@@ -1,7 +1,7 @@
 /*
 	Avoid the DoubleFree sample program prepared by viswanatha Ramasamy to help the people to crack c++ interview.
 	Share , Subscribe and give me your valuable comments.
-	source code location: https://github.com/ViswanathanRamasamy/RockYourInterview-CPP/
+	Source Code Location: https://github.com/ViswanathanRamasamy/RockYourInterview-CPP/
 */
 
 #include <iostream>
