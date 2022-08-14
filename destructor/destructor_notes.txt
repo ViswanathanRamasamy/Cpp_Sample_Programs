@@ -1,0 +1,42 @@
+destructor notes:
+=================
+a. destructor function name is same as the class name with addition ~ in the begining. 
+b. destructor cannot be overloaded, will not take any argument and no return type. so there can be only one destructor
+c. destructor is the last function to be called automatically before the object is deleted or goes out of scope.
+class destructor
+{
+	public:
+		~destructor()
+		{
+		}
+}
+
+int function()
+{
+    destructor obj;
+	return 100;
+}
+
+int main()
+{
+	function();
+	return 0;
+}
+d. destructor can be virtual.
+e. similar to the constructor, compiler will provide the default destructor. user will write their own destructor when the heap memory, needs to be released or socket connection, files  needs to closed.
+f. destructor can be in the private session , if the object wants be deleted only by the static or friend function member function.
+
+
+class destructor
+{
+	private:
+		~destructor()
+		{
+		}
+}
+
+int main()
+{
+    destructor obj;
+	return 100;
+}

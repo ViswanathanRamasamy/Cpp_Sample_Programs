@@ -56,7 +56,7 @@ class shallowCopy
 		/* getter function */
 		void getData()
 		{
-			cout << m_ix <<" " <<m_iy <<endl;
+			cout << m_ix <<" " << m_iy <<endl;
 			cout << "addr = " << m_ipptr << " " << *m_ipptr << endl;
 		}
 };
@@ -99,6 +99,7 @@ addr = 0x556ddcff0eb0 30
 l_obj2 content 
 10 20
 addr = 0x556ddcff0eb0 30
+
 l_obj3 content 
 10 20
 addr = 0x556ddcff0eb0 30

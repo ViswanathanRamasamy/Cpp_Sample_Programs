@@ -70,7 +70,7 @@ int main()
 	 l_obj1.getData();
 	 cout << "l_obj2 content " <<endl;
 	 l_obj2.getData();
-	adoubleFree l_obj3;
+	 adoubleFree l_obj3;
 	 l_obj3= l_obj1;
 	 cout << "l_obj3 content " <<endl;
 	 l_obj3.getData();
