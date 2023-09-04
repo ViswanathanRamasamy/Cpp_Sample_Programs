@@ -1,0 +1,40 @@
+features of c++
+noexcept
+new data types
+initializer lists
+uniform initialization
+nullptr
+range-based for loop
+move,
+tuple
+typeinterface (auto and decltype)
+variadic template
+final override
+constexpr
+lamda function
+smart pointer
+enum class or scoped enum
+userdefined literal
+inclass member initialization
+constexpr
+in class member initilization
+static const member variable
+attribute
+generalined non tival uniion
+trailing return type
+static_assert
+default keyword
+delete keyword
+inheritated constructor
+all_of
+any_of
+none_of
+iota
+fill_n
+copy_n
+static_assert
+smart_pointer
+unorder_multimap
+unordered_multiset
+delegating constructors
+default and delete keyword
