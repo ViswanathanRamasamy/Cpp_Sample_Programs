@@ -1,3 +1,9 @@
+/*
+	What is NaN not a number.
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
+	Author Name: Viswanathan Ramasamy
+	Email id: rviswawt@gmail.com
+*/
 #include <iostream>
 #include <typeinfo> //required for typeid
 using namespace std;

@@ -1,3 +1,10 @@
+/*
+	3 way comparision operator in C++20.
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
+	Author Name: Viswanathan Ramasamy
+	Email id: rviswawt@gmail.com
+*/
+
 // 3 way comparision operator or spaceship operator. <=>
 // its return type is strong ordering, weak ordering or partial ordering.
 /* equality :

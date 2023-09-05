@@ -1,3 +1,9 @@
+/*
+	3 way comparision operator in C++20.
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
+	Author Name: Viswanathan Ramasamy
+	Email id: rviswawt@gmail.com
+*/
 
 a < b ; a.operator <=> b < 0
 a >= b ; a.operator <=> b >= 0
