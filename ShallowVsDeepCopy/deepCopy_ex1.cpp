@@ -1,7 +1,7 @@
 /*
 	deep copy sample program prepared by viswanatha Ramasamy to help the people 
 	to crack c++ interview. Share , Subscribe and give me your valuable comments.
-	Source Code Location: https://github.com/ViswanathanRamasamy/RockYourInterview-CPP/
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
 	Author Name: Viswanathan Ramasamy
 	Email id: rviswawt@gmail.com
 */

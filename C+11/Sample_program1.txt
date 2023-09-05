@@ -1,3 +1,10 @@
+/*
+	Below is the sample program for the C++11 features.
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
+	Author Name: Viswanathan Ramasamy
+	Email id: rviswawt@gmail.com
+*/
+
 C++11
 =====
 some mistake what i have done:
