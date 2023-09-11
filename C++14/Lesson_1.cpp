@@ -1,5 +1,5 @@
 /*
-	Below are the sample program for the C++14 features.
+	Lesson1: Sample program for the C++14 features.
 	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
 	Author Name: Viswanathan Ramasamy
 	Email id: rviswawt@gmail.com
@@ -281,7 +281,7 @@ int main() {
 
 ===================================
 std::thread::hardware_concurrency() is a static member function of the std::thread class
- available in the C++ Standard Library. It provides an estimate of the number of hardware threads or cores that are supported by the execution environment.
+ available in the C++ Standard Library. It provides an estimate of the number of hardware cores that are supported by the execution environment.
  ==============
 Resource initialized only Once:
 
