@@ -79,6 +79,21 @@ int main() {
 }
 0123
 ============================
+// Define a function template with a parameter pack
+template <typename... Types>
+void printIndices(Types... indices) {
+    // Print the indices
+    ((std::cout << indices << " "), ...); // Using fold expression
+    std::cout << '\n';
+}
+
+int main() {
+    // Calling the function with indices
+    printIndices<std::size_t>(0, 1, 2, 3);
+
+    return 0;
+}
+=====================================
 //how to remove the warning of unsed variable
 //(,) 2 expression  inside the ()
 //int dummy[] = {(std::cout << Indices << "   ")...};  will not work since we cannot convert output to int
@@ -393,3 +408,8 @@ int main() {
 }
 // 11 22 33 44 55 6
 =====================================
+/* Note
+yeild
+fold requires the utility library
+template argument can be from 
+print<1,2,3,4,5>()//need,'t be in the argument list
