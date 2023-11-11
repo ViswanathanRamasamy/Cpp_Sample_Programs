@@ -1,6 +1,6 @@
 /*
 	Lesson1: Sample program for the C++14 features.
-	Source Code Location: https://github.com/ViswanathanRamasamy/_Sample_Programs
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
 	Author Name: Viswanathan Ramasamy
 	Email id: rviswawt@gmail.com
 */
@@ -180,7 +180,7 @@ int main() {
 }
 ============================================
 constexpr int operator""_myliteral(unsigned long long value) {
-	return static_cast<int>(value * 2);
+	return static_cast<int>(value * 2); //static_cast is converting the value. reinterpret_cast convert the ointer
 }
 
 int main() {
@@ -352,7 +352,7 @@ int main() {
 }
 
 ==========================================
-//string find return size_t
+//string, vector.size(), offsetof find return size_t
 
 #include <iostream>
 #include <string>
@@ -930,6 +930,7 @@ int main() {
 }
 
 =============================================================
+header file required for integer_sequence
 // It's primarily used as a tool to work with and manipulate sequences of integers at compile time. 
 //integer_sequence?
 include <iostream>
@@ -1187,7 +1188,7 @@ std::pair<double, double> findRoots(double a, double b, double c) {
 	double discriminant = b * b - 4 * a * c;
 
 	if (discriminant < 0) {
-		throw std::logic_error("No real roots");
+		throw std::logic_error("No real roots"); //or throw std::invalid_argument("Non-digit character encountered");
 	}
 
 	p.first = (-b + sqrt(discriminant)) / (2 * a);
@@ -1660,7 +1661,8 @@ int main() {
 	return 0;
 }
 ==============================
-//read the character from the buffer and the number of character read
+//read the character from the buffer and the number of character read and maintain the string buffer 
+//size
 #include <stdio.h>
 
 int main() {
@@ -1864,15 +1866,558 @@ Area : 78.5375
 	   Drawing a circle
 	   Drawing a circle
    Area : 78.5375
-		  == == == == == == == == == == == == == =
+== == == == == == == == == == == == == =
+dynamic_cast:
+dynamic_cast is primarily used for performing safe downcasting in polymorphic class hierarchies.It is specifically designed to work with polymorphic classes,
+which means they have at least one virtual function.
+#include <iostream>
+
+class Base {
+public:
+	virtual void print() const {
+		std::cout << "Base class" << std::endl;
+	}
+};
+
+class Derived : public Base {
+public:
+	void print() const override {
+		std::cout << "Derived class" << std::endl;
+	}
+};
+
+int main() {
+	Base* basePtr = new Derived;
+
+	// Using dynamic_cast with pointers
+	Derived* derivedPtr = dynamic_cast<Derived*>(basePtr);
+
+	if (derivedPtr) {
+		// Successfully casted, do something with derivedPtr
+		derivedPtr->print();
+	}
+	else {
+		// Cast failed, handle the error
+		std::cout << "Dynamic cast failed" << std::endl;
+	}
+
+	delete basePtr;  // Don't forget to delete the allocated memory
+
+	return 0;
+}
+=======================================================
+If you use dynamic_cast for non - related classes or non - polymorphic classes, it will result in a compilation error.
+The dynamic_cast operator is designed to work with polymorphic classes, meaning classes that have at least one virtual function.
+there should be atleast one virtual function in the base class.it needn't necessary overriden in the derived class'
+using dynamic_casting you cannot assign the deviced class pointer to the base class object.
+===================================================================
+#include <iostream>
+
+class Base {
+public:
+	virtual void print() const {
+		std::cout << "Base class" << std::endl;
+	}
+};
+
+class Derived : public Base {
+public:
+	void print() const override {
+		std::cout << "Derived class" << std::endl;
+	}
+};
+
+int main() {
+	Base base;
+	Derived derived;
+
+	Base& baseRef = base;
+
+	try {
+		// Using dynamic_cast with references
+		Derived& derivedRef = dynamic_cast<Derived&>(baseRef);
+
+		// Successfully casted, do something with derivedRef
+		derivedRef.print();
+	}
+	catch (const std::bad_cast& e) {
+		// Cast failed, handle the error
+		std::cerr << "Dynamic cast failed: " << e.what() << std::endl;
+	}
+
+	return 0;
+}
+
+==========================================================
+const_cast will work only on pointer and reference:
+const_cast is used to add or remove the const qualifier from a variable.
+
+int& modifiedValue = const_cast<int&>(originalValue);
+====
+int originalValue1 = 42;
+const int* originalValue = &originalValue1;  // Use address-of operator to get a pointer
+
+// Create a non-const copy of originalValue
+int* & modifiedValue = const_cast<int*&>(originalValue);
+-===================
+const int& originalValue = originalValue1;  // Use reference instead of pointer
+
+// Create a non-const reference to originalValue
+int& modifiedValue = const_cast<int&>(originalValue);
+===================
+#include <iostream>
+
+int main() {
+	const int originalValue = 42;
+
+	// Using const_cast with a pointer to remove const-ness and modify the variable
+	int* modifiedValue = const_cast<int*>(&originalValue);
+	*modifiedValue = 100;
+
+	std::cout << "Original value: " << originalValue << std::endl;
+	std::cout << "Modified value: " << *modifiedValue << std::endl; //undefined behaviour
+
+	return 0;
+}
+========================
+reinterpret_cast is used for low - level casting between pointer types.It converts any pointer type to any other pointer type, even of unrelated classes
+int myInt = 42;
+char* charPtr = reinterpret_cast<char*>(&myInt);
+
+int main()
+{
+	int* p = new int(65);
+	char* ch = reinterpret_cast<char*>(p);
+	cout << *p << endl; //65
+	cout << *ch << endl; //A
+	cout << p << endl; //address
+	cout << ch << endl; //A
+	return 0;
+}
+
+===
+#include <iostream>
+
+int main() {
+	// Converting an integer to a pointer
+	int intValue = 42;
+	int* intPtr = reinterpret_cast<int*>(intValue);
+
+	// Converting a pointer back to an integer
+	int backToInt = reinterpret_cast<std::uintptr_t>(intPtr);
+
+	// Output the results
+	std::cout << "Original integer value: " << intValue << std::endl; //42
+	std::cout << "Pointer value: " << intPtr << std::endl; //0x2a
+	std::cout << "Converted back to integer: " << backToInt << std::endl; //42
+
+	return 0;
+}
+===
+#include <iostream>
+
+class MyClass {
+public:
+	int data;
+	MyClass(int value) : data(value) {}
+};
+
+int main() {
+	// Creating an object of MyClass
+	MyClass myObject(42);
+
+	// Using reinterpret_cast to cast the pointer
+	int* intPtr = reinterpret_cast<int*>(&myObject);
+
+	// Accessing the data member through the casted pointer
+	std::cout << "Value through reinterpret_cast: " << *intPtr << std::endl;
+
+	return 0;
+}
+
+===========================
+static_cast is used for general - purpose type casting.It performs type checking at compile - time and is safer than C - style casting.
+static_cast to remove the const qualifier from a variable, you will encounter a compilation error.
+const int originalValue = 42;
+
+// Attempt to use static_cast to remove const-ness and modify the variable
+int modifiedValue = static_cast<int>(originalValue);  // Error here
+
+float myFloat = 4.56;
+int myInt = static_cast<int>(myFloat);
+===
+double value = 3.14;
+int intValue = static_cast<int>(value); //allwed
+===
+class Base {};
+class Derived : public Base {};
+
+Base* basePtr = new Derived;
+Derived* derivedPtr = static_cast<Derived*>(basePtr); // no error. static_cast can convert between the polymorphic class
+===
+static_cast cannot be used between the unrelated class:
+int* p = static_cast<int*>(&c); //if c is char then error. unrelated type
+like int* to double *; poiter between the unrelated class
+=====
+int i = 10;
+void* v = static_cast<void*>(&i);
+int* ip = static_cast<int*>(v);
+===========================
+int main()
+{
+
+	int num = 10;
+
+	// converting int to double 
+	double numDouble = static_cast<double>(num);
+
+	// printing data type 
+	cout << typeid(num).name() << endl; //i
+
+	// typecasting 
+	cout << typeid(static_cast<double>(num)).name() << endl; //d
+
+	// printing double type t 
+	cout << typeid(numDouble).name() << endl; //d
+
+	return 0;
+}
+===========
+#include <iostream>
+#include <string>
+using namespace std;
+
+// new class
+class integer {
+	int x;
+
+public:
+	// constructor
+	integer(int x_in = 0)
+		: x{ x_in }
+	{
+		cout << "Constructor Called" << endl;
+	}
+
+	// user defined conversion operator to string type
+	operator string()
+	{
+		cout << "Conversion Operator Called" << endl;
+		return to_string(x);
+	}
+};
+
+// Driver code
+int main()
+{
+	integer obj(3);
+	string str = obj;
+	obj = 20;
+
+	// using static_cast for typecasting
+	string str2 = static_cast<string>(obj);
+	obj = static_cast<integer>(30);
+
+	return 0;
+}
+============
+practical example where the constant object is used? configuration file management
+#include <iostream>
+#include <string>
+
+class LoggerConfig {
+public:
+	// Constructor to initialize configuration settings
+	LoggerConfig(const std::string& logFilePath, bool enableDebugMode)
+		: logFilePath(logFilePath), debugModeEnabled(enableDebugMode) {}
+
+	// Getter functions for configuration settings (const member functions)
+	const std::string& getLogFilePath() const {
+		return logFilePath;
+	}
+
+	bool isDebugModeEnabled() const {
+		return debugModeEnabled;
+	}
+
+private:
+	const std::string logFilePath;
+	const bool debugModeEnabled;
+};
+
+int main() {
+	// Create a constant LoggerConfig object with read-only settings
+	const LoggerConfig productionConfig("/var/log/app.log", false);
+
+	// Access and display configuration settings using const member functions
+	std::cout << "Log File Path: " << productionConfig.getLogFilePath() << std::endl;
+	std::cout << "Debug Mode Enabled: " << (productionConfig.isDebugModeEnabled() ? "Yes" : "No") << std::endl;
+
+	// Attempting to modify the constant object will result in a compilation error
+	// productionConfig.logFilePath = "/var/log/new.log";  // Error: assignment of read-only member 'LoggerConfig::logFilePath'
+
+	return 0;
+}
+
+==============================================
+n C++, the mutable keyword is used as a specifier for class member variables.When a member variable is declared as mutable, it means that even if the object 
+itself is declared as const, the mutable member variable can still be modified.This is often used for cases where an object wants to cache or memoize a result without affecting the logical constness of the object.
+#include <iostream>
+
+class MyClass {
+public:
+	// Mutable member variable
+	mutable int cachedValue;
+
+	MyClass(int value) : cachedValue(value) {}
+
+	// Const member function
+	int getValue() const {
+		// Modifying a mutable member variable in a const member function
+		cachedValue++;
+		return cachedValue;
+	}
+};
+
+int main() {
+	const MyClass obj(42);
+
+	// Calling a const member function that modifies a mutable member variable
+	std::cout << obj.getValue() << std::endl;
+
+	return 0;
+}
+
+different way to create the double pointer?
+===========================
+
+=====
+#include <iostream>
+
+#include <iostream>
+
+int main() {
+	// Number of rows and columns
+	int rows = 3;
+	int cols = 4;
+
+	// Step 1: Allocate memory for the pointers to rows
+	int** arr = new int*[rows];
+
+	// Step 2: Allocate memory for each row
+	for (int i = 0; i < rows; ++i) {
+		arr[i] = new int[cols];
+	}
+
+	// Access and modify elements
+	arr[0][0] = 42;
+
+	// Deallocate memory
+	for (int i = 0; i < rows; ++i) {
+		delete[] arr[i];
+	}
+	delete[] arr;
+
+	return 0;
+}
+
+=====
+#include <iostream>
+#include <vector>
+
+int main() {
+	// Number of rows and columns
+	int rows = 3;
+	int cols = 4;
+
+	// Create a vector of vectors
+	std::vector<std::vector<int>> arr(rows, std::vector<int>(cols));
+
+	// Access and modify elements
+	arr[0][0] = 42;
+
+	// No explicit deallocation needed; handled by vector
+
+	return 0;
+}
+=====
+#include <iostream>
+
+int main() {
+	// Number of rows and columns
+	int rows = 3;
+	int cols = 4;
+
+	// Step 1: Allocate memory for the entire 2D array
+	int* arr = new int[rows * cols];
+
+	// Step 2: Access elements using 2D indexing
+	arr[0 * cols + 0] = 42;
+
+	// Deallocate memory
+	delete[] arr;
+
+	return 0;
+}
+
+======
+std::string input = "Hello, my email addresses are john@example.com and jane@email.com";
+
+// Define a regular expression pattern for matching email addresses
+std::regex emailPattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+
+// Search for matches in the input string
+std::smatch matches;
+std::cout << "Email addresses found: ";
+while (std::regex_search(input, matches, emailPattern)) {
+	// Output the matched email addresses
+	std::cout << matches[0] << " ";
+
+	// Update the input string to search for the next match
+	input = matches.suffix().str(); //matches.suffix();
+}
+========================================================
+#include <iostream>
+#include <regex>
+#include <string>
+
+int main() {
+	// Input string
+	std::string input = "Hello, my email addresses are user@example.com and admin@example.org";
+
+	// Regular expression pattern to match email addresses
+	std::regex emailPattern(R"(\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b)");
+
+	// Using std::sregex_iterator to find all matches
+	std::sregex_iterator regexIterator(input.begin(), input.end(), emailPattern);
+	std::sregex_iterator endIterator;
+
+	// Iterating over matches and printing them
+	while (regexIterator != endIterator) {
+		std::smatch match = *regexIterator;
+		std::cout << "Found email: " << match.str() << std::endl; //match[0] 
+		//in regext_iterator dont use suffix. it will not work for the next match. 
+		//match.suffix().str() will return the remaining element from the matched psosition
+		++regexIterator;
+	}
+
+	return 0;
+}
+============
+int main() {
+	std::string input1 = "The pattern is abc.";
+	std::string input2 = "The pattern is .";
+
+	// Match the sequence "abc"
+	std::regex pattern(R"(abc)");
+
+	// Check the first input
+	if (std::regex_search(input1, pattern)) {
+		std::cout << "Matched in input1: " << input1 << std::endl; //matcjed
+	}
+	else {
+		std::cout << "No match in input1." << std::endl;
+	}
+=========================
+regex for data of birth, ipaddress, https, ssn and color patten
+slashes for b to add , decimal
+hi w01/15/2022 /b will rejecy it since the word is starting with w
+std::regex datePattern(R"(\b(0[1-9]|1[0-2])/([0-3][0-9])/\d{4}\b)");//MM/DD/YYYY
+
+std::regex ipPattern(R"(\b(?:\d{1,3}\.){3}\d{1,3}\b)"); //d{1,3} for the last digit
+std::regex urlPattern(R"(\b(?:https?|ftp)://\S+\b)"); //http," "https," or "ftp." //https? https or http \S+
+std::regex ssnPattern(R"(\b\d{3}-\d{2}-\d{4}\b)");//123-45-6789. //\d is a shorthand character class that matches any digit (equivalent to [0-9]).
+std::regex hexColorPattern(R"(#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}))"); //#RRGGBB or #RGB.
+std::regex pattern(R"(colou?r)");
+
+std::regex pattern(R"(:d{3})") //will search for the word :d{3}
+((? : \d{ 1, 3 }))" or (\d{1,3})"
+std::regex pattern(R"(\babc\w*\b)"); //all word starting with abc
+========================================================
+setw, setfill, quoted(string) header file?
+how to check the digit or character isspace and the header?
+snprintf and sscanf header file and importance?
+abstract class and access specifier?
+sqrt header file?
+user literal ?
+header file required exception?
+header file required for the integer_sequence and index_sequence?
+is_same: header file required?
+syntax for sleep_util
+std::exceptions:
+how to compile the c++ code?
+static and dynamic_cast important
+what is the return of regex_search?
+regex exact match?
+make_index_sequence need how many argument in the template?
+
+HEAP:
+	The heap typically has a larger size compared to the stack, and it can grow and shrink dynamically during program execution.
+	Memory fragmentation can occur on the heap as memory is allocated and deallocated over time, leading to inefficient use of memory.
+	malloc() and free() in languages like C or new and delete in C++.
+	Memory in the heap persists until explicitly freed.
+	Access to memory on the heap is slower than the stack because it involves dynamic allocation and deallocation.Dereferencing pointers to the heap requires additional indirection
+
+Stack : 
+	  The stack has a fixed size determined at compile - time.It is generally smaller than the heap.
+	  Fragmentation is not an issue on the stack, as memory is allocated and deallocated in a last - in, first - out(LIFO) manner.
+	  allocated and deallocated by the compiler as functions are called.
+	  Memory in the stack is short - lived, and it is typically used for local variables and function call information.
+	  Access to memory on the stack is faster than the heap because it involves simple pointer arithmetic.Local variables on the stack can be accessed directly.
+
+	  command line argument and ebvironmental variable
+	  stack(grow downward)
+	  heap(grow upward to wards the higher order address)
+	         uninitialized data
+	         initialized data
+lower memory address text
 <iomanip> = > setfill and setw
 cctype required isalpha and ischar
-sniprintf and sscanf needs stdio.h
+snprintf and sscanf needs stdio.h
 snpritf total size + 1 > buffer size
 sscanf needs & and it can be used to convert from string to integer
 userliter only the overloading operator can be constexpr
-user liter long l = 43_degree; //no ()
+user liter long l = 43_degree; //no () but overlaoding will have _deg(long)
 better to use using namespace std; const &
 exception: stdexcept
-abstract class: protected variable and public function in base class good to have.
+abstract class : protected variable and public function in base class good to have.
+cmath : sqrt
+header file required for the integer_sequence : utility
+is_same : header file required ? type_traits
+chrono::time_poibt<chrono::steadt_clock> wait = chron::steady_clock::now() + chrono::seconds()
+exception :
+logic_error(" ")
+invalid_argument()
+string not found:
 
+
+string::npos
+static and dynamic_cast cannot be used for not related class
+
+R"(abc)"; R"(c?)"
+template <typename T, T... Is>
+void print_sequence(integer_sequence<T, Is...>)
+
+// Helper template to print elements of an array
+template <typename T, std::size_t... Indices>
+void printArray(const T& arr, std::index_sequence<Indices...> y)
+using IndexSequence = std::make_index_sequence<size>;
+
+// Call the printArray function with the generated sequence
+printArray(myArray, IndexSequence{});
+== == == == = 
+cin.ignore() ignore the input bufffer.
+
+std::string inputString = "123 4.56 hello";
+std::istringstream iss(inputString);
+
+// Variables to store extracted values
+int intValue;
+float floatValue;
+std::string stringValue;
+
+// Extract values from the stringstream
+iss >> intValue >> floatValue >> stringValue;
+//or
+while (iss >> intValue >> floatValue >> stringValue) {
+}
