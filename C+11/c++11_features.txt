@@ -39,9 +39,3146 @@ none_of
 iota
 fill_n
 copy_n
+rank
+is_array
+extent
 static_assert
 smart_pointer
 unorder_multimap
 unordered_multiset
 delegating constructors
 default and delete keyword
+=======================
+accumulate the sum for array and vector?
+
+programming question:
+using namespace std;
+int main()
+{
+    vector <int> v{1,2,3,4,5}; //or  int sum = std::accumulate(array, array + 10, 0);
+    int s = 0;
+    s=accumulate(v.begin(),v.end(),s); //note if you put int s=accumulate(v.begin(),v.end(),s); //result in adding the value to garbage value;
+int s=accumulate(v.begin(),v.end(),0);   
+int s=accumulate(v.begin(),v.end(),1, std::plus<int>());//16
+   cout << s;
+    return 0;
+}
+===============
+accumulate for the product?
+
+#include <iostream>
+#include <numeric>
+#include <vector>
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+
+    // Use std::accumulate with multiplication to calculate the product
+    int product = std::accumulate(numbers.begin(), numbers.end(), 1, std::multiplies<int>());
+
+    // Print the result
+    std::cout << "Product: " << product << std::endl;
+
+    return 0;
+}
+===============================
+accumulate the string without lamda?
+
+#include <iostream>
+#include <numeric>
+#include <string>
+#include <vector>
+
+int main() {
+    std::vector<std::string> words = {"Hello", ", ", "world", "!"};
+
+    // Use std::accumulate to concatenate the elements in the vector of strings
+    std::string concatenatedString = std::accumulate(words.begin(), words.end(), std::string());
+
+    // Print the result
+    std::cout << "Concatenated String: " << concatenatedString << std::endl;
+
+    return 0;
+}
+===============================
+accumulate with lamda to add square of the given sum?
+
+#include <iostream>
+#include <vector>
+#include <numeric>
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+
+    // Using std::accumulate with a lambda function to calculate the sum of squares
+    int sumOfSquares = std::accumulate(numbers.begin(), numbers.end(), 0,
+        [](int accumulator, int element) {
+            // Custom lambda function to calculate the sum of squares
+            return accumulator + element * element;
+        }
+    );
+
+    std::cout << "Sum of squares: " << sumOfSquares << std::endl;
+
+    return 0;
+}
+
+==================================
+accumulate to find the sum using array;
+does accumulate modify the argument value passed to it?
+how to pass the argument and function to the accumulate?
+
+// C++ program to demonstrate working of accumulate()
+#include <iostream>
+#include <numeric>
+using namespace std;
+
+// User defined function
+int myfun(int x, int y)
+{
+	// for this example we have taken product
+	// of adjacent numbers
+	return x * y;
+}
+
+int main()
+{
+	// Initialize sum = 1
+	int sum = 1;
+	int a[] = { 5, 10, 15 };
+
+	// Simple default accumulate function
+	cout << "\nResult using accumulate: ";
+	cout << accumulate(a, a + 3, sum); //31
+
+	// Using accumulate function with
+	// defined function
+	cout << "\nResult using accumulate with"
+			"user-defined function: ";
+	cout << accumulate(a, a + 3, sum, myfun); //750
+
+	// Using accumulate function with
+	// pre-defined function
+	cout << "\nResult using accumulate with "
+			"pre-defined function: ";
+	cout << accumulate(a, a + 3, sum, std::minus<int>()); //-29
+
+	return 0;
+}
+
+=========================================================
+what is the retun value of the accumulate ?
+what the output expected from the transform? 
+transform function to insert the element into vector with different option?
+transform using the array and user defined function?
+transform using the array and lamdafunction function?
+transform using the unary operation
+transform using the binaray operation?
+
+unary:
+transform(Iterator inputBegin, Iterator inputEnd, 
+         Iterator OutputBegin, unary_operation) 
+		 
+
+binary:
+transform(Iterator inputBegin1, Iterator inputEnd1, 
+         Iterator inputBegin2, Iterator OutputBegin, 
+         binary_operation)
+
+unary operation:
+// Custom increment function
+int increment(int x) {
+    return x + 1;
+}		 
+int arr[] = {1, 2, 3, 4, 5};
+transform(arr, arr+n, arr, increment); 
+if we dont specify the vector size?
+if we specify the vector size?
+back_inserter is for the which STL?
+inserter is for which STL?
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+
+    // Create a vector to store the squares of the numbers
+    std::vector<int> squares;
+
+    // Using std::transform with a lambda function to calculate the squares
+    std::transform(numbers.begin(), numbers.end(), std::back_inserter(squares), //std::back_inserter(squares)to vector.begin() when we define vector with size
+        [](int element) {
+            // Custom lambda function to calculate the square
+            return element * element;
+        }
+    );
+
+    // Display the original and transformed vectors
+    std::cout << "Original vector: ";
+    for (const auto& num : numbers) {
+        std::cout << num << " ";
+    }
+
+    std::cout << "\nTransformed vector (squares): ";
+    for (const auto& square : squares) {
+        std::cout << square << " ";
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+
+====================================
+accumulate using the lamda string?
+
+#include <iostream>
+#include <numeric>
+#include <string>
+#include <vector>
+
+int main() {
+    std::vector<std::string> words = {"Hello", "world", "!"};
+
+    // Use std::accumulate with a space as a delimiter
+    std::string concatenatedString = std::accumulate(
+        words.begin(), words.end(), std::string(),
+        [](const std::string& a, const std::string& b) {
+            return a.empty() ? b : a + " " + b;
+        }
+    );
+
+    // Print the result
+    std::cout << "Concatenated String with Space: " << concatenatedString << std::endl;
+
+    return 0;
+}
+=======================================
+accumulate for teh 2d array?
+
+2d array addition:
+a[3][4]
+int sum2D = 0;
+    for (int i = 0; i < 3; ++i) {
+        sum2D += std::accumulate(array2D[i], array2D[i] + 4, 0);
+    }
+=========================
+pushing the element into the 2d vector and printing?
+Assigning the elemenet to the 2d vector during the declaration?
+
+//row then value;
+2d vector
+    // Declare and initialize a 2D vector
+    std::vector<std::vector<int>> my2DVector = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+	std::vector<std::vector<int>> my2DVector;
+	// Add rows to the 2D vector
+    my2DVector.push_back({1, 2, 3});
+    my2DVector.push_back({4, 5, 6});
+    my2DVector.push_back({7, 8, 9});
+
+std::cout << "Initialized 2D Vector:\n";
+    for (const auto& row : my2DVector) { //row
+        for (int value : row) {
+            std::cout << value << ' ';
+        }
+        std::cout << '\n';
+    }
+=================================
+print the 3d vector?
+//matrix, row, value;
+
+3d array
+std::vector<std::vector<std::vector<int>>> my3DVector = {
+        {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9}
+        },
+        {
+            {10, 11, 12},
+            {13, 14, 15},
+            {16, 17, 18}
+        }
+    };
+
+    // Access and print elements in the 3D vector
+    std::cout << "Initialized 3D Vector:\n";
+    for (const auto& matrix : my3DVector) {
+        for (const auto& row : matrix) {
+            for (int value : row) {
+                std::cout << value << ' ';
+            }
+            std::cout << '\n';
+        }
+        std::cout << '\n';
+    }
+========================
+// Declare a 3D vector and pushing it into the vector?
+    std::vector<std::vector<std::vector<int>>> my3DVector;
+
+    // Initialize a 3D vector using push_back
+    my3DVector.push_back({{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
+    my3DVector.push_back({{10, 11, 12}, {13, 14, 15}, {16, 17, 18}});
+==============================
+array[x][y][z]
+x denotes the number of  //2
+y denotes the rows //3 
+z denotes the coloum //4
+Layer 0:
+  [  0  1  2  3 ]
+  [  4  5  6  7 ]
+  [  8  9 10 11 ]
+
+Layer 1:
+  [ 12 13 14 15 ]
+  [ 16 17 18 19 ]
+  [ 20 21 22 23 ]
+========================
+convert the number to string and string to number?
+
+to_string(sum_r);
+stoi(numberstring);
+======================
+sort the elemenet for the vector and array?
+does vector has sort?
+sort(array,array+10) //it doest not return 
+sor(v.begin(),v.end())
+v.sort();
+
+======================
+priority queue insertion and getting the element and removing it?
+
+std::priority_queue<int> pq;//pq(v.begin(),v.end())
+
+    // Insert elements into the priority queue
+    pq.push(30);
+    pq.push(10);
+    pq.push(50);
+    pq.push(20);
+
+// Access the top element (the one with the highest priority)
+std::cout << "Top element: " << pq.top() << std::endl;
+====================================
+To find the number of elements between the 2 iterator?
+
+#include <iterator> // Required for std::distance
+ditance(it1,it2)
+========================
+what should you do for the lower_bound; upper_bount and set_intersection?
+what is the return type of all the above stl functions?
+
+we need sort.
+and the retuyrn type is iterator.
+=====================================
+
+find the iterator of the lower bound and upper bound?
+
+    auto it3 = std::lower_bound(vec.begin(),vec.end(), 5); //mark the first occurance of the 5
+    // Calculate the distance between it1 and it2
+    std::ptrdiff_t dist = std::distance(it1, it3); //it should be it1 and it3 the number of elements between the it1 to it3
+===============================================================
+copy only one element for the other vector during the declaration?
+
+std::vector<int> digits(digit.begin(),digit.begin()+1); //copying only one element
+====================================================
+convert the number to string
+reverse the string?
+string to number.
+
+// Convert the number to a string
+    std::string strNumber = std::to_string(number);
+
+    // Reverse the string
+    std::reverse(strNumber.begin(), strNumber.end());
+
+    // Convert the reversed string back to an integer
+    int reversedNumber = std::stoi(strNumber);
+=======================================
+differents way for vector<int> to string:
+
+#include <numeric> // for std::accumulate
+#include <sstream>
+
+std::string vectorToString(const std::vector<int>& vec) {
+    std::ostringstream oss;
+    for (const int& num : vec) {
+        oss << num;
+    }
+    return oss.str();
+}
+
+std::string vectorToString(const std::vector<int>& vec) {
+    return std::accumulate(vec.begin(), vec.end(), std::string(),
+                           [](std::string s, int num) { //it can be const &
+                               return s + std::to_string(num);
+                           });
+}
+=========================================================
+find the permutation?
+
+#include <algorithm>
+
+void printPermutations(std::vector<int>& digits) {
+    do {
+        for (int digit : digits) {
+            std::cout << digit; //print each invidiual element of the vector
+        }
+        std::cout << std::endl;
+    } while (std::next_permutation(digits.begin(), digits.end())); //permutation in vector
+}
+====================================================
+To find the row and size of the 2d vector?
+// Driver Code
+int main()
+{
+    vector<vector<int> > M = { { 1, 1, 0, 0, 0,1 },
+                               { 0, 1, 0, 0, 1 },
+                               { 1, 0, 0, 1, 1 },
+                               { 0, 0, 0, 0, 0 },
+                               { 1, 0, 1, 0, 1 } };
+ 
+    cout << "Number of islands is: " << M.size(); //5
+	cout << "Number of islands is: " << M[0].size();//5
+    cout << "Number of islands is: " << M[1].size(); //5
+    return 0;
+}
+=====================================================================
+insert the element into the priority queue?
+how to check whether the priority queue is empty?
+
+#include <queue>  // Include the queue header
+std::priority_queue<int, std::vector<int>, std::greater<int>> minHeap;
+
+int main() {
+    // Max heap (default behavior)
+    std::priority_queue<int> maxHeap;
+
+    // Min heap using a lambda function as the comparison
+    std::priority_queue<int, std::vector<int>, std::greater<int>> minHeap;
+
+    // Insert elements into both heaps
+    for (int i : {3, 1, 4, 1, 5, 9, 2, 6}) {
+        maxHeap.push(i);
+        minHeap.push(i);
+    }
+
+    // Display elements in the max heap (top to bottom)
+    std::cout << "Max Heap (default): ";
+    while (!maxHeap.empty()) {
+        std::cout << maxHeap.top() << " ";
+        maxHeap.pop();
+    }
+    std::cout << std::endl;
+
+    // Display elements in the min heap (top to bottom)
+    std::cout << "Min Heap: ";
+    while (!minHeap.empty()) {
+        std::cout << minHeap.top() << " ";
+        minHeap.pop();
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+===============================
+sort the vector in the accessing and descending order?
+for sort  using greater we need to use ()
+
+less<int> not lesser<int>
+
+Sort:
+
+std::sort(numbers.begin(), numbers.end()); //ascending
+std::sort(numbers.begin(), numbers.end(), std::greater<int>()); //ascending
+std::sort(numbers.begin(), numbers.end(), std::less<int>()); //descending
+====================================
+how to find whether the given character is number or digit or anyother character?
+what is the header files?
+
+ASCII value of '0': 48
+int isalnum(int c); //check bot number and digit
+isdigit //number
+isalpha;//is character
+#include <cctype>
+
+char findIndex(const std::string& str, int k) {
+    std::string ex;
+
+    for (char ch : str) {
+        if (std::isdigit(ch)) {
+            for (int i = 0; i < ch - '0' - 1; ++i) {
+                ex += ex;
+            }
+        }
+        if (std::isalpha(ch)) {
+            ex += ch;
+        }
+    }
+
+    // Output the extended string for verification
+    // std::cout << ex << std::endl;
+
+    return (k <= ex.size()) ? ex[k - 1] : ' '; // Check if k is a valid index
+}
+  std::string inputString;
+    std::cout << "Enter a string: ";
+    std::getline(std::cin, inputString);
+=====================================
+derived class object accessing the base class function?
+
+	#include <iostream>
+#include <string>
+
+class Person {
+protected:
+    std::string firstName;
+    std::string lastName;
+    int empIDNumber;
+
+public:
+    Person(const std::string& firstname, const std::string& lastName, int empIDNumber)
+        : firstName(firstname), lastName(lastName), empIDNumber(empIDNumber) {}
+
+    void printPerson() {
+        std::cout << "Name " << lastName << ", " << firstName << "\nEmpID " << empIDNumber << std::endl;
+    }
+};
+
+class RDStudent : public Person {
+private:
+    int* testScore;
+
+public:
+    RDStudent(const std::string& firstName, const std::string& lastName, int id, int* testScore)
+        : Person(firstName, lastName, id), testScore(testScore) {}
+
+    char calculateGrade() {
+        int total = 0;
+        for (int i = 0; i < 5; i++) { // Assuming there are 5 test scores
+            total += testScore[i];
+        }
+        if (total >= 80 && total < 90) {
+            return 'E';
+        } else if (total >= 70 && total < 80) {
+            return 'A';
+        } else if (total >= 55 && total < 70) {
+            return 'P';
+        } else if (total >= 40 && total <= 100) {
+            return 'D';
+        } else
+            return 'T';
+    }
+};
+
+int main() {
+    // Example usage
+    int testScores[] = {85, 75, 60, 45, 95};
+    RDStudent student("John", "Doe", 123, testScores);
+
+    student.printPerson();
+    char grade = student.calculateGrade();
+    std::cout << "Grade: " << grade << std::endl;
+
+    return 0;
+}
+=============================
+To add the empty spaces with special character and print the number in the console?
+
+ std::cout << std::setfill('*') <<setw(5) << 5;// ****5
+
+int main() {
+   int i = 0, j =0 , k = 0;
+   int n =5;
+   for (i=0;i<n;i++)
+   {
+       for(j=0;j<n;j++)
+       {
+           if (j<n-i)
+           {
+            cout <<setw(2)<<"*";
+           }
+           else
+           {
+               cout <<setw(2)<<" ";
+           }
+       }
+    
+        for(j=n-1;j>=0;j--)
+       {
+           if (j<n-i)
+           {
+            cout <<setw(2)<<"*";
+           }
+           else
+           {
+               cout <<setw(2)<<" ";
+           }
+       }     
+       
+       std::cout <<endl;
+   }
+
+    return 0;
+}
+====
+ * * * * * * * * * *
+ * * * *     * * * *
+ * * *         * * *
+ * *             * *
+ *                 *
+ ==========================================
+ userdefined class object comparision?
+ ie sort the object based on the mark?
+ 
+ #include <iostream>
+#include <string>
+
+class Candidate {
+private:
+    std::string name;
+    int marks;
+
+public:
+    Candidate(const std::string& name, int marks) : name(name), marks(marks) {}
+
+    const std::string& getName() const {
+        return name;
+    }
+
+    void setName(const std::string& name) {
+        this->name = name;
+    }
+
+    int getMarks() const {
+        return marks;
+    }
+
+    void setMarks(int marks) {
+        this->marks = marks;
+    }
+
+    bool operator<(const Candidate& candidate) const { //public 
+        return this->marks < candidate.marks;
+    }
+};
+
+int main() {
+    Candidate candidate1("John", 85);
+    Candidate candidate2("Alice", 92);
+
+    if (candidate1 < candidate2) {
+        std::cout << candidate1.getName() << " has fewer marks than " << candidate2.getName() << std::endl;
+    } else {
+        std::cout << candidate1.getName() << " has more marks than or equal to " << candidate2.getName() << std::endl;
+    }
+
+    return 0;
+}
+
+===============================================================
+sperate the number based on the user input 1,2,3,4,5
+
+#include <iostream>
+#include <sstream>
+#include <vector>
+
+int main() {
+    std::string input;
+    
+    // Get user input as a string
+    std::cout << "Enter comma-separated integers: ";
+    std::getline(std::cin, input);
+
+    std::vector<int> numbers;
+
+    // Use stringstream to extract individual integers
+    std::stringstream ss(input);
+    int num;
+
+    while (ss >> num) {
+        numbers.push_back(num);
+        
+        ss.clear();
+        ss.ignore(1);
+        // or Check for the comma and ignore it
+        //if (ss.peek() == ',') {
+        //    ss.ignore();
+        //}
+    }
+
+    // Display the extracted integers
+    std::cout << "Individual integers: ";
+    for (int i : numbers) {
+        std::cout << i << " ";
+    }
+    
+    return 0;
+}
+
+1,2,3
+1 2 3
+=============================================
+erase the element in th set in different ways?
+what cannot be done in erasing the set for the iterator ?
+auto it1 = mySet.find(4);
+ mySet.erase(it1, mySet.end()); //current elemet to till end
+ mySet.erase(it,it++) or mySet.erase(it,it+1) will give undefined behaviour
+ mySet.erase(value);
+ 
+ mySet.erase(it1, ++it2); //erase the element from the iterator it to the elelement before iterator2 
+=======================
+distance between the 2 vector elements?
+
+#include<iterator>
+std::vector<int> vec = {1, 2, 3, 4, 5};
+    
+    // Create iterators pointing to the beginning and end of the vector
+    auto it1 = vec.begin();
+    auto it2 = vec.end();
+    
+    // Calculate the distance between it1 and it2
+    size_t dist = std::distance(it1, it2); //distance between the iterator 5
+===================================
+in which stl we can erase the element based on the value/key?
+can vector erase the lement based on the value?
+
+set and map
+
+vector cannot erase the element based on the value . it need the iterator
+erase(it) =>erase one elementerase(it1,it2);
+
+vector dont have inbuild find and count?
+
+find the element in the vector?
+auto it = find(vector.begin(), vector.end(),
+                   valueToBeDeleted);
+
+std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+int count = std::count(v.begin(), v.end(), 5);
+==========
+does set has the lower_bound and upper_bound ? what does it return?
+does vector has lower/upper_bound, count and find inbuild?
+vector / array used in the bound has to sorted?
+
+vector has no inbuild lower or upper bound
+
+set has inbuild lower_bound, find and count?
+std::set<int> mySet = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+    // Example using lower_bound
+    auto itLower = mySet.lower_bound(5); //lower element which is equal to 5
+	auto itUpper = mySet.upper_bound(5); //6
+In this example, lower_bound(5) returns an iterator pointing to the smallest element in the set that is not less than 5. 
+upper_bound(5) returns an iterator pointing to the smallest element in the set that is greater than 5.
+================================================
+loop over the array of element
+#include <iostream>
+
+int main() {
+    int a[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // Example values
+
+    // Loop over each element in the array and print it
+    for (const auto& elem : a) {
+        std::cout << elem << ' '; //1 2/ 3 4 5 6 7 8 9 10
+    }
+
+    std::cout << '\n';
+
+    return 0;
+}
+======================================================
+//inesrtion into the vector of array for the class object
+// Array of vector and iteraterate over it.
+//vector with class object while declaring vector with values.
+
+#include <iostream>
+#include <vector>
+
+struct A {
+    int data;
+    A(int value) : data(value) {}
+};
+
+int main() {
+ // Declare an array of vectors of type A
+    std::vector<A> M1[] = {
+        { {1} },       // Vector 1
+        { {2},{3} }     // Vector 2
+        // Add more vectors as needed...
+    };
+
+    // Access and print elements from the array of vectors
+    for (const auto& vec : M1) {// get the invidual vector from the array
+        for (const auto& elem : vec) {
+            std::cout << elem.data << ' ';
+        }
+        std::cout << '\n';
+    }
+
+    return 0;
+}
+///  each element is consider as object
+        { 1 },       // Vector 1
+        { 2,3 }     // Vector 2
+////
+===================================
+vector subraction and store in in seperate vector?
+multiply each invidual element and store it in seperate vector?
+
+algorithm
+    std::vector<int> v1 = {1, 2, 3, 4};
+    std::vector<int> v2 = {2, 2, 2, 2};
+    std::vector<int> result(v1.size());
+
+    // Subtract corresponding elements of v2 from v1
+    std::transform(v1.begin(), v1.end(), v2.begin(), result.begin(), std::minus<int>()); //std::plus<int>() //std::multiplies<int>()
+	-1 0 1 2 
+
+// Square each element in the vector
+    std::transform(v.begin(), v.end(), result.begin(), [](int x) { return x * x; });
+
+===================
+count the occurance of 2
+std::vector<int> numbers = {1, 2, 3, 2, 4, 2, 5, 2, 6};
+
+    // Count the occurrences of the value 2 in the vector
+    int countOfTwos = std::count(numbers.begin(), numbers.end(), 2);
+=============================
+How to compare vector and array?
+how to comapre the set and array?
+what is the return value of equal?
+std::set doesn't have a guaranteed order, so comparing it directly with an array might not give you the desired result.
+std::set<int> mySet = {1, 20, 3, 4, 5};
+    int array[] = {1, 20, 3, 4, 5};
+
+    // Convert set to a sorted vector
+    std::vector<int> setVector(mySet.begin(), mySet.end());
+
+    // Use std::equal to compare the vector with the array
+    bool isEqual = std::equal(setVector.begin(), setVector.end(), std::begin(array));
+
+===============================
+std::equal(mySet.begin(), mySet.end(), std::begin(array), std::end(array))
+This line checks if the elements in the std::set and the array are exactly the same and in the same order. 
+
+std::equal(mySet.begin(), mySet.end(), std::begin(array))
+This line checks if the elements in the std::set and the array are the same, but it does not consider the order. 
+===============
+
+array of object declaration?
+insert the multiple object into the set in one line?
+
+
+#include <iostream>
+#include <set>
+
+class classA {
+    // Your class definition goes here
+public:
+    int value;
+
+    // Constructor
+    classA(int val) : value(val) {}
+
+    // Define comparison operator for sorting in the set
+    bool operator<(const classA& other) const {
+        return value < other.value;
+    }
+};
+
+int main() {
+    std::set<classA> s;
+
+    // Assuming array is an array of classA objects
+    classA array[] = {classA(5), classA(2), classA(8), classA(3), classA(5),
+                      classA(1), classA(7), classA(4), classA(6), classA(9)};
+
+    // Insert elements from the array into the set
+    s.insert(array, array + 10);
+
+    // Display the elements in the set
+    std::cout << "Elements in the set: ";
+    for (const auto& elem : s) {
+        std::cout << elem.value << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+=================================
+insert the class object into the set and finding the obeject in set?
+class MyClass {
+public:
+    int value;
+
+    // Implementing operator< for std::set and std::find
+    bool operator<(const MyClass& other) const {
+        return value < other.value;
+    }
+
+    // Optionally, implementing operator== for equality comparison
+    bool operator==(const MyClass& other) const {
+        return value == other.value;
+    }
+};
+
+// Usage
+std::set<MyClass> mySet;
+mySet.insert(MyClass{42});
+
+MyClass searchKey{42};
+auto it = mySet.find(searchKey);
+if (it != mySet.end()) {
+    // Element found
+}
+=====================================
+find whether the complete vector sub vector?
+
+syntax for the serach();
+what is the return value of teh search?
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> haystack = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::vector<int> needle = {4, 5, 6};
+
+    auto it = std::search(haystack.begin(), haystack.end(), needle.begin(), needle.end());
+
+    if (it != haystack.end()) {
+        std::cout << "Needle found at position: " << std::distance(haystack.begin(), it) << std::endl; //3
+    } else {
+        std::cout << "Needle not found in haystack" << std::endl;
+    }
+
+    return 0;
+}
+=======================================================
+what are the different way to print the hexa decimal value?
+what is the header file required?
+what is the syntax?
+basefiled?
+
+std::cout << std::hex << value << std::endl;
+===============
+
+#include <iostream>
+#include <iomanip>  // Required for std::hex
+
+int main() {
+    int value = 255;
+
+    // Set the basefield to hexadecimal
+    std::cout.setf(std::ios::hex, std::ios::basefield);
+
+    // Print the integer in hexadecimal format
+    std::cout << "Hexadecimal: " << value << std::endl;
+    std::cout.unsetf(std::ios::hex);
+    // Set the basefield back to decimal (optional)
+    std::cout.setf(std::ios::dec, std::ios::basefield);
+
+    // Print the integer in decimal format
+    std::cout << "Decimal: " << value << std::endl;
+     
+    return 0;
+}
+
+==========================
+what is the header file and the macro need to set the minimum value of the integer?
+how to get the last character of the string using the string function?
+can i use [] at string?
+
+#include <climits> : INT_MIN
+ char ch = s.back();//s::string
+ s[i] //
+ ================
+ quick sort:
+ Quicksort is ideal for small arrays.
+ The worst time complexity of Quicksort is O(n^2)
+ It doesn't take up any more space to perform the quick sort.
+ For small data sets, it will be faster than other sorting algorithms.
+ In Quicksort, each element of the array is compared with a pivot element.
+ ==================
+ Mergesort repeatedly divides the array into two subarrays (n/2) until only one element remains.
+ Merge sort is suitable for any array size, whether small or large.
+ The worst time complexity of Mergesort is O(n log n).
+ To merge two subarrays takes additional space as a temporary array.
+ With this algorithm, all data sets are sorted at the same speed.
+ =====================
+ 
+=========================================================
+merge, push,pull --keep
+Initialize a Repository:
+
+git init: Initialize a new Git repository in the current directory.
+Clone a Repository:
+
+git clone <repository-url>: Clone a remote repository to your local machine.
+Stage Changes:
+
+git add <file>: Add a specific file to the staging area.
+git add . or git add -A: Add all changes to the staging area.
+Commit Changes:
+
+git commit -m "Commit message": Commit the staged changes with a descriptive message.
+Check Repository Status:
+
+git status: View the status of files in the working directory.
+View Commit History:
+
+git log: Display the commit history.
+git log --oneline: Display a concise log with one commit per line.
+Create a Branch:
+
+git branch <branch-name>: Create a new branch.
+git checkout -b <branch-name>: Create and switch to a new branch in one command.
+Switch Branches:
+
+git checkout <branch-name>: Switch to an existing branch.
+Merge Branches:
+
+git merge <branch-name>: Merge changes from one branch into the current branch.
+Remote Repositories:
+
+git remote -v: View remote repositories.
+git push <remote-name> <branch-name>: Push changes to a remote repository.
+git pull <remote-name> <branch-name>: Pull changes from a remote repository.
+Undo Changes:
+
+git reset <file>: Unstage changes for a file.
+git reset This command unstages changes, leaving your working directory unchanged.
+git reset --hard HEAD: Discard all local changes ie do unstage and dic=scard all the changes in the working directory.
+git reset --keep: keep the chages in the stash.his resets the branch and keeps changes in the stash. It's useful when you want 
+to switch branches but keep your changes for later.
+Create Tags:
+
+git tag -a <tag-name> -m "Tag message": Create an annotated tag.
+==================================================
+What is Scrum, and how does it differ from other agile methodologies?
+
+Answer: Scrum is an agile framework that provides a way to deliver a potentially shippable product incrementally. It differs from other agile methodologies by its iterative
+ and incremental approach, with fixed-length iterations called sprints.
+ 
+Explain the roles in Scrum: Scrum Master, Product Owner, and Development Team.
+
+Answer: The Scrum Master is responsible for facilitating Scrum events and removing impediments. The Product Owner is accountable for the product backlog and prioritizing features.
+ The Development Team is responsible for delivering a potentially releasable product increment.
+
+What is a Product Backlog and how is it managed in Scrum?
+
+Answer: The Product Backlog is a prioritized list of features, enhancements, and bug fixes for a product. It is managed by the Product Owner, who continually refines and
+ prioritizes items based on business value and stakeholder feedback.
+
+What is a Sprint in Scrum, and how long should it ideally last?
+
+Answer: A Sprint is a time-boxed iteration during which a potentially releasable product increment is created. 
+Sprints are typically 2-4 weeks long to maintain a balance between frequent delivery and a reasonable planning horizon.
+Explain the concept of a Daily Scrum.
+
+Answer: The Daily Scrum is a short, daily meeting where the Development Team synchronizes their activities. 
+Each team member answers three questions: What did I do yesterday? What will I do today? Are there any impediments in my way?
+What is the Definition of Done (DoD) in Scrum?
+
+Answer: The Definition of Done is a set of criteria that must be met for a product backlog item to be considered complete.
+ It ensures that each increment is potentially releasable and meets the team's quality standards.
+How does Scrum handle changes in requirements during a Sprint?
+
+Answer: Changes to the Sprint Backlog are generally avoided during a Sprint. If a new requirement arises, it is added to the
+ Product Backlog and prioritized for a future Sprint.
+What is a Sprint Review, and who participates in it?
+
+Answer: The Sprint Review is a meeting at the end of the Sprint to inspect the increment and adapt the Product Backlog. 
+Participants include the Scrum Team, stakeholders, and anyone else interested in the product.
+sprint review: when the developer shows the demo on what has be done
+sprint review and sprint retrospective are different meetingsh.
+How does Scrum facilitate continuous improvement?
+
+Answer: Scrum facilitates continuous improvement through regular retrospectives. The team reflects on their processes, 
+identifies areas for improvement, and implements changes in the next Sprint.
+Explain the concept of a Burndown Chart.
+
+Answer: A Burndown Chart visually represents the work completed versus the work remaining in a Sprint. It helps the team track
+ progress and ensures that they are on track to complete the committed work by the end of the Sprint.
+===============================================================
+size of string class?
+
+sizeof(string) //is 32 size varies based on the c++ library implementation for the string
+
+little endian needs pointer.
+liitlle endian : lsb is stored in lower order address
+
+#include <iostream>
+
+int main() {
+    uint32_t value = 1;
+    uint8_t* bytePtr = reinterpret_cast<uint8_t*>(&value);
+
+    if (*bytePtr == 1) {
+        std::cout << "Little Endian\n";
+    } else {
+        std::cout << "Big Endian\n";
+    }
+
+    return 0;
+}
+
+================================
+char h = 'a';
+  wchar_t i = L'b';
+  char16_t j = u'c';
+  char32_t k = U'd';
+  cout << "Character data types: " << endl;
+  cout << "char: " << h << endl;
+  wcout << "wchar_t: " << i << endl;
+  cout << "char16_t: " << j << endl;
+  cout << "char32_t: " << k << endl;
+  
+  char: a
+wchar_t: b
+char16_t: 99
+char32_t: 100
+  
+  wchar_t wideString[] = L"Hello, \xe7\x9a\x84 wchar_t!";  //Hello, 的 wchar_t!
+  ==========================
+  How to erase the last 2 character?
+  
+  std::string modifiedString = originalString.substr(0, originalString.length() - 2);
+  myString.erase(myString.end() - 2, myString.end());
+  
+  myString.erase(myString.end() - 2);//erase the last 2nd character //Hello, World!//Modified string: Hello, Word!
+  ================================
+  header file required for rank;is_aaray?
+  rank:
+  #include <iostream>
+#include <type_traits>  // Include this for std::rank
+#include <string>
+
+using namespace std;
+
+int main() {
+    cout << std::rank<int[10]>::value;               // (1)
+    cout << std::rank<char[10][10]>::value;          // (2)
+    cout << std::rank<string[10][10][10]>::value;    // (3)
+
+    return 0;
+}
+==============================================
+header file required?
+rank not is_rank?
+return aragument
+condition check for the rerun value of the rank
+condition check for the is_array
+find the dimension size?
+extent can be used for the array and rank. 
+extent spellingextent<T> or extent<t,0> will row;
+extent<t,1>::val;ue will give the fisrt colum
+enable_if<>::typerank<>::valueis_array<>::value
+
+type_traits
+#include <iostream>
+#include <type_traits>
+
+template <typename T>
+typename std::enable_if<std::rank<T>::value == 2>::type //in the case of void otional to specify the , void
+processTwoDimensionalArray(const T& array) {
+    std::cout << "Processing a two-dimensional array." << std::endl;
+    // Perform actions specific to two-dimensional arrays
+}
+
+template <typename T>
+typename std::enable_if<std::rank<T>::value != 2>::type
+processTwoDimensionalArray(const T& array) {
+    std::cout << "Not a two-dimensional array." << std::endl;
+    // Handle other cases
+}
+
+template <typename T>
+typename std::enable_if<std::rank<T>::value ==3 , int >::type
+processTwoDimensionalArray(const T& array) {
+    std::cout << "Not a two-dimensional array." << std::endl;
+    return 10
+}
+
+int main() {
+    int arr2D[5][5];
+    int arr1D[10];
+
+    processTwoDimensionalArray(arr2D);  // Prints: Processing a two-dimensional array.
+    processTwoDimensionalArray(arr1D);  // Prints: Not a two-dimensional array.
+
+    return 0;
+}
+================================================
+std::cout << std::is_array<int>::value << std::endl;          // (0)
+    std::cout << std::is_array<char[10]>::value << std::endl;     // (1)
+    std::cout << std::is_array<std::string>::value << std::endl;  // (0)
+=========================================================
+	#include <iostream>
+#include <type_traits>
+
+//void is the return type of the printArraySize
+// Function template that works only for array types
+template <typename T>
+typename std::enable_if<std::is_array<T>::value, void>::type
+printArraySize(const T& array) {
+    std::cout << "Array size: " << std::extent<T>::value << std::endl; //10
+	std::cout << "Array size: " << std::extent<T, 0>::value << std::endl; //5
+}
+
+// Function template that works for non-array types
+template <typename T>
+typename std::enable_if<!std::is_array<T>::value, void>::type
+printArraySize(const T& value) {
+    std::cout << "Not an array type." << std::endl;
+}
+
+int main() {
+    int arr[10][5];
+    int value = 42;
+
+    printArraySize(arr);    // Prints: Array size: 10
+    printArraySize(value);  // Prints: Not an array type.
+
+    return 0;
+}
+================================
+vector as the pointer containing the pointer to class and class
+traverse the vector which containing the pointer of the class using the for loop?
+whether the for loop return the pointer or object?
+
+for (auto& ptr : *V1) { //v1 containing the pointer?
+
+#include <iostream>
+#include <vector>
+
+class a {
+    // Some class definition for 'a'
+public:
+    // A simple constructor for demonstration purposes
+    a(int value) : data(value) {}
+
+    int getData() const {
+        return data;
+    }
+
+private:
+    int data;
+};
+
+int main() {
+    // Creating a dynamic vector of pointers to objects of type 'a'
+    std::vector<a*> *V1 = new std::vector<a*>;
+
+    // Creating a dynamic vector of objects of type 'a'
+    std::vector<a> *V2 = new std::vector<a>;
+
+    // Set values in the vector of pointers
+    for (int i = 0; i < 5; ++i) {
+        V1->push_back(new a(i));
+    }
+
+    // Set values in the vector of objects
+    for (int i = 0; i < 5; ++i) {
+        V2->push_back(a(i));
+    }
+
+    // Access and print values in the vector of pointers
+    std::cout << "Values in the vector of pointers:\n";
+    for (const auto& element : *V1) {
+        std::cout << element->getData() << " ";
+    }
+    std::cout << "\n";
+
+    // Access and print values in the vector of objects
+    std::cout << "Values in the vector of objects:\n";
+    for (const auto& element : *V2) {  //pointer
+        std::cout << element.getData() << " ";
+    }
+    std::cout << "\n";
+
+    // Don't forget to delete the dynamically allocated vectors and their elements when done
+    for (auto* ptr : *V1) {
+        delete ptr;
+    }
+    delete V1;
+
+    delete V2;
+
+    return 0;
+}
+===============================
+bool my_compare(string a, string b)
+{
+    // If any string is a substring then
+    // return the size with greater length
+    if (a.compare(0, b.size(), b) == 0 //b should be the substring of a
+        || b.compare(0, a.size(), a) == 0) // if a is substring of b
+        return a.size() > b.size();
+ 
+    // Else return lexicographically
+    // smallest string
+    else return a < b;
+}
+==========================
+what are the function sor can take?
+
+greater<int>()
+[]()
+lexical string using vector and string using sort?
+
+std::vector<int> buildSuffixArray(const std::string& str) {
+    int n = str.length();
+    std::vector<int> suffixArray(n);
+
+    // Initialize the suffix array with the indices of characters
+    for (int i = 0; i < n; ++i) {
+        suffixArray[i] = i;
+    }
+
+    // Sort the suffix array based on the lexicographic order of substrings
+    std::sort(suffixArray.begin(), suffixArray.end(), [&str](int a, int b) {
+        return str.substr(a) < str.substr(b);
+    });
+
+    return suffixArray;
+}
+=======================
+lexical ordering is dict order. banana, anana; 2. anana and nana... 
+banana" is [5, 3, 1, 0, 4, 2].
+=====================
+different style in the substr:
+(7, 5);// Five character will be copied
+std::string originalString = "Hello, World!";
+    
+    // Example 1: Extract substring from position 7 to the end
+    std::string substring1 = originalString.substr(7);
+    std::cout << "Substring 1: " << substring1 << std::endl;
+
+    // Example 2: Extract substring from position 7 with a length of 5
+    std::string substring2 = originalString.substr(7, 5);// Five character will be copied
+    std::cout << "Substring 2: " << substring2 << std::endl;
+	}
+	Substring 1: World!
+Substring 2: World
+==============
+////////////
+map insertion is success or not?
+multiple insert in map after the declaration
+find and replace in string?
+file opened success or not?
+read the line from file and convert isstring stream?
+set with user defined function
+map with user defined function
+
+map<int,string>::iterator UOIT
+pair<UOIT,bool> result = mymap.insert({1,"hi"})
+result.second = true only when the insertion is completed
+===
+mymap.insert({{1,"hi"},{2,""west}});
+=================
+    size_t pos = line.find(findWord);
+    while (pos != std::string::npos) {
+        line.replace(pos, findWord.length(), replaceWord);
+        pos = line.find(findWord, pos + replaceWord.length());
+    }
+===============
+    if (!outputFile) { //!outputFile.is_open()
+        cout << "Failed to open the file." << endl;
+        return 1;
+    }
+================
+inputFile filestream
+    while (inputFile >> num) {
+        cout << num << " ";
+    }
+================
+    std::string line;
+    while (std::getline(inputFile, line))
+    {
+        std::istringstream iss(line);
+        std::string word;
+        while (iss >> word)
+=============
+set with fuctor function and class object:
+add the element into the map and set?
+
+ std::unordered_set<Person, PersonHash> people; //person is the class name and PersonHash is the functor;
+ people.insert(Person("Alice", 25));
+===============================
+    std::unordered_set<std::string> setOfStrs;
+    // Insert strings to the set
+    setOfStrs.insert("First");
+==================
+  // Declaring a set of tuples and functor in the set?
+  
+  set<tuple<int, int, 
+            int>, cmp> setOfTuples;
+			
+for_each
+find_if
+count_if
+sort
+unique
+
+when we need sort?
+
+we need to sort the lement before finding unique, lower bound and set_intersection.
+==============
+lower and upper character
+check whether the character and digit?
+header file required?
+lower and upper return type
+
+#include <iostream>
+#include <cctype> // For tolower and toupper //islapha or isdigit?
+
+int main() {
+    char ch = 'A';
+
+    // Convert to lowercase using tolower
+    char lowercaseCh = tolower(ch);
+    std::cout << "Original Character: " << ch << ", Lowercase: " << lowercaseCh << std::endl;
+
+    // Convert to uppercase using toupper
+    char uppercaseCh = toupper(ch);
+    std::cout << "Original Character: " << ch << ", Uppercase: " << uppercaseCh << std::endl;
+
+    return 0;
+}
+=========================
+convert the character to lower character and store it in the same variable?
+
+std::string originalString = "Hello, World!";
+
+    // Convert the entire string to lowercase
+    for (char &ch : originalString) {
+        ch = tolower(ch);
+    }
+===============================
+heap sort and merge sort: best , average and worst case is the 0(nlogn)
+vector for from=nt and back?
+
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> myVector = {1, 2, 3, 4, 5};
+
+    // Get the first element
+    int firstElement = myVector.front();
+    std::cout << "First Element: " << firstElement << std::endl;
+
+    // Get the last element
+    int lastElement = myVector.back();
+    std::cout << "Last Element: " << lastElement << std::endl;
+
+    // Display the original vector
+    std::cout << "Original Vector: ";
+    for (const auto& element : myVector) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+1
+5
+=======================================
+bubble sort:
+Use Cases: Small datasets or educational purposes.
+#include <iostream>
+#include <vector>
+
+void bubbleSort(std::vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < n - i - 1; ++j) {
+            if (arr[j] > arr[j + 1]) {
+                std::swap(arr[j], arr[j + 1]);
+            }
+        }
+    }
+}
+
+int main() {
+    std::vector<int> arr = {64, 25, 12, 22, 11};
+    
+    bubbleSort(arr);
+
+    std::cout << "Sorted array using Bubble Sort: ";
+    for (int num : arr) {
+        std::cout << num << " ";
+    }
+    
+    return 0;
+}
+o(n*n)
+==========================================
+merge sort:
+Use Cases: General-purpose sorting, especially for large datasets or linked lists.
+#include <iostream>
+#include <vector>
+
+void merge(std::vector<int>& arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    std::vector<int> leftArray(arr.begin() + left, arr.begin() + left + n1);
+    std::vector<int> rightArray(arr.begin() + mid + 1, arr.begin() + mid + 1 + n2);
+
+    int i = 0, j = 0, k = left;
+
+    while (i < n1 && j < n2) {
+        if (leftArray[i] <= rightArray[j]) {
+            arr[k++] = leftArray[i++];
+        } else {
+            arr[k++] = rightArray[j++];
+        }
+    }
+
+    while (i < n1) {
+        arr[k++] = leftArray[i++];
+    }
+
+    while (j < n2) {
+        arr[k++] = rightArray[j++];
+    }
+}
+
+void mergeSort(std::vector<int>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+
+        merge(arr, left, mid, right);
+    }
+}
+
+int main() {
+    std::vector<int> arr = {12, 11, 13, 5, 6, 7};
+    
+    mergeSort(arr, 0, arr.size() - 1);
+
+    std::cout << "Sorted array using Merge Sort: ";
+    for (int num : arr) {
+        std::cout << num << " ";
+    }
+    
+    return 0;
+}
+
+
+O(nlogn)
+============================================
+Quick sort: General-purpose sorting when average-case performance is crucial.\
+
+//loop should high-1
+//last swap should i+1 and high
+#include <iostream>
+#include <vector>
+
+#include <iostream>
+#include <vector>
+
+int partition(std::vector<int>& arr, int low, int high) {
+    int pivot = arr[high];
+    int i = low-1;
+
+    for (int j = low; j <= high - 1; ++j) { //loop should hih-1
+        if (arr[j] < pivot) {
+            ++i;
+            std::swap(arr[i], arr[j]);
+        }
+    }
+
+    std::swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+void quickSort(std::vector<int>& arr, int low, int high) {
+    if (low < high) {
+        int pivotIndex = partition(arr, low, high);
+
+        quickSort(arr, low, pivotIndex - 1);
+        quickSort(arr, pivotIndex + 1, high);
+    }
+}
+
+int main() {
+    std::vector<int> arr = {10, 7, 8, 9, 1, 5};
+    
+    quickSort(arr, 0, arr.size() - 1);
+
+    std::cout << "Sorted array using Quick Sort: ";
+    for (int num : arr) {
+        std::cout << num << " ";
+    }
+    
+    return 0;
+}
+
+
+worst case o(n*n) , best case 0(nlogn)
+===============================================
+Heap Sort:
+choose mod as the largest
+
+#include <iostream>
+#include <vector>
+
+void heapify(std::vector<int>& arr, int n, int i) {
+    int largest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+    }
+
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    if (largest != i) {
+        std::swap(arr[i], arr[largest]);
+        heapify(arr, n, largest);
+    }
+}
+
+void heapSort(std::vector<int>& arr) {
+    int n = arr.size();
+
+    // Build max heap
+    for (int i = n / 2 - 1; i >= 0; --i) {
+        heapify(arr, n, i);
+    }
+
+    // Extract elements one by one
+    for (int i = n - 1; i > 0; --i) {
+        std::swap(arr[0], arr[i]);
+        heapify(arr, i, 0);
+    }
+}
+
+int main() {
+    std::vector<int> arr = {12, 11, 13, 5, 6, 7};
+
+    heapSort(arr);
+
+    std::cout << "Sorted array using Heap Sort: ";
+    for (int num : arr) {
+        std::cout << num << " ";
+    }
+
+    return 0;
+}
+Best , worst, Average nlogn
+=============================================
+transform to store the squared the element of the vector in the vector at different location then from the begining
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+    std::vector<int> squares(10);
+
+    // Using std::transform with std::back_inserter to append squares to the vector
+    std::transform(numbers.begin(), numbers.end(), squares.begin()+3,
+        [](int element) {
+            return element * element;
+        }
+    );
+
+    // Display the original and transformed vectors
+    std::cout << "Original vector: ";
+    for (const auto& num : numbers) {
+        std::cout << num << " ";
+    }
+
+    std::cout << "\nTransformed vector (squares): ";
+    for (const auto& square : squares) {
+        std::cout << square << " ";
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+Original vector: 1 2 3 4 5 
+Transformed vector (squares): 0 0 0 1 4 9 16 25 0 0 
+
+=========================================================
+transform to store the squared the element of the vector in the vector from the begining
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+    std::vector<int> squares;
+
+    // Using std::transform with std::back_inserter to append squares to the vector
+    std::transform(numbers.begin(), numbers.end(), std::back_inserter(squares),
+        [](int element) {
+            return element * element;
+        }
+    );
+
+    // Display the original and transformed vectors
+    std::cout << "Original vector: ";
+    for (const auto& num : numbers) {
+        std::cout << num << " ";
+    }
+
+    std::cout << "\nTransformed vector (squares): ";
+    for (const auto& square : squares) {
+        std::cout << square << " ";
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+Original vector: 1 2 3 4 5 
+Transformed vector (squares): 1 4 9 16 25 
+============================================
+stack using array:
+full when?
+
+#include <iostream>
+
+class Stack {
+private:
+    static const int MAX_SIZE = 100; // Maximum size of the stack
+    int arr[MAX_SIZE]; // Array to store stack elements
+    int top; // Index of the top element
+
+public:
+    // Constructor
+    Stack() : top(-1) {}
+
+    // Push operation: Add an element to the top of the stack
+    void push(int value) {
+        if (top == MAX_SIZE - 1) {
+            std::cout << "Stack overflow! Cannot push element " << value << std::endl;
+            return;
+        }
+        arr[++top] = value;
+        std::cout << "Pushed element " << value << " onto the stack." << std::endl;
+    }
+
+    // Pop operation: Remove the element from the top of the stack
+    void pop() {
+        if (isEmpty()) {
+            std::cout << "Stack underflow! Cannot pop from an empty stack." << std::endl;
+            return;
+        }
+        std::cout << "Popped element " << arr[top--] << " from the stack." << std::endl;
+    }
+
+    // Peek operation: Get the top element without removing it
+    int peek() const {
+        if (isEmpty()) {
+            std::cout << "The stack is empty." << std::endl;
+            return -1; // Signify an empty stack
+        }
+        return arr[top];
+    }
+
+    // Check if the stack is empty
+    bool isEmpty() const {
+        return top == -1;
+    }
+
+    // Check if the stack is full
+    bool isFull() const {
+        return top == MAX_SIZE - 1;
+    }
+};
+
+int main() {
+    Stack myStack;
+
+    myStack.push(10);
+    myStack.push(20);
+    myStack.push(30);
+
+    std::cout << "Top element: " << myStack.peek() << std::endl;
+
+    myStack.pop();
+    myStack.pop();
+    myStack.pop();
+
+    return 0;
+}
+=========================
+Depth-First Search (DFS) and Breadth-First Search (BFS) 
+DFS:
+Visits a node and then recursively visits its neighbors
+how the 2d vector can be imitilized for the first dimension after the declaration?
+
+std::vector<std::vector<int>> adjacencyList;
+
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <unordered_set>
+
+class Graph {
+private:
+    int vertices;
+    std::vector<std::vector<int>> adjacencyList;
+
+public:
+    Graph(int V) : vertices(V), adjacencyList(V) {}
+
+    // Add an edge to the graph
+    void addEdge(int src, int dest) {
+        adjacencyList[src].push_back(dest);
+        adjacencyList[dest].push_back(src); // Assuming an undirected graph
+    }
+
+    // Depth-First Search
+    void DFS(int start) {
+        std::vector<bool> visited(vertices, false);
+        std::stack<int> stack;
+        std::vector<int> traversal;
+
+        stack.push(start);
+
+        while (!stack.empty()) {
+            int current = stack.top();
+            stack.pop();
+
+            if (!visited[current]) {
+                traversal.push_back(current);
+                visited[current] = true;
+
+                for (int neighbor : adjacencyList[current]) {
+                    if (!visited[neighbor]) {
+                        stack.push(neighbor);
+                    }
+                }
+            }
+        }
+
+        // Output the DFS traversal
+        std::cout << "Depth-First Search (DFS) Traversal: ";
+        for (int node : traversal) {
+            std::cout << node << " ";
+        }
+        std::cout << std::endl;
+    }
+};
+
+int main() {
+    int vertices, edges;
+    std::cout << "Enter the number of vertices: ";
+    std::cin >> vertices;
+
+    Graph g(vertices);
+
+    std::cout << "Enter the number of edges: ";
+    std::cin >> edges;
+
+    std::cout << "Enter the edges (format: src dest):" << std::endl;
+    for (int i = 0; i < edges; ++i) {
+        int src, dest;
+        std::cin >> src >> dest;
+        g.addEdge(src, dest);
+    }
+
+    int startNode;
+    std::cout << "Enter the starting node for DFS: ";
+    std::cin >> startNode;
+
+    g.DFS(startNode);
+
+    return 0;
+}
+
+Enter the number of vertices: 5
+Enter the number of edges: 4
+Enter the edges (format: src dest):
+0 1
+1 2
+2 3
+3 4
+Enter the starting node for DFS: 0
+The program would then output:
+
+mathematica
+Copy code
+Depth-First Search (DFS) Traversal: 0 1 2 3 4
+===========================================================
+BFS:
+Visits a node and then visits all its neighbors before moving on to the next level of nodes.
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <unordered_set>
+
+class Graph {
+private:
+    int vertices;
+    std::vector<std::vector<int>> adjacencyList;
+
+public:
+    Graph(int V) : vertices(V), adjacencyList(V) {}
+
+    // Add an edge to the graph
+    void addEdge(int src, int dest) {
+        adjacencyList[src].push_back(dest);
+        adjacencyList[dest].push_back(src); // Assuming an undirected graph
+    }
+
+    // Breadth-First Search
+    void BFS(int start) {
+        std::vector<bool> visited(vertices, false);
+        std::queue<int> queue;
+        std::vector<int> traversal;
+
+        queue.push(start);
+
+        while (!queue.empty()) {
+            int current = queue.front();
+            queue.pop();
+
+            if (!visited[current]) {
+                traversal.push_back(current);
+                visited[current] = true;
+
+                for (int neighbor : adjacencyList[current]) {
+                    if (!visited[neighbor]) {
+                        queue.push(neighbor);
+                    }
+                }
+            }
+        }
+
+        // Output the BFS traversal
+        std::cout << "Breadth-First Search (BFS) Traversal: ";
+        for (int node : traversal) {
+            std::cout << node << " ";
+        }
+        std::cout << std::endl;
+    }
+};
+
+int main() {
+    int vertices, edges;
+    std::cout << "Enter the number of vertices: ";
+    std::cin >> vertices;
+
+    Graph g(vertices);
+
+    std::cout << "Enter the number of edges: ";
+    std::cin >> edges;
+
+    std::cout << "Enter the edges (format: src dest):" << std::endl;
+    for (int i = 0; i < edges; ++i) {
+        int src, dest;
+        std::cin >> src >> dest;
+        g.addEdge(src, dest);
+    }
+
+    int startNode;
+    std::cout << "Enter the starting node for BFS: ";
+    std::cin >> startNode;
+
+    g.BFS(startNode);
+
+    return 0;
+}
+==
+nter the number of vertices: 5
+Enter the number of edges: 4
+Enter the edges (format: src dest):
+0 1
+1 2
+2 3
+3 4
+Enter the starting node for BFS: 0
+The program would then output:
+
+sql
+Copy code
+Breadth-First Search (BFS) Traversal: 0 1 2 3 4
+================================
+set, reset, xor and  or operation?
+
+and &&
+or ||
+xor ^
+for && you can use &&;
+===================================
+fill the element in the increasing order for character array and int?
+
+int a[5] = {0};
+char c[3] = {0};
+ 
+// changes a to {10, 11, 12, 13, 14}
+iota(a, a+5, 10); 
+iota(c, c+3, 'a'); // {'a', 'b', 'c'}
+======================
+copy five element into the target array and vector?
+anither way in the vector?
+
+int source[5] = {0, 12, 34, 50, 80};
+int target[5];
+// copy 5 elements from source to target
+copy_n(source, 5, target);
+===========================
+whch stl has has assign?
+
+std::vector<int> destinationVector;
+    destinationVector.assign(sourceVector.begin(), sourceVector.begin() + numElementsToCopy);
+
+std::list<int> destinationVector;
+    destinationVector.assign(sourceVector.begin(), next(sourceVector.begin(), numElementsToCopy));
+	
+sourceVector.begin() + numElementsToCopy //willnot work for the list.
+	
+only list and vector has assign?
+==============
+How to assign the set for the already declared variable?
+#include <set>
+#include <iostream>
+
+int main() {
+    std::set<int> sourceSet = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::set<int> destinationSet;
+
+    // Specify the number of elements to copy
+    int numElementsToCopy = 5;
+
+    // Use the constructor to copy the first numElementsToCopy elements from sourceSet to destinationSet
+    auto sourceIter = sourceSet.begin();
+    std::advance(sourceIter, numElementsToCopy);
+
+    destinationSet = std::set<int>(sourceSet.begin(), sourceIter);
+
+    // Print the elements in destinationSet
+    for (const auto &i : destinationSet) {
+        std::cout << i << " ";
+    }
+
+    return 0;
+}
+
+=============================
+// Copy the first three elements from sourceVector
+    size_t numElementsToCopy = 3;
+    std::vector<int> destinationVector(numElementsToCopy);
+
+    std::copy_n(sourceVector.begin(), numElementsToCopy, destinationVector.begin());
+
+==================================
+set the particular bit?
+
+int setBit(int num, int bitPosition) {
+    return num | (1 << bitPosition);
+}
+====================
+functor object in for_each?
+
+struct Functor {
+    void operator()(int x) const {
+        std::cout << x << " ";
+    }
+}object;
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+
+    // Using for_each with a functor
+    std::for_each(numbers.begin(), numbers.end(), object);  // No need for explicit ()
+
+    return 0;
+}
+=======================================
+functor in for_each?
+
+struct Functor {
+    void operator()(int x) const {
+        std::cout << x << " ";
+    }
+}object;
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+
+    // Using for_each with a functor
+    std::for_each(numbers.begin(), numbers.end(), Functor());  // No need for explicit ()
+
+    return 0;
+}
+====================================
+functor object in thread?
+
+#include <iostream>
+#include <thread>
+
+struct Functor {
+    void operator()() const {
+        std::cout << "Hello from functor!" << std::endl;
+    }
+}object;
+
+int main() {
+    // Creating a thread and invoking the functor's operator()
+    std::thread myThread(object);  // Need explicit ()
+
+    myThread.join();  // Wait for the thread to finish
+
+    return 0;
+}
+=========================================
+functor in thread 
+#include <iostream>
+#include <thread>
+
+struct Functor {
+    void operator()() const {
+        std::cout << "Hello from functor!" << std::endl;
+    }
+}object;
+
+int main() {
+    // Creating a thread and invoking the functor's operator()
+    std::thread myThread((Functor()));  // Need explicit ()
+
+    myThread.join();  // Wait for the thread to finish
+
+    return 0;
+}
+=========================================
+map with functor?
+what elements does the functor of map takes?
+provide the syntx of the struct functor?
+
+#include <iostream>
+#include <map>
+
+// Functor for custom comparison
+struct CustomComparator {
+    bool operator()(int a, int b) const {
+        // Custom comparison logic
+        return a > b;  // In this example, sorting in descending order
+    }
+};
+
+int main() {
+    // Declare a map with a custom comparator (functor)
+    std::map<int, std::string, CustomComparator> myMap;
+
+    // Insert elements into the map
+    myMap[3] = "Three";
+    myMap[1] = "One";
+    myMap[4] = "Four";
+    myMap[2] = "Two";
+
+    // Print the elements of the map
+    for (const auto& pair : myMap) {
+        std::cout << pair.first << ": " << pair.second << std::endl;
+    }
+
+    return 0;
+}
+4: Four
+3: Three
+2: Two
+1: One
+====================================================
+How to reset the particular bit?
+int resetBit(int num, int bitPosition) {
+    return num & ~(1 << bitPosition);
+}
+===================================
+bool isBitSet(int num, int bitPosition) {
+    return (num & (1 << bitPosition)) != 0;
+}
+============================
+check all the element in the vector satisfies the given condition?
+
+none_of: none of the elemenet satisfies the condition.
+any_of
+all_of
+std::vector<int> numbers = {1, 2, 3, 4, 5};
+
+    bool noneNegative = std::none_of(numbers.begin(), numbers.end(), [](int x) {
+        return x >= 0;
+    });
+======================================
+s is string or array of character?
+for (i=0; s[i]; i++) 
+{ 
+}
+=============================
+Operand	Binary Representation
+a	0101
+b	0011
+XOR	0110 (Decimal: 6)
+=============================
+create 4 occurance of 2 in the list and vector in different ways?
+assign cannott have both the iterator and the elements ie assign(it,4,2)
+
+declaration(4,2);
+assign(4,2)
+insert(it,4,2)
+
+list<int> list1; 
+ // using assign() to insert multiple numbers 
+    // creates 4 occurrences of "2" 
+    list1.assign(4,2);
+==========
+vector:
+push_back: Adds elements to the end of the vector.
+pop_back: Removes the last element from the vector.
+back: Accesses the last element in the vector.
+front
+insert: Inserts an element at a specified position in the vector.
+assign
+assign
+at
+auto it = myVector.begin() + 1;
+    myVector.insert(it, 99);
+===============================
+who has at
+what next and advance is doing and syntax?
+does next take from zero position?
+
+vector have at  but the queue, list and deque will have at.
+queue and vector has front and back?
+yes
+
+#include <iostream>
+#include <list>
+
+int main() {
+    std::list<int> myList = {1, 2, 3, 4, 5};
+
+    // Accessing element at index 2 using advance and begin
+    auto it = std::next(myList.begin(), 2);
+    std::cout << "Element at index 2: " << *it << std::endl; //3
+
+    // Alternatively, you can use std::advance directly
+    std::advance(it, 1);
+    std::cout << "Element at index 3: " << *it << std::endl; //4
+
+    return 0;
+}
+=============================================
+list is double ended linklist. suitable for insertion at middle and deletion at middle
+Choosing Between std::deque and std::list:
+If you need random access to elements and fast insertions/removals at both ends, std::deque may be more suitable.
+If you primarily perform frequent insertions and removals at arbitrary positions and don't require random access, std::list may be more efficient.
+==============================
+    deque<int> mydeque;  //has push_front and push_back
+    mydeque.push_front(1);
+========
+assign:
+assign can be from another array or another list, or duplicate (4,2) //ie 2 2 2 2
+
+
+to forward the iterator?
+difference between deque and list: both has push_front, push_back; empalce_back, emplace_fron(); pop_back;pop_front(); but differ in deletion
+
+
+sort list with out using stl::sort?
+
+alternate way to push_back?
+emplace_bakc()
+
+emplace or insert
+emplace(it,8) //insert 8
+insert(it,8) //inseert 8
+insert(it,5,2) //5 continouse 2
+
+assign the list and insert, push_front, push_back;embalce_back, emplace_front; 
+emblace_back or emplace;
+
+mylist.sort();
+
+list<int> mylist{};
+    mylist.push_front(43);
+	
+list1.push_back(5);
+
+int arr[10] = { 1, 2, 3, 4 }; 
+// using assign() to copy elements of array to list 
+    // assigns array elements 
+    list3.assign(arr,arr+4);
+
+// using push_front to insert elements at beginning 
+    // inserts 5 at beginning 
+    list1.push_front(5);
+	
+		list<int>::iterator it = list1.begin();
+	advance(it,2) //move the iterator to the 3 position; 
+	
+	// using insert to insert 1 element at the 3rd position 
+	// inserts 5 at 3rd position 
+	list1.insert(it,5); 
+	
+		// using insert to insert 2 element at the 4th position 
+	// inserts 2 occurrences of 7 at 4th position 
+	list1.insert(it,2,7); 
+	list1.emplace(it,8); 
+=========================
+spelling for emplace
+emplace
+emplace_back
+emplace_front
+#include <iostream>
+#include <list>
+
+int main() {
+    std::list<int> mylist = {1, 2, 3};
+    mylist.emplace(mylist.begin(), 0);
+    mylist.emplace_back(4);
+    for (int i : mylist) {
+        std::cout << i << " "; //01 2 3 4
+    }
+    std::cout << std::endl;
+    return 0;
+}
+============================
+myVector.insert(myVector.end(), arr, arr + n);
+insert can take (it,element) ; (it, 4,2 )(4 times rpeat 2); (it,array,array+10);
+assign can have only 2 iterator or 2 elements or 2 array
+int main() {
+    std::list<int> mylist = {1, 2, 3,4,5,6,7,8,9};
+    mylist.assign(mylist.begin(), std::next(mylist.begin(), 2));//mylist.begin()+2 is not allowed
+    mylist.emplace_back(4);
+    for (int &i : mylist) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+    return 0;
+}
+
+int main() {
+    std::list<int> mylist = {1, 2, 3,4,5,6,7,8,9};
+    auto it = mylist.begin();
+    std::advance(it, 2); //only increment the iterator but advance retun void
+    mylist.assign(mylist.begin(), it);
+    mylist.emplace_back(4);
+    for (int i : mylist) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+    return 0;
+}
+====================================
+std::advance(it, 2); //increment the iterator by 2.
+============================
+Binary search:
+will work on the sorted array?
+
+#include <iostream>
+#include <vector>
+
+int binarySearch(const std::vector<int>& arr, int target) {
+    int left = 0;
+    int right = arr.size() - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        // Check if the target is present at the middle
+        if (arr[mid] == target) {
+            return mid;
+        }
+
+        // If the target is smaller, ignore the right half
+        if (arr[mid] > target) {
+            right = mid - 1;
+        }
+
+        // If the target is larger, ignore the left half
+        else {
+            left = mid + 1;
+        }
+    }
+
+    // If the target is not present in the array
+    return -1;
+}
+
+int main() {
+    std::vector<int> arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int target = 6;
+
+    int result = binarySearch(arr, target);
+
+    if (result != -1) {
+        std::cout << "Element " << target << " found at index " << result << std::endl;
+    } else {
+        std::cout << "Element " << target << " not found in the array." << std::endl;
+    }
+
+    return 0;
+}
+======================================
+remove all the elements to the end of the vector.
+and remove it
+
+1 2 3 4 5 3
+remove 3
+1 2 4 5 3 3
+it will point to 3;
+// Remove a specific value (e.g., remove all occurrences of 3)
+    vec.erase(std::remove(vec.begin(), vec.end(), 3), vec.end());
+
+========================================
+erase the element of the map to till find ?
+erase the map:
+ gquiz2.erase(gquiz2.begin(), gquiz2.find(3));
+ 
+ ====================================\
+ vectors and maps comparision?
+ comparision allowed?
+ vector1==vector2
+ map1==map2;
+========================================
+const iterator for map?
+
+for (std::map<int, std::string>::const_iterator it = myMap.cbegin(); it != myMap.cend(); ++it) {
+    std::cout << it->first << ": " << it->second << std::endl;
+} 
+=======================================
+map:
+const_iterator
+reverse_iterator
+const_reverse_iterator
+
+#include <iostream>
+#include <map>
+
+int main() {
+    std::map<int, std::string> myMap = {
+        {1, "one"},
+        {2, "two"},
+        {3, "three"},
+        {4, "four"}
+    };
+
+    // Using cbegin and rend to iterate in reverse order
+    for (std::map<int, std::string>::const_iterator it = myMap.cbegin(); it != myMap.cend(); ++it) {
+        std::cout << it->first << ": " << it->second << std::endl;
+    }
+
+    // Using crbegin and crend for reverse iteration
+    for (std::map<int, std::string>::const_reverse_iterator rit = myMap.crbegin(); rit != myMap.crend(); ++rit) {
+        std::cout << rit->first << ": " << rit->second << std::endl;
+    }
+
+    return 0;
+}
+
+========================================================
+Engine carEngine; 
+In composition, the lifetime of the contained object is usually controlled by the containing object. 
+
+Engine *carEngine
+with a pointer, the Car doesn't control the lifetime of the Engine object; it's merely associated with it.
+class Engine {
+    // Engine implementation
+};
+
+class Car {
+    Engine carEngine;  // Composition
+    // Other members
+};
+===========================================
+spelling for intersection?
+set_intersection for set, array
+how to find the number of element from the output of the set_intersection?
+how to call transform from the intersection result?
+how to store the result of intersection in the vector, set?
+it is necessary to sort the to get the interscection element?
+
+// CPP program to illustrate
+// std :: set_intersection
+
+#include <bits/stdc++.h>
+
+int main()
+{
+	int first[] = { 5, 10, 15, 20, 25 };
+	int second[] = { 50, 40, 30, 20, 10 };
+	int n = sizeof(first) / sizeof(first[0]);
+
+	std::vector<int> v1(5);
+	std::vector<int>::iterator it, ls;
+
+	std::sort(first, first + 5);
+	std::sort(second, second + 5);
+
+	// Print elements
+	std::cout << "First array :";
+	for (int i = 0; i < n; i++)
+		std::cout << " " << first[i];
+	std::cout << "\n";
+
+	// Print elements
+	std::cout << "Second array :";
+	for (int i = 0; i < n; i++)
+		std::cout << " " << second[i];
+	std::cout << "\n\n";
+
+	// std :: set_intersection
+	ls = std::set_intersection(first, first + 5, second, second + 5, v1.begin());
+
+	std::cout << "The intersection has " << (ls - v1.begin()) << " elements:";
+	for (it = v1.begin(); it != ls; ++it)
+		std::cout << ' ' << *it;
+	std::cout << "\n";
+
+	return 0;
+}
+First array : 5 10 15 20 25
+Second array : 10 20 30 40 50
+
+The intersection has 2 elements: 10 20
+==========================================
+how to create the typedef for the function pointer?
+insert the set_intersection result to the set ?
+how to add the function name to to the set which has the function pointer?
+
+
+#include <iostream>
+#include <set>
+#include <algorithm>
+
+// Define function pointer types
+typedef void (*FunctionPointer)(int);
+
+// Sample functions
+void function1(int x) {
+    std::cout << "Function 1: " << x << std::endl;
+}
+
+void function2(int x) {
+    std::cout << "Function 2: " << x << std::endl;
+}
+
+void function3(int x) {
+    std::cout << "Function 3: " << x << std::endl;
+}
+
+int main() {
+    // Create sets of function pointers
+    std::set<FunctionPointer> set1 = {&function1, &function2};
+    std::set<FunctionPointer> set2 = {&function2, &function3};
+
+    // Create a set for the intersection
+    std::set<FunctionPointer> intersection;
+
+    // Find the intersection of sets
+    std::set_intersection(set1.begin(), set1.end(), set2.begin(), set2.end(),
+                          std::inserter(intersection, intersection.begin()));
+
+    // Print the intersection
+    std::cout << "Intersection of sets:" << std::endl;
+    for (const auto& funcPtr : intersection) {
+        // Call the function through the function pointer
+        funcPtr(42);
+    }
+
+    return 0;
+}
+Intersection of sets:
+Function 2: 42
+=============================================================
+Use std::queue when you need a simple FIFO queue.
+Use std::priority_queue when you need a priority queue with elements ordered by priority.
+Use std::deque when you need more flexibility in inserting and removing elements from both ends.
+============================
+#include <queue>
+// Create a max-heap (default)
+std::priority_queue<int> myPriorityQueue;
+
+// Enqueue elements
+myPriorityQueue.push(10);
+myPriorityQueue.push(20);
+
+// Dequeue elements (removes the maximum element)
+int maxElement = myPriorityQueue.top(); // Returns 20
+myPriorityQueue.pop(); // Removes the maximum element (20)
+
+=================================================================
+spelling mistake:
+queue;
+deque
+A queue is a data structure that follows the FIFO principle: the first element added is the first one to be removed.
+#include <queue>
+// Create a queue of integers
+std::queue<int> myQueue;
+
+// Enqueue elements
+myQueue.push(10);
+myQueue.push(20);
+
+// Dequeue elements
+int frontElement = myQueue.front(); // Returns 10
+myQueue.pop(); // Removes the front element (10)
+
+=============================================================
+A deque is a versatile data structure that supports insertion and deletion at both the front and the back
+#include <deque>
+// Create a deque of integers
+std::deque<int> myDeque;
+
+// Push elements to the front and back
+myDeque.push_front(10);
+myDeque.push_back(20);
+
+// Pop elements from the front and back
+int frontElement = myDeque.front(); // Returns 10
+myDeque.pop_front(); // Removes the front element (10)
+=================================================
+find the intersection between the 2 sets and storing the result in the vector and printing the result?
+what is the return value of the set_intersection?
+how to find the number of elements resulted from set_intersection?
+transform taking bind?
+
+intersection expect sorted element since it is set it is already sorted.
+
+#include <iostream>
+#include <set>
+#include <vector>
+#include <algorithm>
+
+typedef int (*AdditionFunction)(int, int);
+
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    std::set<int> set1 = {1, 2, 3, 4};
+    std::set<int> set2 = {3, 4, 5, 6};
+
+    std::vector<int> intersection;
+
+    // Find the intersection of sets
+    std::set_intersection(set1.begin(), set1.end(), set2.begin(), set2.end(),
+                          std::back_inserter(intersection));
+
+    // Apply the addition function to elements in the intersection
+    std::transform(intersection.begin(), intersection.end(), intersection.begin(),
+                   std::bind(add, std::placeholders::_1, 10));
+
+    // Print the modified intersection
+    for (const auto& element : intersection) {
+        std::cout << element << " ";
+    }
+
+    return 0;
+}
+//13 14
+====================================================
+coverting the 64 bit data to 32 bit data ?
+header file required for the uni32_t?
+
+
+#include <iostream>
+#include <cstdint>
+
+int main() {
+    // Assuming you have a 64-bit integer
+    int64_t sixtyFourBitData = 0x1234567890ABCDEF;
+
+    // Extract the upper 32 bits
+    uint32_t upper32Bits = static_cast<uint32_t>(sixtyFourBitData >> 32);
+
+    // Display the results
+    std::cout << "64-bit data: " << sixtyFourBitData << std::hex << std::endl;
+    std::cout << "Upper 32 bits: " << upper32Bits << std::endl;
+
+    return 0;
+}
+
+===============================================================
+
+header file required for regex?
+to print the match?
+match data type?
+find the match in the string?
+
+#include <iostream>
+#include <regex>
+
+int main() {
+    // Input string
+    std::string input = "https://fhjdsfgjdsfjsg.com:443";
+
+    // Regular expression pattern to match URL and port number
+    std::regex pattern("^(https?://[a-zA-Z0-9.-]+):(\\d+)$");
+
+    // Match results
+    std::smatch match;
+
+    // Check if the input string matches the pattern
+    if (std::regex_match(input, match, pattern)) {
+        // Extract and print the matched URL and port number
+        std::cout << "URL: " << match[1] << std::endl;
+        std::cout << "Port: " << match[2] << std::endl;
+    } else {
+        std::cout << "Invalid URL format" << std::endl;
+    }
+
+    return 0;
+}
+^: starting of the line
+$ end of the line
+() capture groub
+[]: any one character
+[]+: repeated character with in the square []
+URL: https://fhjdsfgjdsfjsg.com
+Port: 443
+========================================
+header file?
+pattern type?
+starting of line?
+endof line?
+use []+
+use of()?
+
+#include <iostream>
+#include <regex>
+
+int main() {
+    std::string input = "abc123a";
+
+    // ^[a-z]+$: Match a string consisting of lowercase letters from start to end
+    std::regex pattern("^[a-z]+$");
+
+    if (std::regex_match(input, pattern)) {
+        std::cout << "Valid string." << std::endl;
+    } else {
+        std::cout << "Invalid string." << std::endl;
+    }
+
+    return 0;
+}
+since it contains the number:
+Invalid string
+===================================================
+what is the will be the substr if the end of the number is 0 to 5?
+what is the return data type of the find?
+
+#include <iostream>
+#include <string>
+
+int main() {
+    // Input string
+    std::string input = "https://fhjdsfgjdsfjsg.com:443";
+
+    // Find the position of the last occurrence of ":" and "/"
+    size_t colonPos = input.rfind(':');
+    size_t slashPos = input.rfind('/');
+
+    // Check if both ":" and "/" are found
+    if (colonPos != std::string::npos && slashPos != std::string::npos) {
+        // Extract and print the URL and port number
+        std::string url = input.substr(0, colonPos );  // Include the "//" in the URL
+        std::string port = input.substr(colonPos + 1);
+
+        std::cout << "URL: " << url << std::endl;
+        std::cout << "Port: " << port << std::endl;
+    } else {
+        std::cout << "Invalid URL format" << std::endl;
+    }
+
+    return 0;
+}
+
+URL: https://fhjdsfgjdsfjsg.com
+Port: 443
+
+=====================================================
+what number does the find reurn whether it starts from zero or 1?
+
+#include <iostream>
+#include <string>
+
+int main() {
+    // Input string
+    std::string input = "Hello, World! This is a sample string.";
+
+    // Find the position of "World" in the string
+    size_t position = input.find("World");
+
+    // Check if the substring is found
+    if (position != std::string::npos) {
+        std::cout << "Substring found at position: " << position << std::endl; //7 starting from 0
+    } else {
+        std::cout << "Substring not found." << std::endl;
+    }
+
+    return 0;
+}
+====================================================
+use rfind for the second time
+what does the find return type?
+
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string myString = "find the second occurrence find in this string find";
+
+    std::string searchString = "find";
+    size_t pos = myString.rfind(searchString);
+
+    if (pos != std::string::npos) {
+        // First occurrence found
+        size_t secondPos = myString.rfind(searchString, pos - 1);
+
+        if (secondPos != std::string::npos) {
+            // Second occurrence found
+            std::cout << "Second occurrence found at position: " << secondPos << std::endl;
+        } else {
+            std::cout << "Second occurrence not found." << std::endl;
+        }
+    } else {
+        std::cout << "First occurrence not found." << std::endl;
+    }
+
+    return 0;
+}
+===========================================
+void (*functionPointers[3])(int, int) = {add, subtract, multiply};
+==========================================
+tag the git?
+get the first and last element from the vector?
+header file required to find whether it is array or number of dimension?
+what happens if we access the vector out of range?
+how to multiplies the element using the accumulate?
+2 d dimension vector specifying the size
+
+ std::vector<std::vector<int>> queries(m, std::vector<int>(3));
+Notes:
+git tag - a " " -m ""
+vector has front back() called
+multiplies<int>()
+less<int>
+typename enable_if<>::type
+try {
+        int element = myVector.at(indexToCheck);
+        std::cout << "Vector has an element at index " << indexToCheck << ": " << element << std::endl;
+    } catch (const std::out_of_range& oor) {
+        std::cout << "Vector does not have an element at index " << indexToCheck << std::endl;
+    }
+===========================
+queue: for the level order:
+what should be the pointer initialized to?
+
+nullptr not the null.
+
+#include <iostream>
+#include <queue>
+
+struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(int val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+void printLevelOrder(TreeNode* root) {
+    if (root == nullptr)
+        return;
+
+    std::queue<TreeNode*> q;
+    q.push(root);
+
+    while (!q.empty()) {
+        TreeNode* current = q.front();
+        q.pop();
+
+        std::cout << current->data << " ";
+
+        if (current->left != nullptr)
+            q.push(current->left);
+        if (current->right != nullptr)
+            q.push(current->right);
+    }
+}
+
+int main() {
+    // Example tree creation
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(3);
+    root->left->left = new TreeNode(4);
+    root->left->right = new TreeNode(5);
+    root->right->left = new TreeNode(6);
+    root->right->right = new TreeNode(7);
+
+    // Print tree nodes in level order
+    std::cout << "Level Order Traversal: ";
+    printLevelOrder(root);
+
+    return 0;
+}
+=======================================
+1. Stack:
+Undo Mechanism in Software:
+Stacks are commonly used to implement undo mechanisms in applications. Each action is pushed onto the stack, and when the user requests an undo, the top of 
+the stack is popped, reverting the system to the previous state.
+
+Function Call Management:
+The call stack in programming languages is a stack data structure. It's used to keep track of function calls, local variables, and return addresses. When a 
+function is called, a new frame is pushed onto the stack, and when the function returns, the frame is popped.
+
+Expression Evaluation:
+In compilers, a stack is often used to evaluate expressions, especially those written in postfix or prefix notation.
+
+2. Queue:
+Task Scheduling:
+In real-time operating systems, queues are frequently used for task scheduling. Tasks are enqueued and dequeued based on priority or arrival time.
+
+Print Job Management:
+Printers often use queues to manage print jobs. Print jobs are added to the queue and processed in the order they are received.
+
+Breadth-First Search (BFS):
+In graph algorithms, queues are used in BFS to explore nodes level by level.
+
+3. Deque:
+Double-Ended Queue:
+A deque allows insertion and deletion at both ends. This property is useful in scenarios where elements need to be efficiently added or removed from both the
+ front and back.
+
+Sliding Window Problems:
+Deques are handy in solving sliding window problems, where you need to maintain a window of elements and efficiently add/remove elements from both ends as the 
+window slides through a larger data set.
+ie
+Maximum/Minimum Subarray Sum
+Finding Subarrays with a Given Sum: 
+Average of Fixed-Size Subarrays: 
+Longest Subarray with at Most K Distinct Elements:
+
+
+Task Management in Real-Time Systems:
+In some real-time systems, a deque might be used to manage tasks with varying priority levels. High-priority tasks can be efficiently added or removed from
+ both ends of the deque.
+ 
+Limiting the Size of History: Deques also provide a way to limit the size of the undo/redo history, preventing it from growing indefinitely. 
+When the history reaches a certain size, the oldest actions can be removed.
+
+Using Two Stacks (Undo Stack and Redo Stack): Deques can be used as two stacks—one for undo operations and one for redo operations. When a user performs an 
+action, it's pushed onto the undo stack. If the user decides to undo the action, it's popped from the undo stack and pushed onto the redo stack.
+ If the user wants to redo an action, it's popped from the redo stack and pushed back onto the undo stack.
+ =============================
+ . Maximum/Minimum Subarray Sum:
+
+// O(n) solution for finding maximum sum of
+// a subarray of size k with O(k) space
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Returns maximum sum in a subarray of size k.
+int maxSum(int arr[], int n, int k)
+{
+	// k must be smaller than n
+	if (n < k) {
+		cout << "Invalid";
+		return -1;
+	}
+
+	// Create Queue
+	queue<int> q;
+
+	int m = INT_MIN;
+	int su = 0;
+
+	// Compute sum of first k elements and also
+	// store then inside queue
+	for (int i = 0; i < k; i++) {
+		q.push(arr[i]);
+		su += arr[i];
+	}
+
+	for (int i = k; i < n; i++) {
+		su -= q.front();
+		q.pop();
+		q.push(arr[i]);
+		su += arr[i];
+		m = max(m, su);
+	}
+
+	return m;
+}
+
+// Driver code
+int main()
+{
+	int arr[] = { 1, 4, 2, 10, 2, 3, 1, 0, 20 };
+	int k = 4;
+	int n = sizeof(arr) / sizeof(arr[0]);
+	cout << maxSum(arr, n, k);
+	return 0;
+}
+
+// This code is contributed by Susobhan Akhuli
+=================================================================================================================
+what is the default value of the map when inserting the key?
+when we should move to the starting position and decrement the uniqueue position?
+
+it will be zero?
+when the []==0 ; decremenet the uniqueue elements
+
+4. Longest Subarray with at Most K Distinct Elements:
+// CPP program to find longest subarray with 
+// k or less distinct elements. 
+#include <bits/stdc++.h> 
+using namespace std; 
+
+// function to print the longest sub-array 
+void longest(int a[], int n, int k) 
+{ 
+	unordered_map<int, int> freq; 
+
+	int start = 0, end = 0, now = 0, l = 0; 
+	for (int i = 0; i < n; i++) { 
+
+		// mark the element visited 
+		freq[a[i]]++; 
+
+		// if its visited first time, then increase 
+		// the counter of distinct elements by 1 
+		if (freq[a[i]] == 1) 
+			now++; 
+
+		// When the counter of distinct elements 
+		// increases from k, then reduce it to k 
+		while (now > k) { 
+
+			// from the left, reduce the number of 
+			// time of visit 
+			freq[a[l]]--; 
+
+			// if the reduced visited time element 
+			// is not present in further segment 
+			// then decrease the count of distinct 
+			// elements 
+			if (freq[a[l]] == 0) 
+				now--; 
+
+			// increase the subsegment mark 
+			l++; 
+		} 
+
+		// check length of longest sub-segment 
+		// when greater than previous best 
+		// then change it 
+		if (i - l + 1 >= end - start + 1) 
+			end = i, start = l; 
+	} 
+
+	// print the longest sub-segment 
+	for (int i = start; i <= end; i++) 
+		cout << a[i] << " "; 
+} 
+
+// driver program to test the above function 
+int main() 
+{ 
+	int a[] = { 6, 5, 1, 2, 3, 2, 1, 4, 5 }; 
+	int n = sizeof(a) / sizeof(a[0]); 
+	int k = 3; 
+	longest(a, n, k); 
+	return 0; 
+} 
+====================================
+note:
+1. different ways to insert:
+2. different ways to assign
+3. accumulate and transform argumuent in lamda
+4. accumulate return type and transform result
+5. inserter arguments is used for which stl and syntax?
+6. vector and map comparsion for the same object;
+7. regex match return type and get the result
+8. what are the stl function needs the sort. and which sl has the inbuild sort?
+9 How to check the common functionality for all the element.
+10. sort lamda function and which stl has inbuild sort?
+11. transform with bind
+12. map and set insert with multiple arguments and array as the argument.
+13. map with struct functor arguments (key/value or key and value).
+14. find and remove.
+15: usge of dequeue 
+16. difference between the advance and next.
+17. git functionality.
+18. set teh cout to print the numbers all the time in hexa decimal.
+19  accumulate and transform minus
+20. what is the header file required for the character and digit
+21. typedef for the function pointer
+22. typedef for the 2d array
+
+1. insert(numberoftimestorpeat,elementtorepeat); insert(iterator1,iterator2);; insert(array,array+10)
+2. assingn(iterator,element); assign(iterator,numberoftimestorpeat,elementtorepeat); insert(ierator,array,array+10);
+3. accumulate will take 2 argument in lamda and transform will pnly one argument in lamda.
+4. accumulate return type is int. i transform the return result is stored in the argument.
+5  inserter(setvariable, setvariable.begin()
+6. v1==v2;map1==map2
+7. regex_match(inputstring, smatach, pattern) ==> return true or false; smatch[0] => will have the string content;
+regex_match(inputstring,pattern) ==> return true or false;
+8. unique, lower and upper bound, binary search tree;set_intersection needs the elments needs to be sorted before usage. 
+remove doesnt require the element to be soreted.
+9. all_of;none_of;any_of;
+10. sort(v.begin(),v.end();[](int a, int b){}; // list.sort has in build sort
+11. transform(v.begin(), v.end(),v2.begin(), std::bind(userfunction, arguments, std::placeholders::_1);
+12. map.insert({{1,2},{2,3}}); set.insert(array,array+5).
+13. map with struct functor takes only the key value as the argument.
+struct functor {
+bool operator()(int a, int b)
+{
+   return (a>b) //descending order in the map
+}
+}
+14: it = find(v.begin(), v.end(), 2); v.erase(remove(v.begin(), v,end(), elements to deleted), v.end())
+15. deque : history; redo and undo and max/average and unique element in subarray
+16. advance(it,2 //incrmenet the iterator); and it1=next(it,2) //return the iterator after doing the incrment; it position is not changed.
+17. merge, push pull --keep
+18 cout.setf(ios::hex,ios::basefield); or cout<<hex; cout.unsetf(ios::hex);
+19. accumulate (v.begin(),v.end(),1,minus<int>()) //1- sum(v.begin(),v.end());
+   transform(v.begin(),v.end(),v1.begin(),v2.end(),v3.begin(),minus<int>()) //v1-v2
+20.cctype; isalpha;isdigit;isalnum;
+21. typedef void (*fptr)(int);
+  fptr f= &function; f(10);
+  
+22.
+using TwoDArray = int[3][4]; 
+  TwoDArray myArray = {{1, 2, 3, 4},
+                         {5, 6, 7, 8},
+                         {9, 10, 11, 12}};
+
+// Define a type alias for a 2D array of integers
+typedef int TwoDArray[3][4];  // Example: 3 rows and 4 columns
+
+
+// Declare a 2D array using the typedef
+TwoDArray myArray = {{1, 2, 3, 4},
+					 {5, 6, 7, 8},
+					 {9, 10, 11, 12}};
+
+using functionptr = void(*)(int);
+  // Declare a function pointer using the type alias
+    functionptr ptr = &sampleFunction;
