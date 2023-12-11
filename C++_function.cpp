@@ -2036,7 +2036,7 @@ condition check in compilation time?
 is typename is required when want the template parameter as the vector of int?
 get the type from the vector template parameter?
 
-defininit the array?
+definition the stl::array?
 getting the index value in the non parameter type?
 compile time condition check?
 return type of the tupe_size and tuple_element
@@ -2233,4 +2233,4 @@ int main() {
 T is vector<int>
 using value_type1 = T; // 'typename' is not required here
 using value_type1 = typename T::value_type;
-
+=======================
