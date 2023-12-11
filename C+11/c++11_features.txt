@@ -50,6 +50,9 @@ delegating constructors
 default and delete keyword
 =======================
 accumulate the sum for array and vector?
+accumulate passing the initial empty value ie 0
+accumulate passing the initial empty string?
+How to pass the plus<in> to accumulate?
 
 programming question:
 using namespace std;
@@ -58,7 +61,7 @@ int main()
     vector <int> v{1,2,3,4,5}; //or  int sum = std::accumulate(array, array + 10, 0);
     int s = 0;
     s=accumulate(v.begin(),v.end(),s); //note if you put int s=accumulate(v.begin(),v.end(),s); //result in adding the value to garbage value;
-int s=accumulate(v.begin(),v.end(),0);   
+int s=accumulate(v.begin(),v.end(),0);
 int s=accumulate(v.begin(),v.end(),1, std::plus<int>());//16
    cout << s;
     return 0;
@@ -232,7 +235,7 @@ int main() {
 }
 
 ====================================
-accumulate using the lamda string?
+accumulate using the lamda string? and how to return the value?
 
 #include <iostream>
 #include <numeric>
@@ -349,7 +352,7 @@ sort the elemenet for the vector and array?
 does vector has sort?
 sort(array,array+10) //it doest not return 
 sor(v.begin(),v.end())
-v.sort();
+v.sort(); //no 
 
 ======================
 priority queue insertion and getting the element and removing it?
@@ -706,7 +709,7 @@ int main() {
         
         ss.clear();
         ss.ignore(1);
-        // or Check for the comma and ignore it
+        // or Check for the comma and ignore it in the next chracter without extracting it.
         //if (ss.peek() == ',') {
         //    ss.ignore();
         //}
@@ -723,6 +726,16 @@ int main() {
 
 1,2,3
 1 2 3
+=====================
+// Use stringstream to extract individual integers
+std::stringstream ss(input); //or std::istringstream ss(input); 
+
+ss.clear();ss.ignore()
+ss.peek() == ',' //check only one character
+ss.clear(); //clear the error state any
+
+ss.peek() check for the next character without extracting.
+ss.ignore(1);ss.ignore() //ignore the next 1 character
 =============================================
 erase the element in th set in different ways?
 what cannot be done in erasing the set for the iterator ?
@@ -795,7 +808,7 @@ int main() {
 ======================================================
 //inesrtion into the vector of array for the class object
 // Array of vector and iteraterate over it.
-//vector with class object while declaring vector with values.
+//vector with class object while declaring vector intitalize with values.
 
 #include <iostream>
 #include <vector>
@@ -863,6 +876,7 @@ std::set<int> mySet = {1, 20, 3, 4, 5};
     // Use std::equal to compare the vector with the array
     bool isEqual = std::equal(setVector.begin(), setVector.end(), std::begin(array));
 
+if we want to compare 2 sets we can use set1==set2.
 ===============================
 std::equal(mySet.begin(), mySet.end(), std::begin(array), std::end(array))
 This line checks if the elements in the std::set and the array are exactly the same and in the same order. 
@@ -1034,12 +1048,21 @@ Check Repository Status:
 git status: View the status of files in the working directory.
 View Commit History:
 
+git clone <url> : clone the repository
+git status : status of the repository
+
+git config --global user.name "viswa"
+git config --global user.name "viswa@lennoxintl.com"
+git config --list
+
 git log: Display the commit history.
 git log --oneline: Display a concise log with one commit per line.
+git show <commitid> : show the list of changes in that commit
 Create a Branch:
-
 git branch <branch-name>: Create a new branch.
 git checkout -b <branch-name>: Create and switch to a new branch in one command.
+git checkout branchname: checkout the branchname
+git branch -d <branchname>
 Switch Branches:
 
 git checkout <branch-name>: Switch to an existing branch.
@@ -1164,6 +1187,8 @@ char32_t: 100
 using namespace std;
 
 int main() {
+    int a[10];
+    cout << std::rank<decltype(a)>::value;               // (1)
     cout << std::rank<int[10]>::value;               // (1)
     cout << std::rank<char[10][10]>::value;          // (2)
     cout << std::rank<string[10][10][10]>::value;    // (3)
@@ -1173,14 +1198,16 @@ int main() {
 ==============================================
 header file required?
 rank not is_rank?
-return aragument
+return argument
 condition check for the rerun value of the rank
 condition check for the is_array
 find the dimension size?
 extent can be used for the array and rank. 
 extent spellingextent<T> or extent<t,0> will row;
-extent<t,1>::val;ue will give the fisrt colum
-enable_if<>::typerank<>::valueis_array<>::value
+extent<t,1>::value will give the fisrt colum
+enable_if<>::type
+rank<>::value
+is_array<>::value
 
 type_traits
 #include <iostream>
@@ -1403,7 +1430,7 @@ inputFile filestream
     std::string line;
     while (std::getline(inputFile, line))
     {
-        std::istringstream iss(line);
+        std::istringstream iss(line); // ot it can be stringstream iss(line)
         std::string word;
         while (iss >> word)
 =============
@@ -2052,7 +2079,7 @@ sourceVector.begin() + numElementsToCopy //willnot work for the list.
 	
 only list and vector has assign?
 ==============
-How to assign the set for the already declared variable?
+How to assign the set for the already declared variable with limited size?
 #include <set>
 #include <iostream>
 
@@ -2452,6 +2479,7 @@ erase the map:
  comparision allowed?
  vector1==vector2
  map1==map2;
+ set1==set2
 ========================================
 const iterator for map?
 
@@ -2623,6 +2651,7 @@ myPriorityQueue.pop(); // Removes the maximum element (20)
 spelling mistake:
 queue;
 deque
+algorithm
 A queue is a data structure that follows the FIFO principle: the first element added is the first one to be removed.
 #include <queue>
 // Create a queue of integers
@@ -3114,12 +3143,12 @@ note:
 3. accumulate and transform argumuent in lamda
 4. accumulate return type and transform result
 5. inserter arguments is used for which stl and syntax?
-6. vector and map comparsion for the same object;
+6. vector, set and map comparsion for the same object;
 7. regex match return type and get the result
-8. what are the stl function needs the sort. and which sl has the inbuild sort?
-9 How to check the common functionality for all the element.
+8. what are the stl function needs the sort. and which stl has the inbuild sort?
+9 How to check the common functionality for all the element. and whaat is the return type?
 10. sort lamda function and which stl has inbuild sort?
-11. transform with bind
+11. unary transform with bind
 12. map and set insert with multiple arguments and array as the argument.
 13. map with struct functor arguments (key/value or key and value).
 14. find and remove.
@@ -3131,15 +3160,221 @@ note:
 20. what is the header file required for the character and digit
 21. typedef for the function pointer
 22. typedef for the 2d array
+23. inserting the vector to priority queue:
+24. if the accumulate is going to use the lamda what is the first argument and second argument?
+26. minimumheap syntax? get the element; remove the element
+27. algorthm spelling?
+28. who has the back()
+29. sort the vector in the decending order? and sort the vector for specify size?
+30. when you want to sort the user defined object?
+32. get the entire line with spaces from the user input?
+33. what is the meaning for 
+34. std::cout << std::setfill('*') <<setw(5) << 5;
+35. when you compare the user defined object which function in the class is getting called?
+36. how to conver the user input string to seperate invidual values? 1,2,3,4,5
+37. loop over the array
+38. //array of vector with class object while declaring vector intitalize with values.
+39. difference between 
+ myString.erase(myString.end() - 2, myString.end()); vs   myString.erase(myString.end() - 2);
+40. inserting the vector to priority queue:
+41. what is the header file required for rank and is_array?
+42. what the rank return? syntax?
+43. How to define different function based on the dimension of the argument passed to it?
+44. what is the return type of is_array ?
+45. how to get the colum size? 
+46. how to find whether the string is substring or not?
+47. lexical ordering?
+48. what is the originalString.substr(7);?
+49. output file is opened or not?
+50. read word by word from the file?
+
+how to apply certain condition for all the elemenets in the vector?
+how to check the first satisfiying condition in the vector? and the get the element of the first matching type?
+how to check the number of elements satisfying the condition in the vector?
+how to set the size of the vector in the constructor? what doest that size referes to?
+copy limited number of elements ?
+How to assign the set for the already declared variable with limited size?
+map and set insert will call functor opertaor()?
+queue and vector has front?
+emplace vs inssert?
+composition:
+sort only the first 5 elements?
+inserter:
+array of function pointer?
+mymap[key]++;// what will be value for the forst time insertion?
+3*4 2d vector using the vector?
+
+The line vector<vector<int>> date(3, vector<int>(4)); in C++ declares and initializes a 2D vector named date with dimensions 3x4,
+ where each element is an integer.
+
+
+void (*functionPointers[3])(int, int) = {add, subtract, multiply};
+23.
+std::sort(first, first + 5);
+
+compisition: contained object in the containing object
+std::inserter(intersection, intersection.begin()) //remberer it is begin and the end
+==============================
+    mylist.emplace(mylist.begin(), 0);
+    mylist.emplace_back(4);
+============================
+// Functor for custom comparison
+struct CustomComparator {
+    bool operator()(int a, int b) const {
+        // Custom comparison logic
+        return a > b;  // In this example, sorting in descending order
+    }
+};
+
+queue and vector has front and back? yes
+
+
+
+std::vector<std::vector<int>> adjacencyList;
+in the constructor adjacencyList(4);
+adjacencyList[0].push_back(2);
+adjacencyList[3].push_back(2);
+how to apply certain condition for all the elemenets in the vector?
+for_each; use the functor(); functor object
+
+how to check the first satisfiying condition in the vector? and the return type is iterator
+find_if
+============================
+int valueToFind = 5;
+auto findResult = std::find(numbers.begin(), numbers.end(), valueToFind);
+
+if (findResult != numbers.end()) {
+		
+
+// Example using std::find_if to find the first even number
+auto findIfResult = std::find_if(numbers.begin(), numbers.end(), [](int x) { return x % 2 == 0; });
+
+if (findIfResult != numbers.end()) {
+=======================
+how to check the number of elements satisfying the condition in the vector?
+count_if
+
+inputFile filestream
+    while (inputFile >> num) {
+
+
+copy_n(source, 5, target); //source and traget is array //we can also use vector provides the destination vector size is defined
+How to assign the set for the already declared variable with limited size?
+ destinationSet = std::set<int>(sourceSet.begin(), sourceIter);
+
+outputFile.is_open() //not as isopen()?
+
+lexical ordering?
+suffix consistes of 0,1,2,3,4,5:string consistes of banana; //5 3 1 0 4 2
+ std::sort(suffixArray.begin(), suffixArray.end(), [&str](int a, int b) {
+        return str.substr(a) < str.substr(b);
+    });
+
+how to get the colum size? 
+template <typename T>
+typename std::enable_if<std::is_array<T>::value, void>::type
+printArraySize(const T& array) {
+    std::cout << "Array size: " << std::extent<T>::value << std::endl; //10
+	std::cout << "Array size: " << std::extent<T, 0>::value << std::endl; //5
+}
+
+How to define different function based on the dimension of the argument passed to it?
+template <typename T>
+typename std::enable_if<std::rank<T>::value ==3 , int >::type
+processTwoDimensionalArray(const T& array) {
+    std::cout << "Not a two-dimensional array." << std::endl;
+    return 10
+}
+
+template <typename T>
+typename std::enable_if<!std::is_array<T>::value, void>::type
+printArraySize(const T& value) {
+    std::cout << "Not an array type." << std::endl;
+}
+std::priority_queue<int> pq;//pq(v.begin(),v.end())
+
+
+if the accumulate is going to use the lamda what is the first argument and second argument?
+
+
+
+std::string vectorToString(const std::vector<int>& vec) {
+     return std::accumulate(vec.begin(), vec.end(), //This will be the second argument 
+							std::string(), //this will be the first argument
+                           [](std::string s, int num) { //it can be const &
+                               return s + std::to_string(num);
+                           });
+						   
+std::priority_queue<int, std::vector<int>, std::greater<int>> minHeap;
+while (!maxHeap.empty()) ; .top; .pop
+
+only the vector and deque has the back() ir push_back();pop_back()
+std::sort(numbers.begin(), numbers.end(), std::less<int>()); //descending
+
+when you want to sort the user defined object? [](object1, object2) {}
+stl::sort return type is void
+std::getline(std::cin, inputString);
+std::cout << std::setfill('*') <<setw(5) << 5;// ****5
+
+//When the userdefined object is compared1 and 2 . note the argument and the cunction type
+bool operator<(const Candidate& candidate) const { //public 
+	return this->marks < candidate.marks;
+}
+=================================
+rank return the dimension of the array
+    int a[10];
+    cout << std::rank<decltype(a)>::value;               // (1)
+	rank<int[10][10]>::value //2
+	
+	int a;
+    cout << std::rank<decltype(a)>::value; //0
+================================================
+std::getline(std::cin, input);
+
+std::vector<int> numbers;
+
+// Use stringstream to extract individual integers
+std::stringstream ss(input); //or std::istringstream ss(input); 
+
+ss.clear();ss.ignore()
+ss.peek() == ',' //check only one character
+ss.clear(); //clear the error state any
+
+ss.peek() check for the next character without extracting.
+ss.ignore(1);ss.ignore() //ignore the next 1 character
+==========================
+loop over the array
+int a[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // Example values
+
+    // Loop over each element in the array and print it
+    for (const auto& elem : a) {
+	==========
+	struct A {
+    int data;
+    A(int value) : data(value) {}
+};
+	    std::vector<A> M1[] = {
+        { {1} },       // Vector 1
+        { {2},{3} }     // Vector 2
+		{4}
+        // Add more vectors as needed...
+    };
+=================
+git branch <branch-name>: Create a new branch.
+git checkout -b <branch-name>: Create and switch to a new branch in one command.
+======================
+how to find whether the string is substring or not?
+(a.compare(0, b.size(), b)
 
 1. insert(numberoftimestorpeat,elementtorepeat); insert(iterator1,iterator2);; insert(array,array+10)
 2. assingn(iterator,element); assign(iterator,numberoftimestorpeat,elementtorepeat); insert(ierator,array,array+10);
 3. accumulate will take 2 argument in lamda and transform will pnly one argument in lamda.
 4. accumulate return type is int. i transform the return result is stored in the argument.
 5  inserter(setvariable, setvariable.begin()
-6. v1==v2;map1==map2
+6. v1==v2;map1==map2; set1==set2
 7. regex_match(inputstring, smatach, pattern) ==> return true or false; smatch[0] => will have the string content;
 regex_match(inputstring,pattern) ==> return true or false;
+ std::regex pattern("^(https?://[a-zA-Z0-9.-]+):(\\d+)$");
 8. unique, lower and upper bound, binary search tree;set_intersection needs the elments needs to be sorted before usage. 
 remove doesnt require the element to be soreted.
 9. all_of;none_of;any_of;
@@ -3153,13 +3388,20 @@ bool operator()(int a, int b)
    return (a>b) //descending order in the map
 }
 }
-14: it = find(v.begin(), v.end(), 2); v.erase(remove(v.begin(), v,end(), elements to deleted), v.end())
+std::map<int, std::string, CustomComparator> myMap;
+14:
+ stl::remove and stl::unique doen't remove ie resize the element. the lement is moved to end. The vector is resized onlt during the erase
+ it = find(v.begin(), v.end(), 2); v.erase(remove(v.begin(), v,end(), elements to deleted), v.end())
 15. deque : history; redo and undo and max/average and unique element in subarray
 16. advance(it,2 //incrmenet the iterator); and it1=next(it,2) //return the iterator after doing the incrment; it position is not changed.
 17. merge, push pull --keep
+git pull remote-name branchname
+git remote -v repository name
+git reset //filename //--keep //--hard HEAD
+
 18 cout.setf(ios::hex,ios::basefield); or cout<<hex; cout.unsetf(ios::hex);
 19. accumulate (v.begin(),v.end(),1,minus<int>()) //1- sum(v.begin(),v.end());
-   transform(v.begin(),v.end(),v1.begin(),v2.end(),v3.begin(),minus<int>()) //v1-v2
+   transform(v.begin(),v.end(),v1.begin(),v3.begin(),minus<int>()) //v1-v2
 20.cctype; isalpha;isdigit;isalnum;
 21. typedef void (*fptr)(int);
   fptr f= &function; f(10);
