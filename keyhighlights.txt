@@ -1,0 +1,1927 @@
+what is the return type find and find_if?
+How to find whether the find element is present ?
+what happen if the are multiple identical elements? which value were the it will point to?
+how to find the matching index in the find?
+find the first even number
+what happen if the elemt is not there?
+what happen if you derefernce not find iterator ie v.end()?
+
+	auto it = find(v.begin(), v.end(), 2); find the first occurance of the 2
+	
+	auto it = find_if(v.begin(), v.end(), [](int a) { 
+		return (a== 2)
+		//return (a%2 == 0) //find the first even number
+		}
+	 ); find the first occurance of the 2
+
+	if(it != v.end())
+	{
+	   "element fount"
+	   index = distance(v.begin(),it)
+	}
+
+    find_if will return the first matching condition
+======
+what is the return type of equal and search()?
+how to find at what index the serach element is matched?
+whether the lement of the vector needs to be in sorted for serach and equal?
+
+No acending order is not required.
+
+bool = equal(v.begin(),v.end(),v1.begin(),v1.end())
+auto it=search(v.begin(),v.end(),v1.begin(),v1.end())
+
+  std::vector<int> v = {1, 2, 3, 4, 5};
+    std::vector<int> v1 = {1, 2, 3};
+	
+	bool areEqual = std::equal(v.begin(), v.end(), v1.begin(), v1.end()); //not equal
+	 auto it = std::search(v.begin(), v.end(), v1.begin(), v1.end());
+	 if (it != v.end()) 
+	 //std::distance(v.begin(), it) => 0
+	 
+	  std::vector<int> v = {12,13,14,1, 2, 3, 4, 5};
+    std::vector<int> v1 = {1, 2, 3};
+	//serach will give 3
+	
+===================
+for_each
+for_each return type:
+static_assert for the object at the class level
+reset the particular bit
+advance vs next?
+
+	 no return type for_each
+	 
+	 for_each(v.begin(),v.end(),[](int &n) { n*=2})
+	 struct functor {
+	 void operator()(int a){}
+	 };
+	 for_each(v.begin(),v.end(),functor())
+	 
+	 template <typename T,std::size_t sz>
+	 class array {
+		static_assert(sz>4,"message"
+		T datta[sz];
+	 };
+	 array<int,5> arr; //assert check at the object creation
+	 
+	 reset the bit
+	 a&~(1<<position)
+	 
+	  iii = std::next(ii, 2); //ii is not increased iii = ii+2;
+	  advance(ii,2) //here ii is increase
+===================================
+to check whether all the elemenet of the vector are matching the conditions?
+endina type types while working with file?
+	all_of, any_of, none_of will return true or false;
+	htonl(number);
+
+=========================== 
+how to remove the all the particular elements 
+how to remove all the even numbers?
+if the element is not there in remove and if the condition is not meet in the remove_if?
+
+	auto it = remove(v.begin(), v.end(), 2); //remove all the occuaracnce of 2
+	v.erase(it,v.end();
+
+	auto it = remove(v.begin(), v.end(), [](int a)
+	{
+	   return(a%2 ==0 ) //to remove all theeven numbers
+	}
+	); //remove all the occuaracnce of 2
+	v.erase(it,v.end();
+		
+	if the condition is not meet the it will point to the v.end()
+========================================
+erase the element to have only unique element in the vector:
+What should be taken carse while using unique?
+
+    unique will work only on the sorted element.
+    auto it = unique(v.begin(),v.end())
+	v.erase(it,v.end()); //all the duplicates elements will be removed
+	
+======================================
+const_reverse_iterator: crbegin
+reverse iterator will print from the reverse
+different ways to use sort?
+vector erase element>
+set the size of the 2d vector?
+get the element of the vector?
+print array of character array<char,5>
+call the invalid argument exception?
+
+different ways to use the sort:
+	sort(v.begin(),v.end(); //ascending order
+	sort(v.begin(),v.end(),greater<int>()) //descending order
+	sort(v.begin(),v.end(),less<int>()) //ascending order
+
+	sort(v.begin(),v.end(),[](int a, int b)
+	{
+		return (a>b); //descending order
+	})
+	
+	//lexical sorting:
+	sort(v.begin(),v.end(),[&str](int a, int b)
+	{
+		return (str.substr(a)<str.substr(b)); //descending order
+	})
+	
+vector.erase(it);//delete single element
+vector.erase(it, vector.end());//delete from the it to end;
+vector.at(index); //out_of_range exception
+vector[]
+vector<vector>v (4,vector<int>(5,0)); //4 rows and 5 colums all the elements are set to zero
+
+throw (invalid_argument(hi"))
+cout <<array.data();
+
+int function(){reurn 10; }
+const int &a = function(); //const is retuned so const is must
+const int &&a = function(); //const is retuned so const is must
+int &&a = function(); //const is retuned so const is must
+
+lvalue can be function or we can take the address
+fork create the child process for th eparent while executing the program.
+
+int (*fp[5](int,int) ;//array of function pointer
+
+===============================================
+insert: 
+	(itposition, numberoftimeselementhastobeinserted,element)
+	(itposition, array, array+end)
+	(itposition, v.begin(), v.end())
+	(itposition, element)
+
+assign:
+   .assign(array, array+end)
+	.assign(v.begin(), v.end())
+	.assign(numberoftimeselementhastobeinserted,element)
+===============================================
+find the sizeof the file in c and c++;
+Go to the begining and end of the file in c.
+Get the size of the file and store it in the variable?
+How to check if the file opened successfully?
+what the return type of the ftell and ftellg? There is no filetellp why?
+open the file and set the file pointer to the 5th position and read the file content by character by character
+what is the difference seekg and seekp?
+set the file position and read the content of the file by char by character?
+how to set the position for the file read from the begining and end of the file?
+Dont want to skip the spaces and , while reading from the file?
+how to read character by character from the file in c and c++?
+
+seekp: set the put pointer
+seekg: set the get pointer
+file.seekg(0,ios::beg) //or file.seekg(0,ios_base::beg)
+ftellg is stored in streampos or streamsize variable;
+
+    FILE *fp=fopen("viswa.bin","rb")
+	if (fp!=NULL)
+	{
+		fseek(fp,0.SEEK_END);
+		long int n = ftell(fp);
+		fseek(fp,0.SEEK_BEG); //or  fseek(fp, 0, SEEK_SET);
+		fclose(fp);
+	}
+
+	Read the content of the file char by char in c?
+	// Read and display content from the file
+    char ch;
+    while ((ch = fgetc(fp)) != EOF) {
+        putchar(ch);
+    }
+
+    // Reset the file position indicator to the beginning of the file using rewind()
+    rewind(fp);
+
+in c++
+    file.seekg(4, std::ios::beg); ==  file.seekg(4); 
+	file.seekg(-4, std::ios::end)
+	
+    ifstream file("viswa.bin",ios::bin)
+	if(file)//if (file.is_open())
+	{
+		file.seekg(0,ios::end);
+		streampos p =file.tellg() ;;//streampos size p = file.tellg();
+		file.seekg(0,ios::beg) //or file.seekg(0,ios_base::beg)
+		file.close()
+	}
+	
+	open the file and set the file pointer to the 5th position and read the file content by character by character
+	// Seek to a specific position (e.g., 5 bytes from the beginning of the file)
+    std::streampos position = 5;
+    file.seekg(position);
+
+    // Read and display the content from the current position
+    char ch;
+    while (file.get(ch)) {
+        std::cout << ch;
+    }
+	
+	inputfile.seekg(0,ios::beg) //set position for the read only file.
+	outputfile.seekp(0, ios::beg) //set the position of the write only file.
+	
+	if you dont want skip the spaces while reading from the file?
+	inputfile>>noskipws
+	char c;
+    inputFile >> std::noskipws;  // Prevent skipping whitespace
+    while (inputFile >> c) {  // Reading character by character
+        std::cout << c;  // Print each character including whitespace
+    }
+=======================================================
+when to use the cctype header file?
+when to use the numeric header file?
+when to use the algorithm header file?
+when to use cstddef?
+system commands are in which header files?
+sizeof, NULL, pdrdiff_t is in which header file?
+in c++ header file will not have ?
+	
+	in c++ , the header file will not have .h
+	
+	<cctype>:
+	   isalpha
+	   isdigit
+	   isalnum
+	   tolower
+	   toupper
+
+	<numeric>:
+		iota(v.begin(),v.end(),1); //iota(begin(array),end(array),1); ////iota(begin(carray),end(carray),'a');
+		accumulate
+		transform
+		
+	<algorithm>:
+		sort
+		binary_search
+
+	<cstddef>
+	   ptrdiff
+	   int/ptrdiff_t result_size = std::distance(result.begin(), it);
+	   NULL
+	   sizeof
+	   
+	<climits>
+		INT_MIN
+		
+	<type_traits>
+	   enable_if
+	   enable_if_t
+	   rank
+	   is_integral
+	   integral_constant
+
+	<functional>
+	   bind
+	   function
+	   
+	<cstdio>
+		print and scanf
+		if you use %x in the scanf the user input can be 0x or without 0xbut it will consider the input as hexadecimal.
+	
+	#include <cstdlib> // for system function
+		system("cls")
+		system("clear")
+	
+	algorithm
+	unordered_set 0(1)
+================================
+printf("Enter a hexadecimal value: ");
+    scanf("%x", &b);  // User inputs 12
+    
+    printf("The decimal value is: %d\n", b);  // Will print 18
+============================
+complexity
+  unordered_set/unordered_map :
+	Time complexity for search/insertion and deletion: o(1); worst case o(n)
+	Space Complexity: O(n*n) in worst case if the hash function is not good else O(n)
+	hash table
+  set/map :
+	Time complexity in all cases o(logn) 
+	Space complexity: o(n)
+	uses the read black tree
+	
+	we can insert the set.insert(array,array+5)
+	
+Sorting:
+  bubble sort:
+     time complexity 0(n*n) and  space complexity 0(1). Educational purpose
+  merge sort:
+     time complexity 0(nlogn) and  space complexity 0(n). External sorting. parallelism
+  quick sort:
+     time complexity 0(nlogn) , 0(n2) and  space complexity 0(log n) (recursive stack). Avergae case 
+	 Context: Often considered one of the fastest sorting algorithms for in-memory sorting due to its efficiency, especially in the average case.
+	 However, care must be taken to avoid the worst-case scenario.
+  heap sort:
+     time complexity 0(nlogn) and  space complexity 0(1). External sorting//max heap //min heap
+  
+==========
+usage of stack, queue and dequeue 
+stack: compiler, function call, undo, Depth First Search (DFS) -> (LIFO)
+queue: printer, priority queue, Depth First Search (DFS) -> (FIFO)
+deque: undo and redo, web browser history, sliding window 
+
+DFS: Visit the node and recursively visit all its neighbours
+BFS: visit the node and visit all it neighbours beforing moving to the next node
+========================================
+what is the delimiter value for the csv files?
+delimiter in getline
+delimiter in ostream_iterator?
+const char* and char[] memory location details?
+when to use getline insize the while?
+
+delimiter in the getline inputfile and cin will be only single quote.
+delimiter in the ofstream_iterator will be only ""
+delimiter:
+
+  while(getline(cin,line)){} //line string. getline get the input from string
+  //stores it in the string variable line until a newline character ('\n') is encountered.
+  
+  istringstream iss("1,2,3,4,5")
+  while(getline(iss,line,',')){} //whenther the line will be 1 2 3 4 5
+  ifstream inputfile;
+  while(getline(inputfile,line,',')){}
+  
+  std::getline(std::cin, input, ','); //if the user input is viswa,nathan it will read viswa
+  
+  getline(inputfile,line,'\0'); read till before  the \0 character if the file contains viswa 32 it will read the complete line as the ]0 is at the end.
+====
+char c;
+    while (inputFile.get(c)) {
+        if (c == '\0') {
+            break;  // Stop reading when encountering the null character
+        }
+        line += c;  // Append the character to the string
+    }
+-======
+if the input file has the name and age
+/ Read the name until you encounter a space character
+    inputFile >> name;
+
+    // Read the number after the name
+    inputFile >> number;
+	
+my input file content is  viswa 32
+std::getline(inputFile, line, '\0');
+output is viswa 32 where the null character is present at the end of the line
+==============================
+write the structure to the file
+file has to obed in binary mode.
+//& is must in both read and write
+<cstdio>
+fwrite(&person,sizeof(struct person), 1, file)
+fread(&person,sizeof(struct person), 1, file)
+
+file has to be opened in binary mode:
+string name="viswa"
+int namelength = string.length()+1
+outputfile.write(reinterpret_cast<char*>(&namelength),sizeof(int))
+outputfile.write(name.c_str()),namelength)
+outputfile.write(reinterpret_cast<char*>(&age),sizeof(int))
+
+char name[100]
+inputfile.read(reinterpret_cast<char*>(&length),sizeof(int));
+inputfile.read(reinterpret_cast<char*>(name),length);
+name[length]='\0';
+inputfile.read(reinterpret_cast<char*>(&age),sizeof(int));
+
+=============================
+const char * array ="hi"
+array is local function then stack. hi will be in read only memory;
+array is gloal function then datasegment. hi will be in read only memory;
+
+const char array[] ="hi"
+array is local function then stack. hi will be in data segment memory;
+array is gloal function then datasegment. hi will be in data segment memory;
+
+do
+{
+}while(next_permutation(v.begin(),v.end())
+===========================
+network order is always big endian
+host order can be little/bigendian
+ntohl(network to host long)
+ntohs(network to host long)
+
+	<arpa/inet.h>
+	0x12345678
+	(value >>24) & (0xff) | (value <<24) & (0xff000000) | (value >>16) & (0xff00) | (value <<16) & (0xff0000) //78563412
+
+	uint32_t value = 0x12345678;
+	uint32_t networkOrder = htonl(value); // Convert to network byte order (big-endian)
+	uint32_t hostOrder = ntohl(networkOrder); // Convert back to host byte order
+
+============================
+<fstream>, #include <vector>
+convert the string to number
+	istringstream iss("12,13"); or istringstream iss; iss.str("12,13");
+	int number;
+	char comma;
+	iss >> number;  // This will read 12 into 'number'.
+	iss >> comma;   // This will read ',' into 'comma'.
+	iss >> number;  // This will read 13 into 'number'.
+	   
+	iss.peek() == ',' /will point to the next sigle character character
+	iss.ignore(1) or iss.ignore() will remove the next one character from the iss;
+	if there is an error occured we need to clear it else the multiple read will give the same error
+	if (iss.fail()) {
+		// Handle the error
+		iss.clear();  // Clear the error state of the stream
+	}
+
+	// Similarly for cin
+	if (cin.fail()) {
+		cin.clear();
+	}
+   while(!iss.eof()){}
+   
+   ifstream input("filename.txt");
+	vector<char> vec((istreambuf_iterator<char>(input)), istreambuf_iterator<char>());
+   vector<char>(ifstreambuf_iterator<char>(input),ifstreambuf_iterator<char>()) //will copy the space , 
+   
+========================================
+<bitset>
+	How to initialize the bitset?
+	bit<8> v("010101"); or bitset<8> v{"010101"}
+	bit<8> v=123; //v will be "01111011"
+	v = bitset<8> ("1001") // v will be "00001001"
+	v = bitset<8> {"1001"} / v will be "00001001"
+	std::bitset<8> v(0b010101); //same as "10101
+	std::bitset<8> v(010101); //here you are setting the decimal value to the v ie v =10101
+	std::bitset<8> v={"010101"};//error
+	std::bitset<8> v="010101"; //error
+	.set()
+	.reset()
+	.test()
+	.count() //return the number of bits set
+
+	int countA = bitset<12>(a).count(); //return the number of bits set
+==========================================
+strlen(array of character)+1 = will be the last character.
+
+inputfile.read(v.begin(),lengthtoberead)
+outputfile.write(v.data(),inputfile.gcount());//gcount the last file successfully read from input file.
+
+const_cast<pointer has to be same as the soutce pointer without the const keyword>(soutcepointer)
+
+we can create the uniqueue pointer to the constant
+dynamci_cast<const int> ptr(new int(10));
+
+const function can change the local variable and initialize the local variable but not the  class member variable.
+
+typedef int *ptr;
+int a;
+ptr pointer = &a
+
+using ptr = int *;
+int a;
+ptr pointer = &a
+
+typedef int (*fp)(int,int)
+fp function = &add;
+
+typedef int fp[10][11]
+fp function ={{0}{0}};
+
+using fp = int(*)(int,int)
+fp function = &add;
+
+using fp = int[10][11]
+fp function ={{0}}; // the rest of the element will be initialized to zero
+============================================
+vector<vector<int>> v(4, vector<int>(5,0))
+v[0].push_back({1,2,3,4,5})
+
+vector<vector<int>> v
+v.push_back(1)
+
+the vector can be initialized in the constructor part also.
+constructor():v(4, vector<int>(5,0))
+
+std::vector<class*> *v = new std::vector<class*>;
+v->push_back(new class(1, 2));
+
+for(auto &element:*v1)
+element->classmemberfunction();
+
+delete v->at(0);  // Delete the object that was dynamically allocated.
+v->clear();       // Clear the vector, but remember the object remains in heap memory.
+delete v;         // Delete the dynamically allocated vector itself.
+
+
+std::vector<classname> *v = new std::vector<classname>;
+v->push_back({1});            // This assumes that classname has a constructor that takes an int.
+v->push_back(classname(1));   // This uses the constructor of classname to create an object and add it to the vector.
+delete v;                     // Delete the dynamically allocated vector itself.
+
+
+===========================================
+format specifier:
+   %x : unsigned int ; when it is used in the scanf it will take the hexadecimal value
+   %ll : long long int or %lld
+   %d: signed
+   %u: unsigned
+   %lf: double
+   %p : address
+   there is no unsigned double
+   
+   
+	printf("hi %n hi",&n)
+	printf("hellow %d",n) //print 3; no of character printer in the screen till before n
+
+	printf("%.1f",double);// print one floating point value
+	n = printf("%*.*f",10, 2, double1);// print two floating point value. total allocated space width is 10 including the .decimal values to be printed
+	n represent the number of characters printed on the screen.
+	//if the double1 is exceed size of the precision value. then the entier variable content value will be printed.
+
+	//sscanf read the content from the buffer to variable
+	//buffer content is hello 23 24
+	n=sscanf(buffer,"hello %d %d", &age, &height);  //2 
+	n=sscanf(buffer,"hello %*d %d", &height); //skip age ie value will be read from the buffer but not stored in any power //1
+	n : number of argument read from the buffer
+
+
+	double double1 = 100.1009;
+	string aa = to_string(double1);
+	cout << "string : " << aa << endl;
+
+
+	int n = printf("%*.*lf", 12, 2, double1);//n value will be 12 since 12 includes both the whole number part . and fractional part printed on the screen
+
+	printf("%.3lf", double1); is equivalent to 
+	<iomanip>
+	cout <<std::fixed <<set::precision(3)
+
+	cout<< double;//it will do the round off.
+
+	scanf and sscanf will not do the .1f or 3.1f or *.* . It will take only %*
+	printf and sprintf will take %*.* or %.1f. We cannot skip the printing in the as in sscanf.
+========================================================
+format the output of the number in c++?
+		how to add one space in when the letter/number is less than 1?
+		cout<<setw(2)<<2;
+
+		how to add one space in when the letter/number is less than 1?
+		cout << setfill('*') << setw(10) << value << std::endl; 
+		***100.101
+		cout << setw(10) << value << std::endl; 
+		   100.101
+		cout << setfill('*') << setw(1) << value << std::endl;
+		100.101
+		
+		//cout<<setw(2)<<2 ; //onepace2
+		//cout<<setfill('X')<<setw(2)<<2;//set fill can be only one character
+======================================================
+
+=======================================================
+count the number of same elements present in the vector?
+count the number of elements matched the condition in the vector?
+number ot the pointer and viceversa
+can i open the ifstream file in both read and write?
+fstream to open the file in both mode?
+stringstream to read and write the content?
+append the content of the istringstream?
+
+	count,count_if =>return the count
+	file.is_open() or if(file) ==> true when the file exits.
+	<cstdint>
+	uintptr_t p = reinterpret_cast<uintptr_t>(0x88888); //it should be typecasted to uintptr_t
+	<stringstream>
+	
+	istringstream iss("hi")
+	istringstream iss;
+	iss.str("hello")
+	
+	iss.str(iss.str() + " world");
+	
+	fstream file("viswa.txt") => open both in the read and write mode
+	fstream file("viswa.txt",ios::in) = >to open in the read mode.
+	ifstream file("viswa.txt",ios::in|ios::out) = >to open in both read and write
+	or 
+	fstream file;
+	file.open("viswa.txt",ios::in|ios::out)
+
+	No we cannot make the inputfile or outfile to be in both mode. it has to fstream
+---------------
+Append the string to stringstream	
+	std::stringstream str;
+    str << "hi";
+
+    // Move the put pointer to the end of the string
+    str.seekp(0, std::ios_base::end); or str.seekp(0, std::ios::end);
+
+    // Append " word" to the end of the existing content
+    str << " word";
+
+    // Print the content of the stringstream
+    std::cout << str.str() << std::endl;  // This will output "hi word"
+---------------
+	std::ostringstream str;
+    str << "hi";
+    // Append " word" to the end of the existing content
+    str << " word";
+
+    // Print the content of the stringstream
+    std::cout << str.str() << std::endl;  // This will output "hi word"
+================================
+How to use stoi and pow?
+<math>
+<cstring>
+how to print the os error:
+cerr vs clog
+pow
+
+how to push the logs from the buffer?
+
+	stoi("123west12") -> 123
+	(pow(4,2)) 4*4
+	strerror(errno)
+	cerr<< ==>print the error message immediatly
+	clog<< buffer the error message and print
+	
+	#include <iostream>
+
+	int main() {
+		// Example with cerr (Unbuffered - Immediate output)
+		std::cerr << "This is an error message using cerr. It will be displayed immediately." << std::endl;
+
+		// Example with clog (Buffered - May not display immediately)
+		std::clog << "This is a log message using clog. It might not be displayed immediately." << std::endl;
+
+		// You can force clog to flush using the flush method
+		std::clog << "Forcing clog to flush now." << std::endl << std::flush;
+
+		return 0;
+	}
+
+
+================================   
+offsetof and max_align_t: to find what postition the mebers are placed?
+	//member variable has to be public:
+		class SampleStruct {
+			public:
+			int a;
+			char t;
+			char b;
+			double c;
+		};
+		
+			std::cout << "Offset of 'a': " << offsetof(SampleStruct, a) << " bytes" << std::endl; //0
+		std::cout << "Offset of 'b': " << offsetof(SampleStruct, b) << " bytes" << std::endl; //5
+		std::cout << "Offset of 'c': " << offsetof(SampleStruct, c) << " bytes" << std::endl; //8
+		
+max_align_t:
+		std::cout << "Size of max_align_t: " << alignof(std::max_align_t) << " bytes" << std::endl; //16
+
+		// Using max_align_t to define a variable with the maximum alignment requirement
+		alignas(std::max_align_t) char alignedBuffer[sizeof(double)];
+
+		// Checking the alignment of the buffer
+		std::cout << "Alignment of alignedBuffer: " << alignof(decltype(alignedBuffer)) << " bytes" << std::endl; //1 byte
+
+		// Checking the alignment of the buffer
+		std::cout << "Alignment of alignedBuffer: " << alignof(alignedBuffer) << " bytes" << std::endl; //16
+
+====================================
+difference between the back_inserter vs inserter?
+does copy will make any changes to the original vector?
+what happens when we copy the string to array of character?
+copy the array of int to the vector
+print the array of int to the console screen.  
+delimiter in the ostring_stream?
+
+in the ostream_iterator the delimiter has to be in double quote " "
+    back_inserter(v) = 12
+	inserter(v,v,begin()) =12 ;
+	inseter(set,set,end()) =12;
+	inserter(map.map.end())=make_pair(12,12) or make_pair<int,int>(12,12)
+	
+	in the make_pair <int,int> ie type specification is not must.
+	
+	copy(v.begin(),v.end(), back_inserter(v2));
+	//sizeof the v2 can be find using size() and number of elements cannot be find using the distance.
+	
+	copy(v.begin(),v.end(), inserter(v2, v2.end())); //v is inserted to the end of the v2
+	
+	copy(v.begin(),v.end(), inserter(v2, v2.begin())); //v is inserted to the begining of the v2.
+	
+	copy(str.begin(),str.end(),arraychar);
+	arraychar[str.size()+1]='\0';
+	
+	int a[]={1,2,3,4,5}
+	copy(begin(a),end(a),vector.begin())
+	copy(begin(a),a+5,vector.begin());
+	std::copy(std::begin(a), std::begin(a) + 5, std::ostream_iterator<int>(std::cout, "hi"));//1hi2hi3hi4hi5hi
+	std::copy(std::begin(a), std::begin(a) + 5, std::ostream_iterator<int>(std::cout, ""));//12345.
+	
+
+copy_if vs remove_copy_if;
+	copy will not make any changes to the original vector? and the result is stored in the sperate vector.
+	copy_if: will copy the true condition element into the different vector
+	remove_copy_if: will copy the false condition element into the different vector
+	
+=========================================
+<csignal>
+signal(SIGABRT/SIGSEGV,callbackfunction)
+int a = raise(signalname); //0 for success and -1 for failure
+exit(signalnumber)
+
+when the result is th element of back_inserter we cannot use
+ std::cout << std::distance(result.begin(), it) << std::endl;
+ 
+std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> result(100);
+
+    auto it = std::remove_copy_if(v.begin(), v.end(), begin(result), [](int a) { return a % 2 == 0; });
+
+    // Find the number of elements copied into the result vector
+    std::cout << std::distance(result.begin(), it) << std::endl; //5
+
+    for (auto n:v)
+    std::cout <<n << " "; //1 2 3 4 5 6 7
+
+========================================================
+transform:
+bind <functional>
+accumulate to add the strings of the vector?
+accumulate to find the difference between the element and the vector element?
+different forms to use the transfom and bind? to add 10 to each elements in array or vector.
+what are the other options available in the accumulate?
+
+minus<int>()
+plus<int>()
+multiplies<int>()
+
+	int add(int a, int b) { 
+		return (a+b);
+	}
+   
+   transform(v.begin(),v.end(),vectorresult.begin(), bind(add,std::placeholders::_1,10)
+   transform(array,end(array),resultarray, bind(add,std::placeholders::_1,10)
+   transform(begin(array),end(array),resultarray, bind(add,std::placeholders::_1,10)
+   transform((array),(array+10),begin(resultarray), bind(add,std::placeholders::_1,10)
+   transform((array),(array+10),back_inserter(vectorresult), bind(add,std::placeholders::_1,10)
+
+   transform((array),(array+10),array2,(array2+10),back_inserter(vectorresult), minus<int>())
+   output will array-array2
+   
+   accumulate((array),(array+10),0, minus<int>()); //0 - sum of the elements of the array
+   
+   std::vector<std::string> vectstring = {"Hello", ", ", "world", "!"};
+   string s = accumulate(vectstring.begin(),vectstring.end(),string())
+   
+   int add(int a , int b){}
+   int s = accumulate((array),(array+10),0, add);
+   
+=================================================================
+array of pointer;
+3d array
+
+ 
+	 array<int*,5> array1;
+	 int **P;
+	 int**p = new int*[10]
+	 vector<int*> v;
+	 unique_ptr<int*[]] ptr(new int*[5])
+
+	 pointer to an array:
+		unique_ptr<int[]] ptr(new int[5])
+		// Now, you can use ptr as a dynamically allocated array
+		for (int i = 0; i < 5; ++i) {
+			ptr[i] = i * 2;  // Setting values to the dynamically allocated array
+		}
+		
+		unique_ptr<int[]] ptr(new int[5]{1,2,3,4,5,6)
+	
+	int a[3][4][5];
+	3 is layer
+	4 is row 
+	5 is col
+	
+===================================
+we cannott assign the pointer between the unrelated class
+How to create the reference for an array. pointers
+usage of the type info?
+	<typeinfo>
+		typeid(variablenamea).name();//return the data type name
+		const std::type_info& typeInfoRef = typeid(x);
+		typeif(*objectpointer).name()
+	
+	we cannott assign the pointer between the unrelated class
+		class A{};class B{}; A *ptr =new B(); //error
+	
+	int * &refptr = pointer;
+	int b[4][5];
+	int (&a)[4][5]= b;
+	
+====		
+dynamic_cast?
+	 dynamic_cast: will work only polymorphic and class has atleast one virtual function. downcasting ie derived class pointer from the base pointer.
+	 dynamic_cast will not work on the cons_cast object. You're correct that you cannot use dynamic_cast to cast away the const 
+	 when the pointer to the object is used. it can return NULL.
+	 when the reference is used it will return the bad_cast.
+	 when the class has no virtual , then compiler will give you the error
+	 
+	class Base {
+		public:
+			virtual ~Base() {}
+		};
+
+		class Derived : public Base {};
+
+		int main() {
+			 const Base* basePtr = new Derived();
+
+			 const Derived* derivedPtr = dynamic_cast< const Derived*>(basePtr);  // This will succeed.
+
+			if (derivedPtr) {
+				// Safe to use derivedPtr here.
+			}
+
+			delete basePtr;
+
+			Base baseObj;
+			try {
+				Derived& derivedRef = dynamic_cast<Derived&>(baseObj);  // This will throw std::bad_cast.
+			} 
+			catch (const std::bad_cast& e) {
+				std::cout << "Failed to cast: " << e.what() << std::endl;
+			}
+
+			return 0;
+		}
+		
+		Failed to cast: std::bad_cast:
+================================================
+static_cast:
+   compile time
+   no null pointer
+   pointer to void *
+   pointer between the related class
+   reference between the related class
+   double to int
+   cannot use to cast away the const
+   enum to int;
+   enum to another enum
+   long to int
+   
+   enum class Color { RED, GREEN, BLUE };
+   enum class Shape { CIRCLE, SQUARE, TRIANGLE };
+   Shape shapeValue = static_cast<Shape>(static_cast<int>(Color::GREEN)); or
+   Shape shapeValue = static_cast<Shape>((Color::GREEN));
+   
+====================================================
+
+operators:
+
+	arithmatic operator: +,-,*,/,%
+	bitwise operatore: &,|, ~, <<,>>
+	logical operator: &&,||, !
+	relational operator: >=,>,==
+	unary operator: ++,--
+	assignment operator: +=,/=,=,*=,
+================================
+overloading postfix and prefix:
+
+prefix operator overloading:
+   <class name> & operator++()
+   {
+       ++value;            // Increment the value
+        return *this; 
+   }
+   
+postix operator overloading:
+    <class name> operator++(int)
+   {
+        MyClass temp(*this);  // Create a copy of the current object
+        ++value;              // Increment the value
+        return temp;
+   }
+
+===================================
+precendence opertor?
+	 left to right
+	 */% has same precedence
+	 +- has same procedence
+	 
+	 postfix (++(int)> unary operator(++,&,!) > Equality (==,!=) >>shift operator
+===========================
+dequeue and list
+   .push_front
+   ,push_back
+   .emplace(it,2)
+   .emplace_back(1,2)
+   .emplace_front()
+   .pop_front()
+   .pop_back()
+   .queue has no clear(); list has clear
+   .erase()
+   .insert(it)
+   .back()
+   .front()
+   .at() for random access and operator[] only in deque
+=====================================
+empty the deque in one short:
+std::deque<int> myDeque = {1, 2, 3, 4, 5};
+
+// Clear the deque
+std::deque<int>().swap(myDeque);
+==========================================
+vector and queue:
+  .front
+  .back
+  .clear is only queue
+  
+stack vs queue:
+   .push()
+   .pop()
+   .top()
+   .front()
+   .back() only in queue
+   .empty()
+   .size()
+   
+====================================
+insert the pair in list using the single line emplace?
+emplace , emplace_back: can insert only one element at a time;
+#include <iostream>
+#include <list>
+
+int main() {
+    std::list<std::pair<int, std::string>> myList;
+
+    // Using a range-based for loop to insert multiple pairs
+    for (const auto& pair : {std::make_pair(1, "one"), std::make_pair(2, "two")}) {
+        myList.emplace_back(pair);
+    }
+
+    // Print the list to verify
+    for (const auto& pair : myList) {
+        std::cout << pair.first << ": " << pair.second << std::endl;
+    }
+
+    return 0;
+}
+   
+we cannot insert multiple element using push_back or emplace_back?
+   
+=====================================
+set the output to print the umbers in the hexa decimal for one number , all number?
+how to use it for the octal and decimal?
+how to unset?
+	cout.setf vs cout.unsetf?
+		cout <<std::hex;
+		cout.setf(ios::hex,ios::basefield)
+		cout.usetf(ios::basefield)
+		cout.setf(ios::dec,ios::basefield)
+		//oct
+=========================
+what happens if the class member variable is const static?
+points to be in make_<pointer>
+   if the class variable is static const , 
+   then while defining outside the class it has to be 
+   const int classname""variablename =100;
+   auto ptr = make_shared<int>(10); //no new
+   unique_ptr <const int> p (new int (10));
+   
+========================
+c++ was inventeded by bjarane strousup
+	char a =49;
+	cout << a; //1
+	glocal variable can be any where in the file 
+
+	function() {}
+	int b =100; //allowed
+	function1() {}
+
+	
+bind ?
+what is the bool value?
+
+  true ==>1
+  false ==> 0
+  
+  <functional>
+  using namespace std::placeholders;
+  using namespace std::cout; //if you put this line you no need to add the std for each cout alone;
+  
+  //be careful you need <functional>
+  //In C++, std::placeholders is part of the <functional>
+  int add(int a,int b, int c)
+  {
+  }
+  auto f = bind(add,std::placeholders::_1,std::placeholders::_2, 10)
+  f(1,2)
+  
+  auto f2 = bind(add,_1,_2, _3) ;// we cannot assign the f = bind(add,_1,_2, _3)
+  f2(1,2,3)
+  
+  //f = bind(add,std::placeholders::_1,std::placeholders::_2, 100);//we cannot assign the bind variable to other function
+  //f(1,2)
+  
+   // Binding the first two arguments and setting the third argument to 10
+    auto f1 = bind(add, _1, _2, 10);
+    cout << "Result of f1(1, 2): " << f1(1, 2) << endl;
+
+    // Using std::function to allow rebinding
+    std::function<int(int, int)> f1_lambda = [&f1](int x, int y) { return f1(x, y); };
+    cout << "Result of f1(1, 2): " << f1_lambda(1, 2) << endl; //13
+===================================================
+#include <chrono>
+#include <thread>
+   chrono::milliseconds dur(100)
+   this_thread::sleep_for(dur)
+=============================================
+thread?
+where the functor should be?
+
+    functor object should be inside the class or struct:
+	struct MyFunctor {
+		void operator()(int a) const {
+			std::cout << "Inside functor with value: " << a << std::endl;
+		}
+	};
+
+ thread obj((functor(), int a)
+ thread obj(functorobject)
+ obj.join()
+==================================
+allocationg the space of the array:
+
+	int main() {
+		std::string str = "hello";
+		
+		// Dynamic allocation of an array with size determined at runtime
+		char a[str.length() + 1];  // Memory is allocated at runtime
+
+		std::cout << "Size of array 'a': " << sizeof(a) << std::endl;  // Size determined at runtime
+
+		return 0;
+	}
+	
+	int a1 =100;
+    // Dynamic allocation of an array with size determined at runtime
+    char a[a1]; 
+===================================
+.size(v) = distance(v.begin(),v.end())
+
+map?
+	map has emplace
+	map.emplace(10,20)
+	map.emplace(it,10,20);//error
+	map.emplace_back();//error
+	map.emplace_hint(it,10,20); 
+	//vector dont have emplace_hint
+	map <int.int> v({{},{},{}})
+	map <int.int> v={{},{},{}}
+	map <int.int> v=({{},{},{}})//error
+	map.insert({})
+	map.insert({{},{}})
+	auto result = map.insert({{},{}}) // will give error since the result can check whetherone element is inserted successfully ir not
+	
+	map.insert(make_pair<int,int>())
+	map.insert(make_pair())
+	map[key]; here you have added the key hence its default value will be 0
+    
+	for make_pair <int,int> is optional;
+	
+	// Insert {1, 2} into the map
+    auto result = mymap.insert({1, 2}); //auto can be replace by pair<map<int,int>::iterator, bool> result or
+	//typedef  map<int,int>::iterator MIT; pair<MIT, bool> result
+    ////using   MIT = map<int,int>::iterator ; pair<MIT, bool> result
+    // Check if insertion was successful
+    if (result.second == true)//inserted successfully
+	if (mymap.insert({3, 4}).second == true) //inserted successfully.
+	//if the element is not able to inser successfully then the old element value will not be changed.
+	
+erase of map and set?
+    set and erase can be erased using key element. but vector dont have .erase by key
+ 
+set.insert?
+    set.insert({1,2,3,4,5}
+	set s({})
+	set s = {1,2,3,4}
+	s = set<int>({})
+===========================================================
+what happens if you try to access the mymap without valid key?
+what is the value if you insert the key in map []
+
+if the key is not there but you are trying to acess it will give zero
+	#include <iostream>
+	#include <map>
+
+	int main() {
+		std::map<int, int> myMap;
+
+		// Accessing a key that doesn't exist will insert it with a default-initialized value.
+		std::cout << "Value for key 1: " << myMap[1] << std::endl;  // Outputs: 0
+
+		// After the above line, myMap will have a key-value pair (1, 0)
+		std::cout << "Size of map: " << myMap.size() << std::endl;  // Outputs: 1
+
+		// If you try to access it again, it will return the default-initialized value.
+		std::cout << "Value for key 2: " << myMap[2] << std::endl;  // Outputs: 0
+
+		return 0;
+	}
+===
+	int keyToFind = 2;
+    auto it = myMap.find(keyToFind);
+
+    if (it != myMap.end())
+================================================================
+we can move the unique pointer to the shared pointer and vice versa using move.
+we can move the normal pointer to the unique pointer.
+when we move the pointer  the original source pointer will be NULL and the destination pointer will have the valid value.
+original pointer will not call the destructor.
+
+	std::unique_ptr<int> uniquePtr = std::make_unique<int>(5);
+	std::shared_ptr<int> sharedPtr = std::move(uniquePtr); 
+    =======================
+	release will release the memory
+	
+    int* rawPtr = new int(10);
+    std::unique_ptr<int> uniquePtr(rawPtr);  // Transfer ownership to unique_ptr
+    
+    std::cout <<*rawPtr;
+    // Do not delete rawPtr here, because uniquePtr will handle it.
+    
+    // Later, if you want to release the ownership from uniquePtr without deleting the memory:
+    int* releasedPtr = uniquePtr.release();
+    std::cout <<*releasedPtr;
+    // Now you are responsible for deleting the memory pointed by releasedPtr
+    delete releasedPtr;
+	===========================
+	//std::unique_ptr<int> uniquePtr(std::move(rawPtr));
+===
+	reset will release and free the memory:
+	double free
+	int main() {
+    int* rawPtr = new int(10);
+    std::unique_ptr<int> uniquePtr(rawPtr);  // Transfer ownership to unique_ptr
+    
+    std::cout <<*rawPtr;
+    // Do not delete rawPtr here, because uniquePtr will handle it.
+    
+    // Later, if you want to release the ownership from uniquePtr without deleting the memory:
+    uniquePtr.reset(); 
+    std::cout <<*rawPtr;
+    // Now you are responsible for deleting the memory pointed by releasedPtr
+    delete rawPtr; //double free
+
+}
+======================================================================
+loop over the array of element:
+for (int n: arrayofin)
+{
+}
+
+if you want the force the  base constructot calling.
+
+base(){}
+deriver:public base
+{
+   derived():base(int a) //you cann call what base constructors needs to be called
+   {
+   }
+}
+===========================================   
+when we are going to use the user defined object in the set/map? or if you going to compare the user defined object like obj1 < obj2;
+   we need overload the bool operator<(const int & objb) const {
+     return (this->b>obj.b); //descending order.//
+	 }
+different function which need sorting?
+usage of min/max?
+find the number of elements in the vector without using the size?
+lower_bound value if the element is lies between the 2 values?
+if the lower and upper bount is not there between any of the 2 elements value/or any one of element then the iterator will point to v.end()
+and dereferncing the iterator pointing to the .end() will be 0 (*it)
+
+	a. set_intersection:  
+		auto it = (v.begin(),v.end(),v1.begin(),v1.end(),result.begin())
+		result.begin() only when the size of the result is already defined else we need to use back_inserter(v)
+		v ={1,2,3,4,5}
+		v1 = { 2,3}
+		result: {2,3}
+		
+		 example2:
+			std::vector<int> v = {1, 2, 3, 4, 5};
+			std::vector<int> v1 = {2, 3};
+			
+			// Calculate the maximum possible size for the result
+			int max_size = std::min(v.size(), v1.size());
+			
+			std::vector<int> result(max_size);  // Create a result vector with max possible size
+			
+			auto it = std::set_intersection(v.begin(), v.end(), v1.begin(), v1.end(), result.begin());
+			
+			// To get the number of elements in the result, you can use iterators
+			int result_size = std::distance(result.begin(), it);
+	
+	b. set_union: 
+		auto it = (v.begin(),v.end(),v1.begin(),v1.end(),result.begin())
+		v ={1,2,3,4,5}
+		v1 = { 2,3,6}
+		result: {1,2,3,4,5, 6}
+	c. set_difference: 
+		auto it = (v.begin(),v.end(),v1.begin(),v1.end(),result.begin())
+		v ={1,2,3,4,5}
+		v1 = { 2,3}
+		result: {1,4,5}
+	d. set_symmetric_difference: 
+		auto it = (v.begin(),v.end(),v1.begin(),v1.end(),result.begin())
+			v ={1,2,3,4,5}
+		v1 = { 2,3,7}
+		result: {1,4,5,7}
+	e. unique
+	f. bool = binary_search(v.begin(),v.end(),value_to_find)
+	g. lower_bound, upper_bound
+	 
+		 v = {10,20, 30, 40 }
+		 auto it = lower_bound(v.begin(),v.end(),5) //10
+		
+		 auto it = lower_bound(v.begin(),v.end(),25)
+		 it will point to 30 //it will point to the next element if it cannot find that element
+		 
+		  v = {10,19,20, 20,20,30, 40 }
+		 auto it = lower_bound(v.begin(),v.end(),20)
+		 it will point to 20. it will match with exact element
+		 
+		 auto it = upper_bound(v.begin(),v.end(),v1.begin(),5)
+		 
+		 v = {10,20, 30, 40 }
+		 auto it = upper_bound(v.begin(),v.end(),25)
+		 it will point to 30
+		 
+		  v = {10,19,20, 20,20,30, 40 }
+		 auto it = upper_bound(v.begin(),v.end(),v1.begin(),20)
+		 it will point to 30
+		 
+	e. map<int,map<int,string> mymap {{0,{1, "hi"}, {2, "Viswa"},{3,"nathan"}, {1,{1, "Good"}}, {2,{1, "morning"}};
+	   auto it = mymap[0].equal_range(2) //  std::pair<std::map<int, std::string>::iterator, std::map<int, std::string>::iterator> it;
+	   it.first != mymap[1].end()
+	   //it.first->second ; //viswa
+	   
+	   //mymap[array[i]]
+	   
+=============================
+equal_range:	   
+	   std::map<int, std::map<int, std::string>> mymap = {
+        {4, {{30, "hi"}}},
+        {1, {{60, "hello"}}},
+        {6, {{60, "super"}}}
+    };
+
+    auto it = mymap.equal_range(1);
+
+    if (it.first != mymap.end()) {
+        std::cout << "First key-value pair in the range: " << it.first->first << " " << it.first->second.begin()->first << " " << it.first->second.begin()->second << std::endl;
+    } else {
+        std::cout << "Key 10 not found in the map." << std::endl;
+    }
+
+    if (it.second != mymap.end()) {
+        std::cout << "Last key-value pair in the range: " << it.second->first << " " << it.second->second.begin()->first << " " << it.second->second.begin()->second << std::endl;
+    } else {
+        std::cout << "Key 10 not found in the map." << std::endl;
+    }
+	
+	First key-value pair in the range: 1 60 hello
+    Last key-value pair in the range: 4 30 hi
+=====
+auto it = mymap.equal_range(10);
+//lower_bound and upperbound will be end()
+===
+if(mymap.find(2) !=mymap.end())
+{
+   mymap[2]
+}
+===============================================
+merge and inplace_merge:
+merge:
+	operation to sort is o(n)
+   it= merge(v.begin(),v.end(),v1.begin(), v1.end(), result.begin())
+inplace_merge
+   operation to sort is o(n)
+   inplace_merge(v.begin(),v1.begin()+3, v1.end()); //no return type
+   
+ std::vector<int> v = {1, 3, 5, 7, 9};
+    std::vector<int> v1 = {2, 4, 6, 8, 10};
+
+    std::vector<int> result(v.size() + v1.size());
+
+    auto it = std::merge(v.begin(), v.end(), v1.begin(), v1.end(), result.begin());
+
+
+    // 'it' points to the end of the merged sequence
+    std::cout << "Iterator points to: " << *(it-1) << std::endl; //10 value
+    std::cout << "Iterator points to: " << it - result.begin() << std::endl;//10 elements
+===
+  // Sorted vector
+    std::vector<int> v = {1, 3, 5, 2, 4, 6, 7, 8, 9, 10};
+
+    // Using inplace_merge to merge the middle part of the vector
+    std::inplace_merge(v.begin(), v.begin() + 3, v.end());
+=================================================
+compile time check
+is_integral,static_asswert; enable_if,rank,is_array, extent
+integeral_constant
+a. how to assign the const to the variable?
+b. how to write your own?
+c. can i use the same for the enum type?
+//integeral_const not integrat_constant
+
+    a. <type_traits>
+	using intconst =std::integral_const<int,5>
+	int a = intconstant::value;
+   
+    b. alternate way:
+	constexpr int intConstant = 5;
+	int a = inntConstant;
+	
+	c. template<typename T, T Value>
+	struct integral_const {
+		static constexpr T value = Value;
+	};
+
+	// Create an integral constant with value 5
+	constexpr integral_const<int, 5> constant;
+
+	int main() {
+		// Use the constant's value
+		int a = constant.value;
+		
+	d.    enum class my_e { e1, e2 };
+ 
+    typedef std::integral_constant<my_e, my_e::e1> my_e_e1;
+    typedef std::integral_constant<my_e, my_e::e2> my_e_e2;
+	
+	  <type_traits>
+	is_integeral</bool/char/short/int/long/signed/unsigned>::value ==>true
+	is_integeral_v</bool/char/short/int/long/signed/unsigned> ==>true
+	is_integeral</vector/float/double/char*/string>::value ==>true
+	is_integeral<decltype(variable)>::value
+	
+	#include <iostream>
+	#include <type_traits>
+
+	template <typename T>
+	typename std::enable_if<std::rank<T>::value == 4, void>::type
+	print() {
+		std::cout << "This is a 4D array!" << std::endl;
+	}
+
+	template <typename T>
+	typename std::enable_if<std::rank<T>::value == 2>::type
+	print() {
+		std::cout << "This is a 2D array!" << std::endl;
+	}
+
+	template <typename T>
+	typename std::enable_if<std::rank<T>::value == 8, int>::type
+	print() {
+		std::cout << "This is an 8D array!" << std::endl;
+		return 0;
+	}
+	
+	int arr8D[1][2][3][4][5][6][7][8];
+    int result = print<decltype(arr8D)>();
+	==============================
+	_t comes then no ::type?
+	
+	template <typename T>
+typename std::enable_if_t<std::is_array_v<T>, void>
+printArray8D() {
+    std::cout << "This is a 2D array!" << std::endl;
+}
+
+template <typename T>
+typename std::enable_if<std::rank<T>::value == 7, int>::type
+printArray8D() {
+    std::cout << "This is an 8D array!" << std::endl;
+    return 0;
+}
+
+int main() {
+    // Testing the 8D array print function
+    int arr8D[1][2][3][4][5][6][7][8];
+    int result = printArray8D<decltype(arr8D)>();
+	
+================================
+<type_traits>	
+rank<int[10]>::value => 1
+rank<int[10][11>::value => 2
+rank<int>::value = > 0
+  header file required for extent, rank,is_array, is_integeral?
+extent to get the dimension of the array?
+  <type_traits>
+  std::cout << std::extent<std::vector<int>[>::value << std::endl;  // Outputs 0
+  std::cout << std::extent<std::vector<int>[5]>::value << std::endl;  // Outputs 5
+  std::cout << std::extent<float[5]>::value << std::endl;  // Outputs 5
+  extent<int>::value =>0
+  extent<int[10]>::value =>10
+  extent<int[10],0>::value =>10
+  extent<int[10],1>::value =>0
+  extent<int[10][11],1>::value =>11
+============================
+how to use the template by calling the void function?
+
+	template <typename T>
+	typename std::enable_if<std::is_array<T>::value==0>::type
+	print() {
+		std::cout << "This is not an array!" << std::endl;
+	}
+
+	// Third version where a different type (int) is specified for non-arrays
+	template <typename T>
+	typename std::enable_if<std::is_array<T>::value, int>::type
+	print() {
+		T a;
+		std::cout << "This is an array!" << std::endl;
+		return 0;
+	}
+	  int arr[5] = {1, 2, 3, 4, 5};
+    print<decltype(arr)>();
+	output/ this is an array
+================================
+forwardlist:
+  since it is list we can clear it
+  emplace_front(1)
+  push_front
+  pop_front
+  front
+  back
+  insert_after
+  erase_after
+  empty
+  size
+  clear
+==================================
+priority_queue
+   greater/less function is used in the declaration then no ()
+   vector<int> is must in both the max/min/or user defined
+   since the element is oushed using push there is no back and front
+   priroty queue can have the same elements.
+   
+   instead of the priority_queue<int,std::vector<int>, less<int>> p  ; you can call your function
+   priority_queue<int> p; or priority_queue<int,std::vector<int>, less<int>> p ;//max_heap
+   
+   priority_queue<int> p(v.begin(),v.end()); //max heap ie hihest element will poped first
+   priority_queue<int,vector<int>,greater<int>); //min heap lesser element will poped out first
+   .empty()
+   no clear, back and front
+   .push()
+   .emplace(1)
+   .top()
+   .pop()
+   .swap
+   //since the function is used outside the queue class. it should take  2 arguments.
+   struct Compare {
+		bool operator()(int a, int b) {
+			return a > b; // Use std::less<int>() behavior
+		}
+	};
+   //priority_queue<int,std::vector<int>, compare> p 
+
+    //swap the priority queue with full element
+    std::priority_queue<int> empty;
+    std::swap(pq, empty);
+	
+	//clear the priority queue:
+	    while (!pq.empty()) {
+        std::cout << pq.top().value << " ";
+        pq.pop();
+    }
+==============================
+string function:
+15 functions:
+get the length and sizeof the string?
+How to find the length, front and back element, erase the element, substr, find the substring?
+How to compare the string?
+how to find whether the string is substring or or not?
+how to store the index position of the find and what is the starting position index?
+sizeof the string class?
+
+    .find() //.compare()
+	.rfind()
+	.back()
+	.front()
+	.at()
+	.size()
+	.length()
+	.empty()
+	[]
+	begin()
+	end()
+	.clear
+	.erase(srt.length()-10) //will erase from the last 10 character to the end
+	.erase(srt.length()-10,srt.length()-5 ) //will erase from the last 10 character to the end of last of 5 charcter
+    str1.compare(str2) == 0 //both the strings are equal.match whole string
+	str2 = str1.substr(7,5); //copy the 7,8,9,10,11 character to the str2
+	str2 = str1.substr(7); //copy the 7th character to the last element
+	str3= str1.substr(0,5); //copy 0 to 4th character
+	std::string::size_type found = str.find(str2); //will return the first charcter match string position. 
+	//std::string::size_type or int
+	//find and rfind will start from the index 0
+	
+	if (str.find(str2) != string::npos)
+	{
+	   str2 is substring
+	}
+	
+	//search from the specified position
+	if (str.find(pos, str2) != string::npos)
+	{
+	   str2 is substring
+	}
+	
+	//replace the string
+	str.replace(pos,serach.length(),replaceword)
+	
+	std::string str = "one";
+    std::string str2 = "one";
+	str.find(str2) ==> 0th position
+	Here the str2 is substring of the str1
+	
+	std::string str = "Twoone";
+    std::string str2 = "one";
+	str.find(str2) ==> 3
+	Here the str2 is substring of the str1
+	
+	sizeof the string will give the sizeof the string class  (value is determined by the compiler and the architecture)
+	not the number of characters it can hold.
+	
+	  std::string str = "applebanana";
+    std::string str2 = "banana";
+
+    // Compare the first str2.length() characters of str with str2
+    if (str.compare(0, str2.length(), str2) == 0) //if the str2 is the substring of the str
+	
+	std::string str = "applebanana";
+    std::string str2 = "apple";
+
+    // Compare the first str2.length() characters of str with str2
+    if (str.compare(0, str2.length(), str2) == 0) //if the str2 is the substring of the str
+	
+=========================
+How to find the actual size of the stack required by the thread?
+	  root@CHEGJWV2F3:/mnt/wsl/viswa# gcc -fstack-usage stackusage.c
+	  The above line will genereate the stackusage.su which will give the required stack size for each function call.
+	  
+	  or
+	  valgrind --tool=massif ./your_program --stacks=yes
+	  ms_print massif.out.<PID> : will give the information abot the total heap allocated, used heap, extra heap and stack
+	  --stacks=yes : optional. It is required only when you need the stack monitoring.
+	  
+======================================== 
+To find the number of process and the core:
+	ps :
+	 show the process spawned by the current user in the current terminal
+	 
+	ps -aux: list all the process for all the users
+
+	ps -eLf: thread associated with each process
+
+	to find the number of cores:
+		lscpu | grep "^CPU(s):"
+		nproc
+		/proc/cpuinfo
+========================================
+TI wifi Chip:
+	CC3301 (cortex m4 microcontroller)
+	Secure Digital input output (SDIO interface) for the host and controller.
+	It has sdio bus interface, SRAM interface, interrupt controller, CMD control, Datat , data FIFO,
+===========================
+A2l Micro controller
+	Otis: STM32G0B1CCUx - cortex M0 microcontroller.
+==========================
+Partition and is_partitioned is doing?
+Where the partition will store the result?
+How the position of the elements is determined?
+When is_partioned will return false
+what will happen if we dereference the v.end()
+
+   auto it = partition(v.begin(),v.end(),[](int a)
+   {
+     return (a%2);
+   })
+   
+   bool p = is_partitioned(v.begin(),v.end(),[](int a)
+   {
+     return (a%2);
+   })
+   
+   example1:
+   std::vector<int> v = { 2, 1, 5,4,3, 11, 6, 8, 7};;
+   output vector = { 7 1 5 11 3 4 6 8 2 } ; it will point 4
+   ispartitioned ==> yes
+   example2:
+     std::vector<int> v = { 1,3,5};;
+   output vector = { 1,3,5 } ; it will point 0
+   ispartitioned ==> yes
+   
+   only the satified condition elements will in the left.
+  
+   auto it=v.end()
+   *it => will be zero
+   
+   std::vector<int> v = { 1,5,4, 3 };
+   is_partitioned ==> False.
+===================================================
+vector insertion and resize()
+	vector<int> v{1,2,3,4,5}
+	v.resize(10);
+	v.push_back(12);
+	//1,2,3,4,5,0,0,0,0,0,12
+
+	vector<int> v{1,2,3,4,5}
+	v.resize(3);
+	v.push_back(12);
+	//1,2,3,12
+
+==================
+macro comparision based on the c++ version:
+#idfedef : can check whether the macro is avilable or not>
+#if can compare the against the value?
+
+//201103L is long
+	#if __cpluplus > 201103L 
+	//higher than 2011 version
+	#else
+	#endif
+
+	#ifdef __cpluplus
+	if(__cpluplus > 201103L)
+	{
+	}
+	#endif
+
+    //201103L is the long and not the string.
+	
+	#if __cplusplus > 201103L
+	// Code for C++ versions higher than C++11
+	#else
+		// Code for C++11 or lower versions
+	#endif
+======================================
+static_assert check for the global class and function:
+	template <typename T>
+	class name
+	{
+		static_assert(size(T) >=4, "message"); //condition1
+		
+		public:
+		void function()
+		{
+		static_assert(size(condition) >=4, "message2");
+		}
+	}
+
+	name <int> obj; //condition1 will be checked
+	obj.function(); //condition 2 will be checked
+=====================================
+reverse the element complexity is o(n/2) and space complexity is 1
+
+move_iterator:
+move_ierator will not work on swap
+move_ierator will not work directly in the reverse.
+
+  move_iterator<std::vector<int>::iterator> begin(v.begin), end(v.end())
+  copy(begin,end,back_inserter(v2));//v1 and v2 will have the same element
+
+  //reverse and move iterator are not the same
+auto begin = std::make_reverse_iterator(v.end());
+    auto end = std::make_reverse_iterator(v.begin());
+    std::reverse(begin, end);
+	
+auto begin = v.rbegin();
+auto end = v.rend();
+std::reverse(begin, end);
+
+std::reverse(v.begin(), v.end());
+
+reverse(begin(str),end(str));//reverse the string
+reverse((str.begin()),(str.end());//reverse the string
+=====
+use move iterator to swap the element?
+    // Create move iterators for the start and end of the vector
+    auto begin = std::make_move_iterator(v.rbegin());
+    auto end = std::make_move_iterator(v.rend());
+
+    // Reverse the vector using move iterators
+    std::move(begin, end, v.begin());
+	
+====
+// Using reverse iterators
+    auto rbegin = v.rbegin();
+    auto rend = v.rend();
+
+    // Swapping first and last elements
+    if (rbegin != rend) {
+        std::iter_swap(rbegin, rend - 1);  // '-1' because rend points to one past the end //iter swap
+    }
+=====	
+	//reverse
+	
+	void reverse(vector<int> &v, int left, int right) {
+		if (left >= right)
+		{
+			return;
+		}
+		swap(v[left].v[right]) //ement swap
+		reverse(v,left+1,right-1)
+	}
+	  
+
+    reverse(v, 0, v.size() - 1); // Reverse the entire vector
+====
+   while (left <= right) {
+		
+		swap(v[left],v[right])
+		left++;
+		right--
+	}
+	
+	we also have iter_swap
+	 std::iter_swap(iter1, iter2);
+======
+lamda function and nan function and inits header.
+  auto f = [](int a) {}
+  //here the capture variable is none but take int argument.
+  
+  Nan:
+  <cmath>
+  float b = sqrt(-2)
+  b==b => false
+  
+  cout<isnan(b); //true
+  log(0) or log(-1) or 100/0 will return nan
+  ==================
+git commands: 
+clone, --recurse-submodules, config, reset, log full/oneline, create and check , checkout branch, tag creation , commit file difference
+
+
+	git clone 
+	git config --global user.name "username"
+	git config --global user.email "emailid"
+	git config --list
+	git log : will list all the commit logs
+	git log --online: will list the commt logs in one line
+	git show commitid: will show the difference in that commit identical
+	git checkout -b <branchname>: create the branch and checkpout that branch
+	git checkout <branchname>:  checkpout that branch
+	git remote -v 
+	git push <remotename> <branchname>
+	git pull <remotename> <branchname>
+	git reset files : remove the changes from the staging
+	git tag -a "release commit tag" -m "commit tag"
+	git reset --soft HEAD~1: staging remains, keep the commited changes in staging
+	git reset --Hard HEAD~1:remove the staging, renove the changes the working directory; keep the commited changes in staging
+	git clone --recuse-submodules URL -b develoment
+	git submodules add URL path -b development
+==============================================
+how to determine the return type of the function based on the variable type?
+how to declare the variable type from the already declared variable?
+how to automatically declare the type of the variable?
+
+auto d=12.12 //double
+auto f=12.12 //float
+auto a =10;
+auto ptr = &a; //int *
+auto pptr = &ptr;
+int x;
+decltype(x) j =5;
+
+template <class A, class B>
+auto findmin(A a, B b)->decltype(a<b ? a:b)
+{
+   return (a<b) ? (a):(b)
+}
+
+findmin(12,13.4)
+================================================
+which stl uses the bucket?
+find the number of bucket?
+how to find the number of element in the current bucket?
+find the number of elements in each bucket? 
+what are the different ways to get the value from the key in map?
+how to get the buckey number from the key?
+
+bucket can be used only in the unordered map:
+    std::unordered_map<int, std::string> umap;
+
+    // Add some elements to the unordered_map
+    umap[1] = "One";
+    umap[2] = "Two";
+    umap[3] = "Three";
+    umap[4] = "Four";
+    umap[5] = "Five";
+	
+get the number of bucket count
+int n = mymap.bucket_count(); // will be greater than 5. bucket count and size of index will not match.
+for(i=0;i<n;i++)
+	umap.bucket_size(i)//number of element in the bucket i;
+
+	for(auto it=umap.begin(i);it != umap.end(i); it++)
+	{
+		cout << it->first <<it->second;
+	}
+}
+
+mymap.at(key)
+mymap.bucket_size(mymap.bucket("apple"));// not of element for that bucket.
+mymap.bucket("apple") // will return the bucket number
+==========================
+find the shortest path:
+Dijkstras :: will work only on the positive edge
+bellmmen ford: will work both on positive and negative
+
+yens is extension of Dijkstras . Yen both positive and negative.
+topological ordering cannot gurantee the order for the shortest path.
+Topological ordering with dynamic programming will be best suted.
+johns = Bellmen+dijkstras
+=============================
+regex to find the starring point and ending point?
+group
+repeaded
+what happens if you have 2 . in the url
+how to extract the URL and port number?
+how to check whether the pattern is matching?
+
+<regex>
+string input = "123west";
+regex pattern("^[1-9]$")// the line should start and ends with number
+regex_match(input,pattern)==>false;
+if input is abc=> it will pass
+
+<regex>
+smatch match
+string input = "https://west.com.com:443";
+regex pattern("^(https?://[a-zA-Z0-9.-]+\\.[A-z]{3-6}):(\\d+)+$")// the line should start and ends with number
+if(regex_match(input,match, pattern))
+match[0] = original input
+match[1]:URL
+match[2]: port number
+
+(\\d)+: =>3
+[A-z]{3-6} => will refer to the last com
+[a-zA-Z1-9.-+] not allowed [+a-zA-Z1-9.-]; //- is expected between the range
+^ starting point
+$ endpoint
+() group
+[]+: repeated character
+
+input = "https://west.com.com:443";
+regex pattern("^(https?://[a-zA-Z0-9-]+\\.[A-z]{3-6}):(\\d+)+$")// return false. Invalid error since there is no . in []
+===================
+Anangram program:
+	std::string sortedStr1 = str1;
+    std::string sortedStr2 = str2;
+    std::sort(sortedStr1.begin(), sortedStr1.end());
+    std::sort(sortedStr2.begin(), sortedStr2.end());
+
+    // Compare sorted strings
+    return sortedStr1 == sortedStr2;
+=====
+assigning the tuple, getting the elemenets from tuple and updating the tuple individually?
+#include <iostream>
+#include <tuple>
+#include <string>
+
+int main() {
+    // Creating a tuple with three elements: an int, a double, and a stringq
+    std::tuple<int, double, std::string> myTuple(42, 3.14, "Hello");
+
+    // Accessing tuple elements using std::get<>
+    std::cout << "First element: " << std::get<0>(myTuple) << std::endl;  // Outputs: 42
+    std::cout << "Second element: " << std::get<1>(myTuple) << std::endl; // Outputs: 3.14
+    std::cout << "Third element: " << std::get<2>(myTuple) << std::endl;  // Outputs: Hello
+
+    // Modifying tuple elements using std::get<>
+    std::get<0>(myTuple) = 100;         // Modify the int element
+    std::get<2>(myTuple) = "World";     // Modify the string element
+
+    // Accessing and printing modified elements
+    std::cout << "Modified First element: " << std::get<0>(myTuple) << std::endl;  // Outputs: 100
+    std::cout << "Modified Third element: " << std::get<2>(myTuple) << std::endl;  // Outputs: World
+
+    return 0;
+}
+=============================
+convert the string into the lower case:
+what is the argument to the lamda function?
+
+// Convert both strings to lowercase before comparison
+    std::transform(str1.begin(), str1.end(), str1.begin(), ::tolower);
+    std::transform(str2.begin(), str2.end(), str2.begin(), ::tolower);
+or
+std::transform(result.begin(), result.end(), result.begin(), 
+                   [](unsigned char c) { return std::tolower(c); });
+============================
+array increment:
+	&array+1: move to the end of array
+	array+1: move to the next array
+	&(array+1) in valid option
+====================================
+
+
+
