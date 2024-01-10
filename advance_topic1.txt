@@ -1,0 +1,273 @@
+
+//increase the compilation time but redice the runtime
+
+#include <iostream>
+#include <vector>
+#include <array>
+#include <string>
+#include <initializer_list>
+
+class employee {
+public:
+    static constexpr const char* name = "viswa";
+
+    static const std::vector<int>& getemployeedetail() {
+        static const std::vector<int> v = {1, 2, 3, 4, 5};
+        return v;
+    }
+
+    employee() : m_v(getemployeedetail()) //Here the const variable is copied to the member variable
+	{
+        for (auto& row : data) {
+            for (auto& val : row) {
+                val = true;  // Set all elements in the array to true
+            }
+        }
+
+        v.emplace_back(std::vector<std::string>{"hi", "viswa", "how", "are", "you"});
+        v.emplace_back(std::vector<std::string>{"hi", "rithick", "how", "are", "you"});
+        v.emplace_back(std::initializer_list<std::string>{"hi", "Vimala", "how", "are", "you"});
+        v.emplace_back(std::vector<std::string>{"hi", "hema", "how", "are", "you"});
+
+        for (const auto& row : v) {
+            for (const auto& message : row) {
+                std::cout << message << " ";
+            }
+            std::cout << std::endl;
+        }
+        
+        for (auto & element:data) {
+		    element.fill(false); //all elements in the array are set to true
+        }
+   
+        std::cout <<data[1][2] <<std::endl; //false
+    }
+
+    void function(std::initializer_list<int> p) {
+        std::vector<std::string> temp;
+        for (const auto& val : p) {
+            temp.push_back(std::to_string(val));  // Convert int to string for insertion
+        }
+        v.emplace_back(temp);
+    }
+
+private:
+    std::vector<std::vector<std::string>> v;
+    std::vector<int> m_v;
+    std::array<std::array<bool, 3>, 2> data = {{
+        {false, true, false},
+        {false, true, false}
+    }};
+};
+
+int main() {
+    employee e;
+    e.function({1, 2, 3});
+    return 0;
+}
+============================
+//static const function returning the vector?
+//vector cannot be consexpr
+
+class employee {
+public:
+    static const  std::vector<int>& getemployeedetail() {
+        static const std::vector<int> v = {1, 2, 3, 4, 5};
+        return v;
+    }
+
+    employee() {
+
+        for (const auto& row : m_v) {
+             std::cout << row <<std::endl;
+        }
+        
+    }
+
+private:
+    static const std::vector<int> m_v; 
+
+};
+
+const std::vector<int> employee::m_v= getemployeedetail();
+int main() {
+    employee e;
+    return 0;
+}
+=====
+
+==================================
+//static const; not mal variable or static constexpr can call the function in the calss declaration itself
+#include <iostream>
+#include <vector>
+#include <array>
+
+// Define the getemployeedetail() function outside the class
+constexpr std::array<int, 5> getemployeedetail() {
+    return {1, 2, 3, 4, 5};
+}
+
+class employee {
+public:
+    employee() {
+        for (const auto& value : m_v) {
+            std::cout << value << std::endl;
+        }
+    }
+
+private:
+    static constexpr std::array<int, 5> m_v = getemployeedetail();
+};
+
+int main() {
+    employee e;
+    return 0;
+}
+
+====================================
+How to check whether the variable is initialized to the defaulat initializer?
+int a = 0;
+a == int{}
+the default initilaizer value for
+int 0
+bool false
+float 0.0f
+double 0.0
+float and double cannot directly float1==float2; double1==double2
+=====================================
+There is no array.empty?
+array<int, 5> v ={1,2,3};
+.front()=>1
+.back()=>0
+.size() =>5
+
+array<int, 5> v;
+.size() =>5
+
+=======
+for (auto a:{1,2,3,4}
+{
+}
+========
+struct strv{
+ vector<int> v;
+ int a;
+ int function(){}
+};
+
+//here we are dortecly assigning the lement to the vector. no need of constructor
+strv obj = {{1,2,3,4,5}, 100}
+===================================
+//constexpr function to initailize the variable and read the value of the variable at compile time.
+
+#include <iostream>
+
+class MyClass {
+public:
+    constexpr MyClass(int x) : value(x) {}
+
+    // constexpr member function
+    constexpr int getValue() const {
+        return value;
+    }
+
+private:
+    int value;
+};
+
+int main() {
+    constexpr MyClass obj(42);
+
+    // Calling constexpr member function at compile-time
+    constexpr int result = obj.getValue();
+
+    std::cout << "Value: " << result << std::endl; // This will be printed at compile-time
+
+    return 0;
+}
+============================================
+a. For static const variable it can be initialized at the time of declaration or  it can be  defined
+outside the class and cannot be initialized in both the places. 
+b. const variable has to initialized from the class constructor
+c. constructor can also be constexpr when the value being passed to it is known 
+d. value of the constexpr cannot be changed although we are not specifying as const.
+e. event weven put static constexpr const
+
+#include <iostream>
+
+class MyClass {
+public:
+    // Static const member variable declaration
+    static const int staticConstVar;
+    static const int staticConstVar1 =200;
+    // Static constexpr member variable definition
+    static constexpr int staticConstExprVar = 200;
+
+    // Const member variable initialized using a constexpr constructor
+    const int constVar;
+
+    // Constructor
+    constexpr MyClass(int val) : constVar(val) {}
+};
+
+// Definition of static const member variable outside the class
+const int MyClass::staticConstVar = 100;
+
+int main() {
+    // Accessing static member variables of MyClass
+    std::cout << "staticConstVar: " << MyClass::staticConstVar << std::endl;
+	//MyClass::staticConstExprVar =300; //error
+    std::cout << "staticConstExprVar: " << MyClass::staticConstExprVar << std::endl;
+
+    // Creating an instance of MyClass
+    constexpr MyClass obj(50);
+    std::cout << "constVar in obj: " << obj.constVar << std::endl;
+
+    return 0;
+}
+=======================================================
+//staic const function returning the static const array
+//Calling the static const function in the constructor and in the variable declaration.
+//constexpr function needn't to have the cost variable all the time.
+
+//1 2 3
+#include <iostream>
+#include <array>
+
+class MyClass {
+public:
+    // Static const function returning a const array by reference
+    static const std::array<int, 3>& getStaticArray() {
+        static const std::array<int, 3> staticArray = {1, 2, 3};
+        return staticArray;
+    }
+
+    // Constructor to initialize the member variable using the static function
+   // MyClass() : memberArray(getStaticArray()) {}
+    MyClass() {}
+    // Function to display the member array
+    void displayMemberArray() const {
+        for (const auto& val : memberArray) {
+            std::cout << val << " ";
+        }
+        std::cout << std::endl;
+    }
+
+private:
+    // Member variable to store the array by reference
+    const std::array<int, 3>& memberArray = getStaticArray();
+};
+
+int main() {
+    // Create an instance of MyClass
+    MyClass obj;
+
+    // Display the member array
+    obj.displayMemberArray();
+
+    return 0;
+}
+
+
+
+
