@@ -52,6 +52,8 @@ default and delete keyword
 accumulate the sum for array and vector?
 accumulate passing the initial empty value ie 0
 accumulate passing the initial empty string?
+
+what is the templatefunction for int addition?
 How to pass the plus<in> to accumulate?
 
 programming question:
@@ -764,7 +766,8 @@ can vector erase the lement based on the value?
 set and map
 
 vector cannot erase the element based on the value . it need the iterator
-erase(it) =>erase one elementerase(it1,it2);
+v.erase(it) =>erase one element
+v.erase(it1,it2); erase the element between it1 to it2
 
 vector dont have inbuild find and count?
 
@@ -775,6 +778,11 @@ auto it = find(vector.begin(), vector.end(),
 std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 int count = std::count(v.begin(), v.end(), 5);
 ==========
+std::vector<int> vec = {1, 3, 5,6,6, 7, 9};
+lower_bound (6) => 6
+upper_bound(6) = >7
+upper_bound(2) =>3
+
 does set has the lower_bound and upper_bound ? what does it return?
 does vector has lower/upper_bound, count and find inbuild?
 vector / array used in the bound has to sorted?
@@ -1014,19 +1022,23 @@ can i use [] at string?
  char ch = s.back();//s::string
  s[i] //
  ================
+ 
  quick sort:
  Quicksort is ideal for small arrays.
- The worst time complexity of Quicksort is O(n^2)
+ The worst time complexity of Quicksort is O(n^2). Average and best case 0(nlogn)
  It doesn't take up any more space to perform the quick sort.
  For small data sets, it will be faster than other sorting algorithms.
  In Quicksort, each element of the array is compared with a pivot element.
+ extra space O(logn)
  ==================
  Mergesort repeatedly divides the array into two subarrays (n/2) until only one element remains.
  Merge sort is suitable for any array size, whether small or large.
  The worst time complexity of Mergesort is O(n log n).
  To merge two subarrays takes additional space as a temporary array.
  With this algorithm, all data sets are sorted at the same speed.
+ extra space of 0(n)
  =====================
+ in heap and merge sort the time complexity is O(nlogn) but the extra space required for the merge sort is O(n) where us heap Sort O(1)
  
 =========================================================
 merge, push,pull --keep
@@ -1052,7 +1064,7 @@ git clone <url> : clone the repository
 git status : status of the repository
 
 git config --global user.name "viswa"
-git config --global user.name "viswa@lennoxintl.com"
+git config --global user.email "viswa@lennoxintl.com"
 git config --list
 
 git log: Display the commit history.
@@ -1079,8 +1091,6 @@ Undo Changes:
 git reset <file>: Unstage changes for a file.
 git reset This command unstages changes, leaving your working directory unchanged.
 git reset --hard HEAD: Discard all local changes ie do unstage and dic=scard all the changes in the working directory.
-git reset --keep: keep the chages in the stash.his resets the branch and keeps changes in the stash. It's useful when you want 
-to switch branches but keep your changes for later.
 Create Tags:
 
 git tag -a <tag-name> -m "Tag message": Create an annotated tag.
@@ -1177,7 +1187,199 @@ char32_t: 100
   myString.erase(myString.end() - 2, myString.end());
   
   myString.erase(myString.end() - 2);//erase the last 2nd character //Hello, World!//Modified string: Hello, Word!
-  ================================
+ ================================
+ vector is partitioned or not?
+ even numbers are placed in one end and odd number in other end
+ #include <iostream>
+#include <algorithm>
+#include <vector>
+
+bool is_odd(int i) {
+    return (i % 2) == 1;
+}
+
+int main() {
+    std::vector<int> vec = {1, 3, 5, 2, 4, 6};
+
+    // Check if the vector is partitioned based on the predicate is_odd
+    if (std::is_partitioned(vec.begin(), vec.end(), is_odd)) {
+        std::cout << "The vector is partitioned based on the predicate.\n";
+    } else {
+        std::cout << "The vector is not partitioned based on the predicate.\n";
+    }
+
+    return 0;
+}
+=================================================
+partitin the vector based on some condition ie odd in one end and even in other end
+Partitioned vector: 1 9 3 7 5 6 4 8 2 
+partition_point is pointing to 6
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+bool is_odd(int i) {
+    return (i % 2) == 1;
+}
+
+int main() {
+    std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+    // Partition the vector such that odd numbers come before even numbers
+    auto partition_point = std::partition(vec.begin(), vec.end(), is_odd);
+
+    // Display the partitioned vector
+    std::cout << "Partitioned vector: " << *partition_point;
+    for (const auto& num : vec) {
+        std::cout << num << " ";
+    }
+    std::cout << "\n";
+
+    return 0;
+}
+
+===============================================
+efficient copy of the element from one vector to other vector is achieved by  ?
+after the move what will happen to the orginal element?
+how to deference the move_ieterator?
+*move_iteratorvariable;
+what is the space and time complexity?
+
+Time complexity: O(n/2)
+space complexity: O(1)
+#include <iostream>
+#include <vector>
+#include <iterator>  // for std::move_iterator
+#include <algorithm> // for std::copy
+
+int main() {
+    std::vector<int> vec1 = {1, 2, 3, 4, 5};
+    std::vector<int> vec2;
+
+    // Create move iterators for the source vector
+    std::move_iterator<std::vector<int>::iterator> begin(std::begin(vec1));
+    std::move_iterator<std::vector<int>::iterator> end(std::end(vec1));
+
+    // Efficiently move elements from vec1 to vec2 using std::copy with move iterators
+    std::copy(begin, end, std::back_inserter(vec2));
+
+    // Print elements of vec2 to verify the move
+    for (const auto& num : vec2) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+===================================
+reverse the element using the recursive method?
+#include <iostream>
+#include <vector>
+
+void reverseSubVector(std::vector<int>& vec, int left, int right) {
+    // Base condition for the recursion
+    if (left >= right) {
+        return;
+    }
+
+    // Swap the elements at positions left and right
+    std::swap(vec[left], vec[right]);
+
+    // Recursively reverse the sub-vector from left+1 to right-1
+    reverseSubVector(vec, left + 1, right - 1);
+}
+
+int main() {
+    std::vector<int> vec = {1, 2, 3, 4, 5};
+
+    std::cout << "Original vector: ";
+    for (int num : vec) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    // Reverse the entire vector
+    reverseSubVector(vec, 0, vec.size() - 1);
+
+    std::cout << "Reversed vector: ";
+    for (int num : vec) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+
+==========================================
+#include <type_traits>
+how to check whether the type of the variable is int (decltype(variable)?
+bothe return true?
+std::is_integral_v<int> is same std::is_integral<int>::value 
+is_integeral_v<double/string/float/char*/vector<int>> => false
+is_integeral_v<bool/long/short/char/wchar/long/unsigned int/> => true
+=========================================
+assigning the constant to the integer using the integeral in c++17
+#include <iostream>
+#include <type_traits>
+
+// Define an integral constant
+using MyIntConstant = std::integral_constant<int, 5>;
+
+int main() {
+    // Access the value of the integral constant
+    int value = MyIntConstant::value;
+
+    // Print the value
+    std::cout << "Value of MyIntConstant: " << value << '\n';
+
+    // Check if int is integral
+    std::cout << "Is int integral? " << std::is_integral_v<decltype(value)> << '\n';
+
+    // Check if double is integral
+    std::cout << "Is double integral? " << std::is_integral_v<double> << '\n';
+
+    return 0;
+}
+
+============================================
+pointer to array of element:
+std::unique_ptr<int[]> arr(new int[5]{1, 2, 3, 4, 5});
+
+=================
+different ways for the array of pointer to integer:
+
+std::unique_ptr<int*[]> arr(new int*[5]);  // Array of 5 pointers to integers
+
+// Initialize each pointer if needed
+for (int i = 0; i < 5; ++i) {
+    arr[i] = new int;  // Allocate memory for an integer
+}
+========
+std::vector<int*> arr(5);  // Vector of 5 pointers to integers
+
+// Initialize each pointer if needed
+for (int i = 0; i < 5; ++i) {
+    arr[i] = new int;  // Allocate memory for an integer
+}
+=================
+#include <array>
+
+std::array<int*, 5> arr;  // Array of 5 pointers to integers
+====================
+int** arr = new int*[5];  // Allocate memory for 5 pointers to integers
+
+// Initialize each pointer if needed
+for (int i = 0; i < 5; ++i) {
+    arr[i] = new int;  // Allocate memory for an integer
+}
+======================
+shortest path in directed cyclic graph:
+djkstra will not work if the edges has negaive weight
+bellmen for algorithn will work both on positive and negative vertex.
+topological sort cannot guarntee the order of the shortest path.
+find the shortest path between two nodes with both positive and negative edge weights is the Topological Sorting with Dynamic Programming (DP) 
+approach.
+==========================
   header file required for rank;is_aaray?
   rank:
   #include <iostream>
@@ -1243,6 +1445,25 @@ int main() {
 
     return 0;
 }
+===============================================
+use enable_if_t of c++17
+#include <iostream>
+#include <type_traits>
+#include <string>
+
+template <typename T, 
+          typename = std::enable_if_t<std::is_integral_v<T>>>
+void printInteger(T value) {
+    std::cout << "Value is an integer: " << value << std::endl;
+}
+
+int main() {
+    printInteger(42);        // This will work
+    // printInteger("hello"); // This will cause a compile-time error because "hello" is not an integral type
+
+    return 0;
+}
+
 ================================================
 std::cout << std::is_array<int>::value << std::endl;          // (0)
     std::cout << std::is_array<char[10]>::value << std::endl;     // (1)
@@ -1551,6 +1772,7 @@ o(n*n)
 ==========================================
 merge sort:
 Use Cases: General-purpose sorting, especially for large datasets or linked lists.
+external sorting, parallelism since divide and concur. (0nlogn)
 #include <iostream>
 #include <vector>
 
@@ -1655,9 +1877,9 @@ int main() {
 }
 
 
-worst case o(n*n) , best case 0(nlogn)
+worst case o(n*n) , average case=best case 0(nlogn)
 ===============================================
-Heap Sort:
+Heap Sort: (no additional memory, sorting that doesnot fit into the memory, priority)
 choose mod as the largest
 
 #include <iostream>
@@ -2110,8 +2332,10 @@ int main() {
     std::vector<int> destinationVector(numElementsToCopy);
 
     std::copy_n(sourceVector.begin(), numElementsToCopy, destinationVector.begin());
-
+//output file stream?
+ std::copy(lines.begin(), lines.end(), std::ostream_iterator < std::string > (outputFile, "\n"));
 ==================================
+
 set the particular bit?
 
 int setBit(int num, int bitPosition) {
@@ -2147,7 +2371,7 @@ int main() {
     std::vector<int> numbers = {1, 2, 3, 4, 5};
 
     // Using for_each with a functor
-    std::for_each(numbers.begin(), numbers.end(), Functor());  // No need for explicit ()
+    std::for_each(numbers.begin(), numbers.end(), Functor()); 
 
     return 0;
 }
@@ -2470,6 +2694,31 @@ it will point to 3;
     vec.erase(std::remove(vec.begin(), vec.end(), 3), vec.end());
 
 ========================================
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    // Create a vector of integers
+    std::vector<int> numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    // Use remove_if with a lambda function to move all even numbers to the end
+    auto it = std::remove_if(numbers.begin(), numbers.end(), [](int n) {
+        return n % 2 == 0;  // Return true for even numbers
+    });
+
+    // Erase the elements that were moved to the end by remove_if
+    numbers.erase(it, numbers.end());
+
+    // Print the updated vector
+    for (int num : numbers) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+===========================================
 erase the element of the map to till find ?
 erase the map:
  gquiz2.erase(gquiz2.begin(), gquiz2.find(3));
@@ -2481,6 +2730,209 @@ erase the map:
  map1==map2;
  set1==set2
 ========================================
+write the struct to the file and read from the file:
+#include <iostream>
+#include <fstream>
+
+struct Person {
+    std::string name;
+    int age;
+    double height;
+};
+
+void serializePerson(const Person& person, const std::string& fileName) {
+    std::ofstream outFile(fileName, std::ios::binary);
+
+    if (outFile.is_open()) {
+        // Write the length of the name
+        int nameLength = person.name.length()+1;
+        outFile.write(reinterpret_cast<char*>(&nameLength), sizeof(int));
+
+        // Write the name
+        outFile.write(person.name.c_str(), nameLength);
+
+        // Write the age
+        outFile.write(reinterpret_cast<char*>(&person.age), sizeof(int));
+
+        // Write the height
+        outFile.write(reinterpret_cast<char*>(&person.height), sizeof(double));
+
+        std::cout << "Data has been written to " << fileName << "." << std::endl;
+
+        outFile.close();
+    } else {
+        std::cerr << "Unable to open the file for writing." << std::endl;
+    }
+}
+
+Person deserializePerson(const std::string& fileName) {
+    Person person;
+
+    std::ifstream inFile(fileName, std::ios::binary);
+
+    if (inFile.is_open()) {
+        // Read the length of the name
+        int nameLength;
+        inFile.read(reinterpret_cast<char*>(&nameLength), sizeof(int));
+
+        // Read the name
+        char* nameBuffer = new char[nameLength]; // +1 for the null terminator
+        inFile.read(nameBuffer, nameLength);
+        nameBuffer[nameLength] = '\0'; // Null-terminate the string
+        person.name = nameBuffer;
+        delete[] nameBuffer;
+
+        // Read the age
+        inFile.read(reinterpret_cast<char*>(&person.age), sizeof(int));
+
+        // Read the height
+        inFile.read(reinterpret_cast<char*>(&person.height), sizeof(double));
+
+        std::cout << "Data has been read from " << fileName << "." << std::endl;
+
+        inFile.close();
+    } else {
+        std::cerr << "Unable to open the file for reading." << std::endl;
+    }
+
+    return person;
+}
+
+int main() {
+    // Create an instance of the struct
+    Person originalPerson = {"John Doe", 30, 5.9};
+
+    // Serialize the struct to a file
+    serializePerson(originalPerson, "person_data.bin");
+
+    // Deserialize the struct from the file
+    Person loadedPerson = deserializePerson("person_data.bin");
+
+    // Display the loaded data
+    std::cout << "Loaded Person Data:" << std::endl;
+    std::cout << "Name: " << loadedPerson.name << std::endl;
+    std::cout << "Age: " << loadedPerson.age << std::endl;
+    std::cout << "Height: " << loadedPerson.height << std::endl;
+
+    return 0;
+}
+
+===============================================
+#include <iostream>
+#include <fstream>
+#include <cstring> // for strlen and strcpy
+
+struct Person {
+    char name[50];  // Assuming a fixed size for simplicity
+    int age;
+    double height;
+};
+
+void serializePerson(const Person& person, const std::string& fileName) {
+    std::ofstream outFile(fileName, std::ios::binary);
+
+    if (outFile.is_open()) {
+        // Write the name
+        outFile.write(person.name, strlen(person.name) + 1); // +1 to include the null terminator
+
+        // Write the age
+        outFile.write(reinterpret_cast<const char*>(&person.age), sizeof(int));
+
+        // Write the height
+        outFile.write(reinterpret_cast<const char*>(&person.height), sizeof(double));
+
+        std::cout << "Data has been written to " << fileName << "." << std::endl;
+
+        outFile.close();
+    } else {
+        std::cerr << "Unable to open the file for writing." << std::endl;
+    }
+}
+
+Person deserializePerson(const std::string& fileName) {
+    Person person;
+
+    std::ifstream inFile(fileName, std::ios::binary);
+
+    if (inFile.is_open()) {
+        // Read the name
+        inFile.read(person.name, sizeof(person.name)); // Reading into the character array
+
+        // Read the age
+        inFile.read(reinterpret_cast<char*>(&person.age), sizeof(int));
+
+        // Read the height
+        inFile.read(reinterpret_cast<char*>(&person.height), sizeof(double));
+
+        std::cout << "Data has been read from " << fileName << "." << std::endl;
+
+        inFile.close();
+    } else {
+        std::cerr << "Unable to open the file for reading." << std::endl;
+    }
+
+    return person;
+}
+
+int main() {
+    // Create an instance of the struct
+    Person originalPerson;
+    strcpy(originalPerson.name, "John Doe");
+    originalPerson.age = 30;
+    originalPerson.height = 5.9;
+
+    // Serialize the struct to a file
+    serializePerson(originalPerson, "person_data.bin");
+
+    // Deserialize the struct from the file
+    Person loadedPerson = deserializePerson("person_data.bin");
+
+    // Display the loaded data
+    std::cout << "Loaded Person Data:" << std::endl;
+    std::cout << "Name: " << loadedPerson.name << std::endl;
+    std::cout << "Age: " << loadedPerson.age << std::endl;
+    std::cout << "Height: " << loadedPerson.height << std::endl;
+
+    return 0;
+}
+=======================================================================
+when the map has the user defined object class. it has to overide the < operator while inserting the element into the map/set
+#include <iostream>
+#include <map>
+
+class Person {
+public:
+    std::string name;
+    int age;
+
+    Person(const std::string& n, int a) : name(n), age(a) {}
+
+    // Overloading the less than operator to compare Person objects
+    bool operator<(const Person& rhs) const {
+        return age < rhs.age;  // For simplicity, comparing based on age
+    } //print the name in the ascending order of the age.
+};
+
+int main() {
+    std::map<Person, std::string> peopleMap;
+
+    Person p1("Alice", 30);
+    Person p2("Bob", 25);
+    Person p3("Charlie", 35);
+
+    peopleMap[p1] = "Engineer";
+    peopleMap[p2] = "Doctor";
+    peopleMap[p3] = "Artist";
+
+   peopleMap[p1] == peopleMap[p1];
+    // Displaying the map
+    for (const auto& pair : peopleMap) {
+        std::cout << pair.first.name << " (" << pair.first.age << ") - " << pair.second << std::endl;
+    }
+
+    return 0;
+}
+===============================================================
 const iterator for map?
 
 for (std::map<int, std::string>::const_iterator it = myMap.cbegin(); it != myMap.cend(); ++it) {
@@ -2764,6 +3216,7 @@ int main() {
     // Check if the input string matches the pattern
     if (std::regex_match(input, match, pattern)) {
         // Extract and print the matched URL and port number
+		std::cout << "URL: " << match[0] << std::endl; //will same ouptit as the input
         std::cout << "URL: " << match[1] << std::endl;
         std::cout << "Port: " << match[2] << std::endl;
     } else {
@@ -3260,7 +3713,7 @@ inputFile filestream
 
 copy_n(source, 5, target); //source and traget is array //we can also use vector provides the destination vector size is defined
 How to assign the set for the already declared variable with limited size?
- destinationSet = std::set<int>(sourceSet.begin(), sourceIter);
+ destinationSet = std::set<int>(sourceSet.begin(), sourceSet.end());
 
 outputFile.is_open() //not as isopen()?
 
@@ -3359,9 +3812,33 @@ int a[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // Example values
 		{4}
         // Add more vectors as needed...
     };
+    // Accessing elements of the array of vectors
+    std::cout << "Elements of M1[0]:" << std::endl;
+    for (const auto& element : M1[0]) {
+        std::cout << element.data << std::endl;
+    }
+
 =================
 git branch <branch-name>: Create a new branch.
 git checkout -b <branch-name>: Create and switch to a new branch in one command.
+
+git command to checkout the submodule?
+current commit
+git submodule update --init --recursive
+
+current repos to the master
+git submodule foreach git pull origin master
+git submodule foreach --recursive git pull origin master
+
+git command to checkout the remote branch?
+all submodules to the master
+git checkout -b release-1.0 origin/release-1.0
+
+how to clone the repository with submodules?
+git clone --recurse-submodules https://lennox-controls@dev.azure.com/lennox-controls/Katmai/_git/yearling_fft -b development-1.0
+
+how to add the submodules?
+git submodule add  -b development https://lennox-controls@dev.azure.com/lennox-controls/Katmai/_git/common_fft application/lennox/fft/common
 ======================
 how to find whether the string is substring or not?
 (a.compare(0, b.size(), b)
@@ -3371,10 +3848,17 @@ how to find whether the string is substring or not?
 3. accumulate will take 2 argument in lamda and transform will pnly one argument in lamda.
 4. accumulate return type is int. i transform the return result is stored in the argument.
 5  inserter(setvariable, setvariable.begin()
-6. v1==v2;map1==map2; set1==set2
+6. v1==v2;map1==map2; set1==set2 //no we cannot compare.
+however we can use equal api for vector and set
+equal(v.begin(),v.end(),v2.begin())
+auto it = std::search(vec.begin(), vec.end(), subsequence.begin(), subsequence.end());
+
 7. regex_match(inputstring, smatach, pattern) ==> return true or false; smatch[0] => will have the string content;
 regex_match(inputstring,pattern) ==> return true or false;
  std::regex pattern("^(https?://[a-zA-Z0-9.-]+):(\\d+)$");
+ 
+regex_match() => true only if patern strin completely matches with the input
+regex_search() => pattern is substring
 8. unique, lower and upper bound, binary search tree;set_intersection needs the elments needs to be sorted before usage. 
 remove doesnt require the element to be soreted.
 9. all_of;none_of;any_of;
@@ -3424,3 +3908,210 @@ TwoDArray myArray = {{1, 2, 3, 4},
 using functionptr = void(*)(int);
   // Declare a function pointer using the type alias
     functionptr ptr = &sampleFunction;
+============
+std::string str = "y=4.86754x+5.6";
+
+std::string str = "y=4.86754x+5.6"; 
+
+double y, x, a, b; 
+y = 0; 
+x = 0; 
+
+// offset will be set to the length of 
+// characters of the "value" - 1. 
+std::size_t offset = 0; 
+
+a = std::stod(&str[2], &offset);  
+std::cout << a <<"  " << offset <<std::endl;
+b = std::stod(&str[offset+4]); //This should be position from the begining
+
+4.86754  7
+0.6
+================
+   // Get input stream and end of stream iterators
+    istream_iterator<int> cin_it(cin);
+    istream_iterator<int> eos;
+ 
+    // Get output stream iterators
+    ostream_iterator<int> cout_it(cout, " ");
+ 
+    // We have both input and output iterators, now we can treat them
+    // as containers. Using copy function we transfer data from one
+    // container to another.
+    // Copy elements from input to output using copy function
+    copy(cin_it, eos, cout_it);
+====================
+// Cpp program to illustrate
+// Read a bunch of strings from a file
+// sort them lexicographically and print them to output stream
+
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <string>
+#include <vector>
+
+using namespace std;
+int main()
+{
+
+	// Define a vector to store the strings received from input
+	vector<string> strings_v;
+
+	// Define the filestream object used to read data from file
+	ifstream fin("input_file.txt");
+
+	// Get input stream and end of stream iterators
+	istream_iterator<string> fin_it(fin);
+	istream_iterator<string> eos;
+
+	// Get output stream iterators
+	ostream_iterator<string> cout_it(cout, " ");
+
+	// Copy elements from input to vector using copy function
+	copy(fin_it, eos, back_inserter(strings_v));
+
+	// Sort the vector
+	sort(strings_v.begin(), strings_v.end());
+
+	// Copy elements from vector to output
+	copy(strings_v.begin(), strings_v.end(), cout_it);
+
+	return 0;
+}
+========================
+// Cpp program to illustrate
+
+// Read a bunch of integers from the stream
+// print the sorted order of even integers only
+
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <vector>
+
+using namespace std;
+int main()
+{
+
+	// Define a vector to store the even integers received from input
+	vector<int> vi;
+
+	// Get input stream and end of stream iterators
+	istream_iterator<int> cin_it(cin);
+	istream_iterator<int> eos;
+
+	// Get output stream iterators
+	ostream_iterator<int> cout_it(cout, " ");
+
+	// Copy even integer elements from input to vector using for_each function
+	for_each(cin_it, eos, [&](int a) {
+		if (a % 2 == 0) {
+			// if a is even push it to vector
+			vi.push_back(a);
+		}
+	});
+
+	// Sort the vector
+	sort(vi.begin(), vi.end());
+
+	// Copy elements from vector to output
+	copy(vi.begin(), vi.end(), cout_it);
+
+	return 0;
+}
+=====================
+pair<int, int> mnmx;
+// Using minmax((array of elements)
+mnmx = minmax({2, 5, 1, 6, 3});
+     
+// printing minimum and maximum values.
+cout << "\n\nThe minimum value obtained is : ";
+cout << mnmx.first; // 1
+cout << "\nThe maximum value obtained is : ";
+cout << mnmx.second; //6
+================
+// C++ code to demonstrate the working of minmax_element()
+
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+
+int main()
+{
+	
+	// initializing vector of integers
+	vector<int> vi = { 5, 3, 4, 4, 3, 5, 3 };
+		
+	// declaring pair pointer to catch the return value
+	pair<vector<int>::iterator, vector<int>::iterator> mnmx;
+		
+	// using minmax_element() to find
+	// minimum and maximum element
+	// between 0th and 3rd number
+	mnmx = minmax_element(vi.begin(), vi.begin() + 4);
+		
+	// printing position of minimum and maximum values.
+	cout << "The minimum value position obtained is : ";
+	cout << mnmx.first - vi.begin() << endl;
+		
+	cout << "The maximum value position obtained is : ";
+	cout << mnmx.second - vi.begin() << endl;
+		
+	cout << endl;
+		
+	// using duplicated
+	// prints 1 and 5 respectively
+	mnmx = minmax_element(vi.begin(), vi.end());
+		
+	// printing position of minimum and maximum values.
+	cout << "The minimum value position obtained is : ";
+	cout << mnmx.first - vi.begin() << endl;
+		
+	cout << "The maximum value position obtained is : ";
+	cout << mnmx.second - vi.begin()<< endl;
+	
+}
+
+The minimum value position obtained is : 1
+The maximum value position obtained is : 0
+
+The minimum value position obtained is : 1
+The maximum value position obtained is : 5
+===========
+A void pointer is a pointer that has no associated data type with it.
+A void pointer can hold an address of any type and can be typecasted to any type.
+
+we cannot perform the arithamatic operation and deference the void pointer.
+
+In C++, the Size of an empty structure/class is one byte as to call a function at 
+least empty structure/class should have some size (minimum 1 byte is required ) 
+i.e. one byte to make them distinguishable.
+
+int comp = memcmp("GEEKSFORGEEKS", "geeksforgeeks", 6);
+
+// registering function
+at_quick_exit(function1);
+at_quick_exit(function2);
+
+quick_exit(0);
+
+//function will be called only when the quick_excit is called
+Exit Function 2
+Exit Function 1
+===================
+	atexit(function1);
+	atexit(function2);
+	//normal resturn call call
+Exit Function 2
+Exit Function 1
+============
+//remove the 3 from the vector
+remove_copy(v1.begin(), v1.end(), v1.begin(), 3); 
+//willnot remove from v1 but will copy the elements to v2 leaving 3;
+remove_copy(v1.begin(), v1.end(), v2.begin(), 3); 
+============
+int fun(int=0, int = 0); 
+int fun(int x, int y) { return (x+y); } 
