@@ -1,0 +1,5480 @@
+/*
+	Below is the sample program for the C++ features.
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
+	Author Name: Viswanathan Ramasamy
+	Email id: rviswawt@gmail.com
+*/
+c++ object oriented general purpose programing language.
+in Visual studio 2019 ->create the project -> Type (empty project in the search bar) ->
+choose the c++ -> type the location (where the source project and solution file needs to present)
+-->create
+
+Please note that solution file can be one and it can have multiple project folder 
+
+Now in the Visual studio will have the solution and the list of the projects. right click on the 
+project -> add -> new items -> source file -> you type only the source file name. (.cpp file
+name will automatically added, it is not must).
+
+c++ created bjarne Stroustrup. 
+object oriented programing language ie it has class and object
+low level like c but feature rich.
+
+general purpose programing langauge (like reference , exception handling,
+function overloading, operator overloading)
+
+Why C++ is Used?
+Used for performace
+available for all OS
+smaller foot print of memory
+c++ code can be easily ported to different platform
+like C++ on Android, windows phone and IOS. microsoft office in different platform.
+
+solution contain multiple project.
+project contain multiple source file and header file.
+
+To get the line number in the visual stdio code
+tools->option->text editor-> choose c/c++-> Enable the line number
+
+// single line command
+
+/* this is
+multiple line comment 
+*/
+
+#include <iostream> => header file contain the class and object required for the 
+input and output operation
+
+in c++ standard header file dont end with .h extension
+main() -> this is the first function which will be automatically invoked at runtime.
+
+to print some text into the screen we need the object cout but the cout is insode the namespace
+std
+cout << "viswa"; //insertion operator
+endl is called manipulator and also flushes the output buffer so that output is 
+immediatly printed on the screen.
+
+
+int main() {
+
+    // Write C++ code here
+    {
+        using namespace std; //using entire namespace
+        cout << "Try programiz.pro";
+    }
+    cout << "Try programiz.pro1"; //error here since std namespace is not available.
+
+    return 0; // This return value will go to the operating system
+}
+==========
+std::cout <<"viswa"; //std:: fully qualified namespace. std -> name of the namespace
+:: scope resolution operator
+
+=======
+No error util the static member variable is used
+#include <iostream>
+
+class sample
+{
+    public:
+    static int a;
+};
+int main() {
+
+    sample obj;
+   // obj.a =100; //error is the line is uncommented
+     return 0;
+}
+==========================
+In Visual studio we have build solution or build only that project. select the particular 
+project and build
+==========================
+How c++ source code is converted to executable?
+
+Preprocessor:
+	process all the statements that begins with the hash sign
+	replace the include statements
+	macros expanded
+
+compilation:
+  syntax check. if there is error stop the compilation.
+  convert to assembly code
+  generate the file .s file
+
+Assembly:
+  assembly file to object file
+ 
+linking:
+   object code is linked with the standard libraries
+   executable is generated
+g++ -o executable source1.cpp source2.cpp -I/path/to/include -L/path/to/libs -lmylib   
+ 
+# Preprocessing
+g++ -E source.cpp -o source.ii
+
+# Compilation
+g++ -S source.ii -o source.s
+
+# Assembly
+g++ -c source.s -o source.o
+
+# Linking
+g++ source1.o source2.o -o executable
+  
+=========================
+Primitive type in c++?
+arithamatic and void
+
+arithmetic has classIntegeral and floating point
+classIntegeral type:
+bool , char,wchar_t(unicode supported character 2 byte)
+, char16_t, char32_t, short, int , long
+
+Floating Point: float and double
+
+void is used in pointer and function
+
+Modifier:
+n C++, modifiers are keywords used to change the properties or behavior of fundamental data types,
+such as mutable,short,long, long long, const, volatile, int, char, float, etc
+
+signed and unsigned will work only on classIntegeral and not in floating
+all types are qualified for qualifier: const, volatile and static
+
+16 bit machine classInteger requires 16 bit of memory
+
+bool and char needs 1 byte
+wchar_t and short requires 2 bytes
+float and long requires 4 bytes
+
+long long: At least 8 bytes.
+double: Typically 8 bytes (64 bits) on most platforms, representing a double-precision floating-point number.
+long double: Usually larger than double, often 10 or 12 byte
+====
+<climits> or <limits.h> header file has the min and max range macros
+range for each of the data types.
+INT_MIN => minimum - value
+INT_MAX ->max positive value for int
+LONG_MIN
+LONG_MAX
+UINT_MIN
+UINT_MAX
+====
+for floating point range
+<cfloat> or <float.h>
+
+variables are also called identifier
+int a; int b;
+or int a,b;
+========================
+How to initialize the char, float, double, bool and pointer?
+
+it is always good to initialize the variable.
+initial value is called initializer;
+
+char ch = 'a';
+or
+char ch  = 97;
+
+bool status = true; //bool can be initialized 
+or
+//any non zero value is consider to be true
+bool sttaus = 1; // true value is 1 and false is 0; 
+or
+bool status = 100;
+
+float f =12.0f;
+double d =12.12;
+
+//scalar type has the single value
+int a;
+char b;
+float c;
+
+//all array type is vector type(has the collection single value)
+//std::vector, std::array,
+int a[5];
+int b[5] = {1,2,3,4,5} //copy initialization
+int b[5](1,2,3,4,56) ;//error not allowed
+================
+uniform or value initialization:
+int i {10}
+int b[5] {1,2,3,4,5}
+=======
+c++ classes for input and output
+std::basic_ostream -> output ; typedef is std::ostream
+std::basic_istream => input; //typedef is std::istream
+
+namespace std {
+    typedef basic_ostream<char> ostream;
+}
+
+cout is the object of osstream class. <<. write the data to the console
+cin is the object of istream class. >> (extract). read the data from the keyboard.
+cout << "hi"; //data is inserted into the cout object.
+cout << "hi" << " viswa" <<endl; //multiple insertion can be in the same line.
+endl is the manipulator ; automatically insert the new line into the cout.
+
+cout << "viswa\n" << " " << 12.12f <<endl;   viswa\n  <insert the spaces>  12.12 \n is inserted into the cout object
+//endl add the new line and flushes the output buffer
+cout << "viswa" << "\n";: //no flushing of output buffer so no overhead
+>> extraction operator
+
+char buffer[64];
+cin >> buffer; // Viswa nathan
+cout << buffer; //Viswa
+cin stop reading from the keyboard when it encounter the spaces
+====
+using namespace std;
+int main()
+{
+    char buffer[10]; //' ' is the delimiter
+    cin.getline(buffer, 10,' '); //stop reading when the space is seen
+    cout << buffer;
+
+    return 0;
+}
+
+using namespace std;
+int main()
+{
+    char buffer[10];
+    cin.getline(buffer, 10); // only 9 character is allwed to read
+    cout << buffer;
+
+    return 0;
+}
+123456 7890qwert
+123456 78 // only 9 characters is allwed to read
+
+using namespace std;
+int main()
+{
+    char buffer[64]; //'\n' is the delimiter
+    cin.getline(buffer, 64, '\n'); // read for 63 characters or \n is read
+    cout << buffer;
+
+    return 0;
+}
+==================
+function is set of statement enclosed with in a pair of {}
+this statement defined the body of the function and what the 
+function is going to do.
+function form the basic building block of basic c and c++ pgm
+function avoid the duplication of code.
+modification inside the function will be easier if the logic is 
+placed in one place.
+
+function return and parameter is optional.
+<return type> <name> (<parameters>){ body }
+what is the signature of add function below
+int add(int,int) ; return type int and accepts/take 2 classInteger argument
+====
+In c main can return void but in c++ main function should always return int
+
+//pass by value. value is being passed to the function
+int add(int x, int y) //scope of x and y is with in the {}
+{
+   return x+y
+}
+
+int a =100, b =200;
+add(a,b);
+
+
+int add(int *x, int *y); //pass by address
+int add(int &x, int &y); //pass by reference 
+
+compiler need to know the function signature before it 
+is being called so declartaion of function is used in that case
+
+declaration / prototype syntax does not need to specify the variable name in
+the argument. example int add(int,int); else the compiler will complaintidentifier not found. 
+since the source file compiler from top to bottom
+functions that work towards the one common goal will be grouped into the one cpp file.
+put the function definition in the sperate .cpp file; example filename can be math.cpp
+put the function declartion in the sperate header file example. math.h
+
+inline function and function template the definition of the function has to be appeared before 
+the calling part.
+===========
+shift+f5: to stop debugging
+continue: F5
+step over: F10; //will not getinto the function
+step into : F11 //will step into the function
+Shift out to the caller: Shift+F11
+to watch the variable:
+debug-> debugwindow ->watch ->add the variable name;
+control+F5: run without debugging
+==================
+in c++98
+use of copy initialization should be avaoided.
+int a = 98; //copy initialization
+int a (98); //direct initalization
+int b[5] ={1,2,3,4,5} //copy or agegrgate initization
+char b[5] = {"abcdef"} //copy initilzation
+char b[5] = "abcdef"; //copy initialization
+//copy initialization will have the = and copy of the value is
+created and then assigned.
+====
+uniform initialization:
+in c++ 11 has uniform initialization same syntax for scalar and vector
+gives the warning/error for incompatible type initilization or narraowing conversion
+
+float f{}
+int a {f} ;//narrowing conversion warining
+
+#include <string>
+std::string s2("c++"); //direct initalization
+
+int b{}; //value initialization  //will initialize the primitivie type to default value
+// all the primitivite type the default value is zero
+int b1{12}; //direct initilzation
+int b2(); // most vexing parse ;// this is consider b2 as function declaration
+In C++, the term "vexing" typically refers to a situation where the compiler interprets a piece 
+of  code in a way that is different from what the programmer intended, leading to 
+confusion or unexpected behavior.
+
+char b[10]{}
+char b[10]{"hello"}
+//it is possible to initize the dynamic memory with 
+//some value using the initializer
+int *p1 = new int{}
+char *p1 = new char[8]{}
+char *p1 = new char[8]{"HELLO"}
+
+========
+Value Initialization:
+
+Value initialization initializes an object to its default value or zero-initializes it
+if no explicit initializer is provided.
+For built-in types (e.g., classIntegers, floating-point numbers), value initialization initializes
+the object to zero.
+For user-defined types, value initialization calls the default constructor (if it exists)
+or initializes each member to its default value (recursively for nested types).
+
+int x{}; // Value initialization of classInteger (x is initialized to 0)
+std::string s{}; // Value initialization of string (s is initialized to an empty string)
+MyClass obj{}; // Value initialization of user-defined type MyClass
+Direct Initialization:
+
+Direct initialization initializes an object using constructor(s) explicitly,
+ providing one or more arguments.
+It allows you to specify the exact constructor to be used for initialization.
+int x(42); // Direct initialization of classInteger (x is initialized to 42)
+std::string s("Hello"); // Direct initialization of string (s is initialized to "Hello")
+MyClass obj(10); // Direct initialization of user-defined type MyClas
+=========
+print the address of the variable?
+
+int *ptr1,*ptr2,p3;//p3 is not a pointer;
+
+int x =10;
+cout << &x; //gives the address of x;
+'\n' => new line character or "\n"
+
+type of the pointer should match with the type of the source else compiler will give error.
+int *ptr11 = &x;
+
+int x1 =100;
+float *ptr11 = &x1; //error int * cannot convert to float *;
+void *ptr34 = &x1; //allowed void pointer can point to any type of variable;
+some compiler will give error if the pointer is not initialized during the definition
+char *ptr; //not initialized so warning.
+always go practice to initialize the varaiable ad pointer in the definition.
+
+*ptr ; here *is called dereference operator. used to read or write operation on the memory location.
+
+===========
+NULL pointer
+
+NULL is macro in c and c++-98
+NULL value is 0
+used to initialize the pointer type;
+int *ptr = NULL;
+
+//after c++11
+drefernce a null pointer for the read and write will 
+crash or exhibit undefined behavior the pgm
+int *ptr = nullptr;
+cout << *ptr; // program may crash or exhibit undefined behavior.
+*ptr =100; // program may crash or exhibit undefined behavior.
+==========
+  int* ptr = nullptr; // Null pointer
+if (ptr != nullptr) {
+    *ptr = 10; // Safe dereferencing
+} else {
+    // Handle null pointer case
+}
+=============
+Reference is created with &. no memory is allocated for eference.
+reference is alternate name or alias name of the variable
+initializer is called referent. 
+reference can be used to modify the variable.
+reference is bount to referent. reference is just an another name.
+variable is also called as identifier
+int x =10;
+int &ref = x;//x is referent, ref is referent
+reference is not the pointer so null is not required.
+reference cannot be null
+==
+reference to pointer
+int* ptr = nullptr; // Pointer declaration
+int*& ptrRef = ptr; // Reference to a pointer
+
+========
+reference to 1D array
+int arr[5] = {1, 2, 3, 4, 5}; // 1D array declaration
+int (&arrRef)[5] = arr; // Reference to a 1D array
+====
+reference and referent are the identifier of the same memory.
+&reference== &referent== true;
+reference to 2D array:
+ int arr2D[2][3]; // 2D array declaration
+ int (&arr2DRef)[2][3] = arr2D; // Reference to a 2D array
+    
+==
+int arr2D[2][3] = {
+        {1, 2, 3},
+        {4, 5, 6}
+    }; // 2D array declaration
+    int (&arr2DRef)[2][3] = arr2D; 
+	cout << arr2DRef[1][1]; //5
+=====
+in reference the initializer must be an l value ie variable.
+pointer can be initalized to nullptr and 
+it can be literal
+reference is bound and cannot be changed.
+reference doesnt require extra memory.
+dereference is not required.
+int x =10;
+int &ref = x;//if x is not given compiler will give error reference requir the initializer.
+int y =100;
+ref =y;// ref will still point to the memory location of x and the value is changed to 100.
+==============
+void factorial (int a, int &b)
+{
+   for (int i=2; i<=a;i++)
+   {
+       b = b*i;
+   }
+}
+
+int main()
+{
+    int a, b=1, result;
+    cin >> a ;
+    factorial(a,b);
+    cout << b;
+    return 0;
+}
+==========================
+macro are not type safe and the hard to debug and scope is not restricted
+typesafe:
+#define MAX(a,b) a < b ? a : b
+int max(int a, int b) {return a < b ? a : b;}
+char *foo = max("abc","def"); //error
+char *foo = MAX("abc","def"); //no error// char *foo = "abc" < "def" ? "abc" : "def";
+similarly for X++,
+
+const int & a =100;
+    std::cout << a;
+    
+    //int & a1 = nullptr; //error non-const reference of type ‘int&’ from an rvalue of type ‘std::nullptr_t’
+    std::cout << a1;
+	
+#define SQUARE(x) (x * x)
+
+avoid using magic number with const qualifier like 
+3.14f in the area and circumference calculation.
+const float PI = 3.14f;//more redable and scope restriction
+const will always need the initializer
+
+pointer to a constant needs the pointer also to be a constant.
+
+const int CHUNK_SIZE = 512;
+const int *ptr=&CHUNK_SIZE;
+*ptr = 12; //error expression must be modifiable l value
+
+int x = 512;
+ptr=&x; //old const ptr
+*ptr = 12; //error
+
+by declaring the pointer as const the sonstantness of the 
+original variable is preserved.
+
+//read from right pointer to the constant value
+//pointer is not constant
+const int *ptr=&CHUNK_SIZE;
+
+//pointer is constant but the value is not const
+ int *const ptr=&CHUNK_SIZE;\
+ 
+ int* ptr = new int(42); // Pointer to a dynamically allocated literal value
+ const int &red=5; //literal
+ const char* strPtr = "Hello"; // Pointer to a literal string
+ const int& ref = 10; // Reference to a literal value
+ const char (&strRef)[6] = "World"; // Reference to a literal string
+ int* arrPtr = new int[3]{1, 2, 3}; // Pointer to a dynamically allocated literal array
+
+it is possible to pass a value to the function that takes the const reference.
+in the case of pointer we will get invalid conversion of classInteger value to pinter.
+
+reference can bound only to lvalue if it is non const
+reference bound to literal if it const. ie number or array of character
+====================
+int x = 42; // Declare a non-const variable
+const int& ref = x; // Bind a const reference to the non-const variable
+// through x i can modify the value but not through the ref
+==================
+interface type
+auto <identifier> = <initializer>
+//Here initializer is important based on the initialzier
+// the vraible type is decided.
+//initializer can be function call, expression or literal
+
+    auto i =12, j =13, c= i+j;
+    std::cout << c; //25
+	
+	auto i =10;
+	auto sum = i+4.3f; //type is decided based on the larger data type
+	//here sum is float type 
+static auto x =12;
+
+const int x = 10;
+auto y = x; //here y is int not const int. const is discarded
+auto &ref = x; //here ref is const int. const is not discarded
+auto ptr = &x; //ptr is pointer to const int ie const int *
+const auto z =x; //here z is const int
+const auto j = 10;        // const int  
+        
+        const auto a = &i;        // int * const
+        // a = &j;                // Error: addr is const
+        *a = 4;                   // OK (value is NOT const)
+
+        const auto* b = &i;       // const int *
+        // *b = 4;                // Error: value is const
+        b = &j;                   // OK (addr is NOT const)
+
+        auto* const c = &i;       // const int *
+        *c = 4;                   // OK (value is NOT const)
+        // c = &j;                // Error: addr is const
+auto list = {1,2,3,4,5} ;//list is std::initilizer_list<int>
+auto list {1,2,3,4,5}; //error
+auto list = {}; //initializer list cannot be empty
+auto list{1}; //list is int
+==========
+initializer list are read only, memory is fixed.
+#include <iostream>
+#include <initializer_list>
+
+// Function to calculate the sum of elements in an initializer list
+int sum(std::initializer_list<int> numbers) {
+    int total = 0;
+    for (int num : numbers) {
+        total += num;
+    }
+    return total;
+}
+
+int main() {
+    // Initialize an initializer_list with a list of values
+    std::initializer_list<int> numbers = {1, 2, 3, 4, 5};
+
+    // Use the sum function to calculate the sum of elements
+    int result = sum(numbers);
+
+    // Output the result
+    std::cout << "Sum of elements: " << result << std::endl;
+
+    return 0;
+}
+//15
+============================
+constant pointer to the classInteger variable x
+int x =10;
+int *const p = &x;
+Uniform initialization is preferable for initializing variables because
+It automatically initializes the variable to 0 (or pointers to nullptr), thereby preventing runtime bugs
+===================
+#include <typeinfo>
+ int constPtr = num; // constPtr is deduced as const int*
+
+    std::cout << "Type of constPtr: " << typeid(decltype(constPtr)).name() << std::endl;
+============================
+Range base for loop?
+allow the iteration over the array or container
+doesn't need the index and no end contains check
+no need of manual increment and decrement
+no way to go beyond the aindex
+each iteration returns the elements
+for (variable declaration:range)
+{
+    statement
+}
+
+int a[] = {1,2,3,4,5}
+for (int x:a) //for (const auto & x:a) //a is l value here
+{
+   cout << x << " ";//1 2 3 4 5
+}
+
+can also work for the iniliazer_list<int>
+
+for (const auto & x:{1,2,3,4,5}) //rvalue {1,2,3,4,5}
+{
+   cout << x << " ";//1 2 3 4 5
+}
+
+================
+range check without using begin and end?
+int main() {
+   int array[5] = {1,2,3,4,5};
+   int *begin = &array[0], *end = &array[5];
+   
+   while(begin != end)
+   {
+       std::cout << *begin << " ";
+       ++begin;
+   }
+    return 0;
+}
+// 1 2 3 4 5
+==================
+range check with beging and end?
+range check with beging , end and auto?
+
+int main() {
+   int array[5] = {1,2,3,4,5};
+   int *begin = std::begin(array), *end = std::end(array);
+   // or auto begin = std::begin(array), end = std::end(array);
+   while(begin != end)
+   {
+       std::cout << *begin << " ";
+       ++begin;
+   }
+    return 0;
+}
+=========================
+where the begin and end is declared?
+container header file:
+array, deque, forward_list, list, map, set, iostream
+=============
+reference for an array using auto?
+
+int main() {
+  int array[5] = {1, 2, 3, 4, 5};
+  auto& range = array;
+  std::cout <<range[3]; //4
+  int (&b)[5] = array;
+  std::cout <<b[3]; //4
+
+    return 0;
+}
+==============================
+range based loop using the lvalue and rvalue reference?
+
+#include <iostream>
+#include <typeinfo>
+
+int main() {
+   char array[10] = {"hello"}; //"hello\0\0\0\0\0".
+   auto &&range = array; //&& indicates a universal reference //forward reference
+   //or auto &range = array; //lvalue reference
+   //nitializes range with the array array
+   auto begin = std::begin(range), end = std::end(range);
+   
+   while(begin != end)
+   {
+       std::cout << *begin << " ";
+       ++begin;
+   }
+   
+   std::cout <<typeid(decltype(end)).name(); //pc
+    return 0;
+}
+=======================================
+lvalue vs rvalue vs universal reference
+
+lvalue reference:
+#include <iostream>
+
+void lvalueFunc(int& x) {
+    std::cout << "Lvalue reference: " << x << std::endl;
+}
+
+int main() {
+    int a = 10;
+    lvalueFunc(a);  // Passing an lvalue
+    return 0;
+}
+======================
+rvalue reference:
+#include <iostream>
+
+void rvalueFunc(int&& x) {
+    std::cout << "Rvalue reference: " << x << std::endl;
+}
+
+int main() {
+    rvalueFunc(20); // Passing an rvalue
+    // rvalueFunc(a); // This would result in a compilation error
+    return 0;
+}
+============================
+universal reference:
+To make an rvalue reference accept both lvalues and rvalues, you need to use a technique 
+called "perfect forwarding" with a forwarding reference (also known as a universal reference).
+ Forwarding references are declared using the && syntax, but within a template context.
+#include <iostream>
+
+template<typename T>
+void forwardingFunc(T&& x) {
+    std::cout << "Forwarding reference: " << x << std::endl;
+}
+
+int main() {
+    int a = 10;
+    forwardingFunc(a);  // Passing an lvalue
+    forwardingFunc(20); // Passing an rvalue
+    return 0;
+}
+=====================================
+In C++, an lvalue refers to an expression that identifies a memory location, and an rvalue 
+refers to an expression that does not identify a memory location but rather a temporary value.
+int x = 10; // 10 is an rvalue
+int y = 20; // 20 is also an rvalue
+
+int z = x + y; // x + y is an rvalue 
+
+int array[10] = {0};
+auto ptr = &array;//array and ptr are lvalues because they identify memory locations.
+
+int array[10] = {0};
+auto &ptr = array; //reference //or int (&ptr)[10] =array;
+
+int array[10] = {0};
+auto &&ptr = array; //forward reference based on the type of array which is lvalue so ptr is also lvalue
+========================
+//necessary to specify the 2d size in ayyay?
+int array[][5] = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
+int (&ptr)[2][5] = array; // Assuming array has 2 rows and each row has 5 elements
+================
+int add(int a, int b)
+{
+}
+
+add(12.12f, 13.12f); //gives warning
+
+==========
+function overloading points:
+function will be overload only when the arguments are different(number or argumnet type)
+return type of the function doesnot participate in function overloading
+const qualifier also participate in function overloading
+function overloading: different implementation for same behaviour. this happens at compile time
+function overloading is static polymorphism
+function overloading uses the name mangling
+The programmer does not have to remember multiple names of the same behavior. Conceptually, the 
+code becomes simpler for the caller.
+==========================
+why name mangaling is important in c++?
+how to find the managled name>
+for what are the thing the name will managled?
+how to avaoid it?
+
+name mangling: uniqueue name created for the by the compiler for the function.
+allow the linker to link the call with the correct overloaded function
+name mangaling algoritham varies from compiler to compiler
+name mangaling depends on the type and and the number of function argument.
+extern "C" used to suppress the name mangaling
+extern "C" can be applied to one function in set of overloaded function.
+allow c++ function to be called from C o
+extern "C" applied to both declaration and definition.
+
+//in .h file
+extern "C" <function declaration>
+//in cpp
+extern "C" <function definition>
+{
+}
+
+name mangling is done for the global function, class member function and global variable
+mangling name be find in the map file generated by the linker
+
+==========================================
+can const for the argument to the function take part in the function overload?
+#include <iostream>
+
+// Function taking a pointer to a non-const classInteger
+int function(int *ptr) {
+    std::cout << "Non-const version called" << std::endl;
+    return *ptr; // Access the value pointed to by ptr
+}
+
+// Function taking a pointer to a const classInteger
+int function(const int *ptr) {
+    std::cout << "Const version called" << std::endl;
+    return *ptr; // Access the value pointed to by ptr
+}
+
+int main() {
+    int X = 10;
+    const int x = 100;
+
+    // Call the function with a pointer to X (non-const)
+    function(&X); // Calls the non-const version of function
+
+    // Call the function with a pointer to x (const)
+    function(&x); // Calls the const version of function
+
+    return 0;
+}
+====================================
+function taking auto argument and returning auto?
+
+visual studio also we can generate the map file linking->debug -> generate linker 
+auto add(auto a, auto b) {
+    return a + b;
+}
+
+int main() {
+    // Calling add with classInteger arguments
+    std::cout << "Sum of 1 and 2: " << add(1, 2) << std::endl; //3
+
+    // Calling add with double arguments
+    std::cout << "Sum of 12.12 and 13.13: " << add(12.12, 13.13) << std::endl; //25.25
+
+    return 0;
+}
+====================================
+different ways of adding extern "C"
+file1.h
+extern "C" {
+ function1 declaration
+ function2 declaration
+}
+=============
+#include <file1.h>
+ function1 definition
+ function2 definition
+(or)
+
+extern "C" {
+ function1 definition
+ function2 definition
+}
+===================
+function call has overhead in the storing the return address, stack memory for argument.
+function can be replaced by macro but it can lead to bugs no type casting
+or use inline function so that expand the function call with function body
+inline function is defined in the header file.
+inline function is applied only to the definition of the function
+inline is only request to the compiler and compiler may ignore
+inline avaoided  by the compiler in
+a. function size
+b. invoked by pointer
+c. recursive function
+inline int square(int x)//no function overhead
+{
+   return x*x
+}
+
+square (5);
+
+==============
+Compiler needs to see the definition of the function to replace the call with the body at 
+the call site. so the definition of the inline function should appear before the call. ie why
+it has to be defined in the header file.
+==========================
+macro dont have the address. inline function have the address.
+macro cannot be used for member function of class .
+function pinter is useful to to decide the function to be called at runtime
+
+=========
+function pointer:
+type is same as the signature of the function both return type and arguments
+can be used to indirectly invoke the function even if the function name is not known
+
+<ret>(*fnptr)(args) = &function;
+<ret>(*fnptr)(args) = function;
+
+int add(int a, int b) {}
+int(*fptr)(int, int) = &add;
+(*fptr)(3,4);
+fptr(3,4);
+
+-==================
+atexit function 
+void functionends()
+{
+  std::cout<<"program about terminate" <<std::endl;
+}
+int main() {
+    atexit(functionends);// function registeration can be anywhere
+	//but it will be called only in the end;
+    std::cout << "Result: " << 100 << std::endl;
+    return 0;
+}
+//This functionends is called when the program is about to end
+================
+multiple atexit function?
+void functionends1()
+{
+  std::cout<<"program about terminate1" <<std::endl;
+}
+
+void functionends2()
+{
+  std::cout<<"program about terminate2" <<std::endl;
+}
+
+int main() {
+    atexit(functionends1);
+    atexit(functionends2);
+    std::cout << "Result: " << 100 << std::endl;
+    return 0;
+}
+Result: 100
+program about terminate2
+program about terminate1
+===========================
+Namespace adavantage:
+named declarative region used for delaring type
+types are not visible outside the name space
+prevent name clashes
+helps to modularize code
+namespace can contain another namespace
+using namespace std; entire namespace
+using std::cout; using specific declarative namespace or open specifi type
+
+namespace and the function name cannot be the same
+#include <iostream>
+namespace adds
+{
+    int add(int a, int b)
+    {
+       return (a+b);
+    }
+}
+
+namespace addandmult
+{
+    int add(int a, int b)
+    {
+       return 2*(a+b);
+    }
+}
+
+int main() {
+    using namespace adds; //entire namespace
+    add(10,20);
+    
+    addandmult::add(10,12); //fully qualified namespace
+    return 0;
+}
+==================
+namespace containing another namespace?
+namespace Sort
+{
+    void function1()
+	{
+	}
+	void function2()
+	{
+	}
+	namesoace s 
+	{
+		void function3()
+		{
+		}
+		void function4()
+		{
+		}	
+	}
+}
+
+using namespace Sort::s; to call the function3 and function 4
+Sort::function2()
+===================
+How to avoid the usage of the macro?
+usuage of macro should be avoided
+
+in c1.cpp
+//namespace without the name
+namespace {
+	void function()
+	{
+	}
+}
+//function can be called only in the cpp file
+Here the function1 is visible only in c1.cpp
+and it can be called directly function()
+==============================
+odr: one definition rule
+
+ambiguity:
+int Max(int x,int y){
+    return x > y ? x : y;
+}
+float Max(float x, float y){
+    return x > y ? x : y ;
+}
+ 
+int main(){
+    float result = Max(8.1f, 6) ;
+	
+====================
+c++ memory area:
+below memories are taken from the process address space.
+stack: allocated for local variable
+data section: for global and static data
+heap: allocated in runtime.
+any memory ie is allocated in heap has to managed by the programmer for freeing.
+===
+calloc (number of element, sizeof element): 
+calloc initialize the raw memory to zero
+malloc doesnot initialize;
+
+in c:
+<stdio.h> print
+<stdlib.h> for malloc
+malloc return the void *
+
+int *ptr = (int*) malloc(sizeof(int))
+*ptr =100
+printf("%d",*ptr)
+free(ptr);
+//after freeing the ptr will become dangling pointer ie still it hold that freed memory address;
+//so initialize to NULL
+ptr = NULL; ptr will become nullptr;
+freeing the dangling pointer will crash;
+free(ptr) ;//freing null pointer no crash
+================
+dynamic memory for signgle element and initialization and free?
+
+new operator: not only allocate the memory but also capable of initilizing that memory
+<type> *<variable> = new <type>(optional arguments)
+delete <variable>
+<variable> = nullptr;
+
+deleting the nullpiinter has no impact;
+deleting the dangling pointer may crash the program;
+
+int *ptr =  new int(10);//or int *ptr =  new int{10};
+delete ptr;
+ptr = nullptr;
+
+int *ptr = new int(); //initialize the memory to zero
+int *ptr = new int; //memory is not initialized to zero
+================
+malloc vs new :
+malloc is function, require the size, cannot initialize the memory, type casted is required
+malloc cannot be overloaded, fails return the null pointer
+new is operator, size is determined from the type, call constructor the object
+
+=================================
+1d dynamic array with different way of initializing the element:
+what happen when the array is delete without []?
+int *ptr = new int[10]{101,1,2,3}; //remaining element will initailzied to zero
+
+int *ptr = new int[10](101,1,2,3); //remaining element will initailzied to zero
+int *ptr = new int[10](); //all element will be initailized to zero
+int *ptr = new int[10] {};  //all elements will be initialized to zero
+delete ptr; // will delete only the first elemnt
+delete []ptr; // will delete entire array 
+ptr = nullptr;
+int *ptr = new int[10]; //garbage value for the allocated memory
+strcpy(ptr,"c++") //will add the null character after  copying
+==============================
+my own strcpy function:
+void my_strcpy(char *dest, const char *src) {
+    // Iterate over each character of the source string
+    while (*src != '\0') {
+        // Copy the character from source to destination
+        *dest = *src;
+        // Move to the next character in both strings
+        ++dest;
+        ++src;
+    }
+    // Null-terminate the destination string
+    *dest = '\0';
+}
+
+strcpy_s(ptr,4,"c++"); 
+================================================
+My own strcpy_s:
+
+#include <iostream>
+
+// Function to copy a string from source to destination with bounds checking
+void strcpy_s(char *dest, size_t destSize, const char *src) {
+    // Check if the destination buffer is null or the destination size is 0
+    if (dest == nullptr || destSize == 0) {
+        // Handle invalid input
+        std::cerr << "Invalid destination buffer or size!" << std::endl;
+        return;
+    }
+
+    // Copy characters from source to destination until the end of the string or the destination size is reached
+    size_t i = 0;
+    while (src[i] != '\0' && i < destSize - 1) {
+        dest[i] = src[i];
+        ++i;
+    }
+
+    // Null-terminate the destination string
+    dest[i] = '\0';
+
+    // If the source string was truncated, report an error
+    if (src[i] != '\0') {
+        std::cerr << "Source string was truncated!" << std::endl;
+    }
+}
+
+int main() {
+    char destination[5]; // Destination buffer with a size of 5 characters
+
+    // Copy the string "1234567890c++" to destination using strcpy_s with a destination size of 4
+    strcpy_s(destination, 4, "1234567890c++");
+
+    // Output the copied string
+    std::cout << "Copied string: " << destination << std::endl;
+
+    return 0;
+}
+=======================
+const pointer can be incremented:
+for character we should have add one extra character.
+char array[10] = "hello"
+const char *ptr = &array;
+ptr++; is allowed 
+============================
+representation of the 2d static array element:
+int data[2][3] = {
+	1,2,3,
+	4,5,6
+};
+or
+int data[2][3] = {
+		{1,2,3},
+		{4,5,6}
+};
+=========================
+2d dynamic aaray using the 1d dynamic array assignment
+how to convert the above to 2D
+int *ptr1 = new int[3]; //ist roow
+int *ptr2 = new int[3]; //2nd row
+int **ptr = new int*[2];
+ptr[0]=p1;
+ptr[1]=p2;
+
+ptr[0][1] =100; 0th row 1 index to 100;
+since ptr[0] == ptr1;
+ptr1[1] =100;//0th row 1 index to 100;
+delete []p1; // or delete []ptr[0];
+delete []p2; // or delete []ptr[1];
+delete []p;
+
+// number of delete call should match with the number of new call
+=============
+2d dynamic array assigning with uniform initializer list of 1d dynamic array?
+int main() {
+    // Dynamic allocation of memory for the 2D array
+    int *ptr1 = new int[3]; // 1st row
+    int *ptr2 = new int[3]; // 2nd row
+    int **ptr = new int*[2] {ptr1,ptr2}; // Pointer to pointers for rows
+
+    // Accessing and initializing elements of the 2D array
+    ptr[0][0] = 1;
+    ptr[0][1] = 2;
+    ptr[0][2] = 3;
+    ptr[1][0] = 4;
+    ptr[1][1] = 5;
+    ptr[1][2] = 6;
+
+    // Displaying the elements of the 2D array
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            std::cout << "ptr[" << i << "][" << j << "] = " << ptr[i][j] << std::endl;
+        }
+    }
+
+    // Deallocating memory
+    delete[] ptr1;
+    delete[] ptr2;
+    delete[] ptr;
+
+    return 0;
+}
+==========================
+value of the variable to printed using the pointer to pointer?
+int x = 10;
+int *ptr1 = &x; // ptr1 holds the address of x
+int **ptr2 = &ptr1; // ptr2 holds the address of ptr1
+
+// Double indirection to access the value of x
+std::cout << "Value of x: " << **ptr2 << std::endl; // Outputs: 10
+===========================
+2d array using 2d dynamic:
+#include <iostream>
+
+int main() {
+    // Define the dimensions of the 2D array
+    int rows = 3;
+    int cols = 4;
+
+    // Dynamically allocate memory for the 2D array
+    int **arr = new int*[rows]; // Allocate memory for row pointers
+
+    for (int i = 0; i < rows; ++i) {
+        arr[i] = new int[cols]; // Allocate memory for each row
+    }
+
+    // Initialize and access elements of the 2D array
+    int count = 1;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            arr[i][j] = count++;
+        }
+    }
+
+    // Display the elements of the 2D array
+    std::cout << "2D Array:" << std::endl;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            std::cout << arr[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    // Deallocate memory
+    for (int i = 0; i < rows; ++i) {
+        delete[] arr[i]; // Delete each row
+    }
+    delete[] arr; // Delete the array of row pointers
+
+    return 0;
+}
+===========================
+2d array using the single pointer:
+#include <iostream>
+
+int main() {
+    // Define the dimensions of the 2D array
+    int rows = 3;
+    int cols = 4;
+
+    // Dynamically allocate memory for the 2D array
+    int *arr = new int[rows * cols]; // Allocate memory for rows * cols elements
+
+    // Initialize and access elements of the 2D array
+    int count = 1;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            arr[i * cols + j] = count++;
+        }
+    }
+
+    // Display the elements of the 2D array
+    std::cout << "2D Array:" << std::endl;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            std::cout << arr[i * cols + j] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    // Deallocate memory
+    delete[] arr;
+
+    return 0;
+}
+=================================
+Object Oriented Programming:
+ Use object as the fundamental building block
+ program created as the collection of object.
+ Every Object is anstance of some class.
+ decrease the complexity of software systems.
+ code reusable, extensible and maintainable
+
+Basic Object Model:
+Abstraction 
+	(focusing on important and necessary details and unwanted details are left)
+	example: name of the person without age , height and weight
+	Important characterisitic varies based on the domain
+Encapsulation
+   Hide the implementation details of the class
+   class provide the behaviour without revealing the implementation.
+   Internal implementation can be changed without the user knowledge
+   Achieved using the abstract modifiers
+   
+Inheritance:
+   represent the hierarchy of class
+   class are related throgh is-a relation ship
+   eg: dog is animal. here is animal is parent and dog is animal
+   the bavious and its implementation is inheritated by the children from the parent.
+   The child class may then reuse the behaviour with the same implementation or provide a 
+   different implementation.
+   promote reusability and extendability
+   
+   
+   other way to reuse is composition:
+   signifies the relation ship between the object.
+   Promote the reuse of the object
+   represented as has a or part-of relationship
+   Car has a engine. car oject has the engine object.
+   
+Polymorphism
+  means different form
+  represent the common behaviour with different implementation'
+  reponse will be different for each object either based on its
+  class or the arguments
+  eg car, cycle person can move differently. 
+  Here move is common behaviour
+  
+  compile time polymorphism:
+   implemented through the function overloading and template and virtual function.
+   
+======================
+class :
+blueprint /recipe 
+object is instance of class.
+class can have multiple object. all objects are independent
+
+class modifiers are public, private and protected
+
+class car
+{
+   private: //not must default is private:
+      flaot fuel;
+	  float speed;
+	  int passenger;
+    public:
+	 void fillfuel(float liter);
+};
+
+#pragma once //called header guard. prevent the redeclaration error
+
+in visualstudio you needn't specify the .cpp and .h in file creation
+it automatically getting added when new itesm of the file is added
+
+if the function is defined inside the class, it become inline
+
+class member variable has the garbage value in c++
+==========
+constructor:
+  automaticall called during initialization
+  used for initialization
+  doesn't have return type
+  can be overloaded
+      default (no argument),
+		car c;//invoke default constructor
+		automatically created/synthesized by the compier if there is no 
+		other user defined constructor exist in that class.
+	parameterized:
+		one or more argument
+		used to initialize the object with user defined values
+		compiler will never creates it
+		block the auto generation of default constructor.
+		
+	copy, delegating and inheriting constructor
+	
+destructor:
+no argument
+class can have only one destructor and it cannot be overloaded
+used for releasing the resource when the object is being destroyed	
+
+Inheriting constructors is a feature introduced in C++11 
+that allows derived classes to inherit constructors from their base classes. This can reduce code duplication and improve code readability. 
+
+#include <iostream>
+
+// Base class with a constructor
+class Base {
+public:
+    Base(int x) : value(x) {
+        std::cout << "Base constructor called with value: " << value << std::endl;
+    }
+
+protected:
+    int value;
+};
+
+// Derived class inheriting constructor from Base
+class Derived : public Base {
+public:
+    // Inherit constructor from Base
+    using Base::Base;
+
+    void printValue() {
+        std::cout << "Value in Derived class: " << value << std::endl;
+    }
+};
+
+int main() {
+    // Create an object of Derived class
+    Derived d(42);
+    d.printValue();
+    return 0;
+}
+Base constructor called with value: 42
+Value in Derived class: 42
+==========
+Delegating Constructors:
+
+allow the constructor to invoke another constructor
+replacement for common initialization
+reduce the duplicate initialization code in multiple constructor
+
+Delegating constructors allow a
+constructor to call another constructor of the same class 
+(or of a base class) to perform part of its initialization. 
+This feature reduces code duplication and ensures that 
+initialization logic is centralized.
+
+class MyClass {
+public:
+    MyClass() : MyClass(0) {}  // Delegating constructor
+    MyClass(int x) : value(x) {}
+private:
+    int value;
+};
+===
+car::car():car(0) {
+cout <<"first constructor";
+}
+car::car(float amount):car(amount,0) {
+cout <<"second constructor";
+}
+car::car(float amount, int passenger)
+{
+cout <<"third constructor";
+   this ->amount = amount;
+   this->passgenger = passengether;
+}
+
+car c;
+
+o/p will be:
+third constructor
+second constructor
+first constructor
+
+
+=======================
+#include <iostream>
+
+// Base class with a constructor
+class Base {
+public:
+    Base(int x) : value(x) {
+        std::cout << "Base constructor called with value: " << value << std::endl;
+    }
+
+protected:
+    int value;
+};
+
+// Derived class inheriting constructor from Base
+class Derived : public Base {
+public:
+    // Inherit constructor from Base
+    using Base::Base;
+
+    // Derived() {} //error no function matching in base base::base()
+    //Derived(int value) {}  //error no function matching in base base::base()
+    void printValue() {
+        std::cout << "Value in Derived class: " << value << std::endl;
+    }
+};
+
+int main() {
+    // Create an object of Derived class
+    Derived d; //call the deriveed() but there is no base()
+    Derived d(12);//call the deriveed(int) but there is no base()
+    d.printValue();
+    return 0;
+}
+=================
+#include <iostream>
+
+// Base class with a constructor
+class Base {
+public:
+    Base(int x) : value(x) {
+        std::cout << "Base constructor called with value: " << value << std::endl;
+    }
+
+protected:
+    int value;
+};
+
+// Derived class inheriting constructor from Base
+class Derived : public Base {
+public:
+    // Additional constructor for Derived
+    Derived() : Base(0) {
+        std::cout << "Derived default constructor called" << std::endl;
+    }
+
+    // Additional constructor for Derived
+    Derived(int x) : Base(x) {
+        std::cout << "Derived constructor called with value: " << x << std::endl;
+    }
+
+    void printValue() {
+        std::cout << "Value in Derived class: " << value << std::endl;
+    }
+};
+
+int main() {
+    // Create objects of Derived class using different constructors
+    Derived d1;   // Calls the default constructor of Derived
+    Derived d2(42); // Calls the constructor of Derived with an int argument
+
+    d1.printValue();
+    d2.printValue();
+    return 0;
+}
+Value in Derived class: 0
+Value in Derived class: 42
+=======================================
+structure
+useful in creating the function objects.
+similar to class but has public access specifier by default.
+you can replace struct with class if the specifier is not concern.
+============
+non static data member initialization:
+Convenient way of initializing the class member with value during the 
+declaration.
+
+class class
+{
+  int va=12;
+  int va{12} //int or array
+}
+compiler automatiocally generate the initilization code
+compiler place the above initialization in the default constructor.
+initialization in user defined constructor take procedence.
+===
+#include <iostream>
+
+class a {
+    int value = 100; //This line is placed in all the constructors
+public:
+    // Default constructor
+    a() {}
+
+    // Parameterized constructor
+    a(int value) {
+       
+    }
+
+    void print() {
+        std::cout << value;
+    }
+};
+
+int main() {
+    a obj;
+    obj.print(); // This will print the value of obj which is 100
+    a obj(1);
+    obj.print(); //100
+    return 0;
+}
+================================
+
+
+=================================
+initializing non static data member 
+ensure all the data members are initialized
+
+#include <iostream>
+
+// Base class with a constructor
+class Base {
+    public:
+int a =100;
+int b =12;
+int c[4] = {1,2,3,4};
+char *ptr{};
+char *ptr = new char;
+// note we cannot use auto here 
+//auto i =10;
+    Base()
+    {
+        a =110;
+    }
+    
+    
+    Base(int s)
+    {
+        a =s;
+    }
+};
+
+
+int main() {
+    Base obj;
+    std::cout <<obj.a << obj.b <<std::endl//110 12
+    Base obj1(21);
+     std::cout <<obj1.a << obj1.b; //21 12
+    return 0;
+}
+====================
+#include <iostream>
+
+class MyClass {
+public:
+    // Constructor
+    MyClass() : array{1, 2, 3, 4, 5, 6, 7, 8, 9, 10} {
+        // Constructor body
+    }
+
+    // Function to print array elements
+    void printArray() {
+        for (int i = 0; i < 10; ++i) {
+            std::cout << array[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+private:
+    int array[10]; // Member array
+};
+
+int main() {
+    MyClass obj; // Create an object of MyClass
+    obj.printArray(); // Print array elements
+    return 0;
+}
+======================
+#include <iostream>
+
+class MyClass {
+public:
+    // Constructor
+    MyClass(std::initializer_list<int> values) {
+        int i = 0;
+        for (int value : values) {
+            array[i++] = value;
+        }
+    }
+
+    // Function to print array elements
+    void printArray() {
+        for (int i = 0; i < 10; ++i) {
+            std::cout << array[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+private:
+    int array[10]; // Member array
+};
+
+int main() {
+    MyClass obj({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}); // Create an object of MyClass
+    obj.printArray(); // Print array elements
+    return 0;
+}
+=============================
+#include <iostream>
+#include <algorithm> // for std::copy
+#include <iterator>  // for std::begin and std::end
+
+class MyClass {
+public:
+    // Constructor using std::copy
+    MyClass() {
+        int initialArray[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        std::copy(std::begin(initialArray), std::end(initialArray), std::begin(array));
+    }
+
+    // Constructor using std::initializer_list
+    MyClass(std::initializer_list<int> values) {
+        std::copy(values.begin(), values.end(), array);
+    }
+
+    // Function to print array elements
+    void printArray() {
+        for (int i = 0; i < 10; ++i) {
+            std::cout << array[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+private:
+    int array[10]; // Member array
+};
+
+int main() {
+    MyClass obj1; // Create an object of MyClass using default constructor
+    obj1.printArray(); // Print array elements
+
+    MyClass obj2{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}; // Create an object of MyClass using initializer_list constructor
+    obj2.printArray(); // Print array elements
+
+    return 0;
+}
+=========================================
+this pointer:
+a hidden pointer passed to member function
+this pointer contains the address that ivokes the member function.
+this pointer value cannot be changed.
+
+In C++, constructors do not have a this pointer. The this pointer refers to the 
+current object instance, but it is only available within member functions (including 
+member function constructors) of a class or struct.
+
+class sample
+{
+   sample() //dont have this pointer
+   {
+   }
+   
+   void function ()
+   {
+      this -> a =100; //or a  =100;
+   }
+   
+   void function2 (int aa)
+   {
+      this -> aa =aa; // if there is no this then only the local variable will have preference
+	  //and no change in the member variable aa;
+   }
+   
+   int a, aa;
+}
+
+*this will give the current object;
+=================================
+static member variable:
+member variable qualified with static keywords.
+not part of the object
+belongs to the class, Only one copy exists .
+shared between objects. 
+declared inside the class
+have to be defined outside the class for initialization.
+
+car.h
+class car {
+static int totalcars;
+}
+
+car.cpp
+int car::totalcard; //automatically initialize to default init to zero
+
+===============
+static member function:
+belongs to the class
+qualified with static keyword
+belongs to class and not object
+don not receive this poinetr.
+cannot access the non-static member of the class
+can be invoked directly through the class name
+can access the static member member function and static member variable;
+
+classname::staticfunctionname(); //calling the static function
+================
+const member function:
+member function qualified with const keyword
+both declaration and definition required const keyword
+such function cannot change the value of the member variable
+useful for creating the read-only function. member variable value cannot be changed
+const object can invokde only const function.
+
+No, a static member function cannot be declared as const in C++.
+ However, static member functions do not operate on specific 
+ instances of a class; they are associated with the class itself,
+ not with any particular object.
+
+copy constructor:
+create copy of the object state in another object
+if the user not provided the copy constructor, compiler synthesized automatically
+default implementation copies values
+
+ = when the function return object by value
+ = when you manually create the copy of the variable
+ = when the object is passed by value to the function
+
+================
+for the below line if the user defined copy constructor is not available 
+the compiler create one.
+
+classname function() {
+return classname object;
+}
+
+void function (classname object)
+{
+}
+
+
+classname object1;
+classname object2(object1);
+
+classname object1;
+classname object2{object1};
+
+classname object1;
+classname object2 = (object1); 
+ 
+========================
+shallow copy:
+int *ptr=new int(10);
+int *ptr2=ptr1;
+
+deep copy
+int *ptr=new int(10);
+int *ptr2=new int(*ptr2);
+
+when there is pointer in the user defined object use
+deep copy constructor and deep copy assignement.
+
+classname (classname & object);
+if there is no & then the above line will go in the loop
+for calling the copy constructor (recursive loop)
+
+original object value is not modified hence mark it as const
+classname (const classname & object);
+=============================
+if the user has implemented the destructor for 
+freeing of resources then he might need to use 
+rule of 3
+destructor
+copy constructor
+copy assignement operator
+this is call rule of 3 ie destructor , copy assignement 
+and copy constructor all will occur together for performing deep copy
+==============
+c++ compiler cannot create the parameter constructor automatically like default
+create the object and call the default constructor
+Person p{} ;
+===================
+Memory is allocated and constructor is invoked to initialize the object.
+during the destruction, the destructor is invoked and memory is released.
+
+when there is parameter constructor the compiler cannot place the default constructor
+class member initialization will place the initialized code in the provided constructor of the class.
+when all the member of the class is initialized using the initialization then we can make the 
+zero argument constructor to default.
+we can put the default for the zero argument, copy cobstructor and assignement operator.
+
+classname(const classname &obj) =default;
+classname(const classname &obj) =delete;
+
+unlike default function, we mark any function as delete;
+
+void setValue(int a) {
+}
+
+void setValue(float) = delete;
+or void setValue(float f) = delete;
+
+if your program is using the deleted function, compiler will complain attepting to use the deleted function
+
+#include <iostream>
+
+class a {
+    int value = 100; //This line is placed in all the constructors
+public:
+    // Default constructor
+    //a() {}
+    a() = default;
+    // Parameterized constructor
+    a(int value) {
+       
+    }
+
+    void print() {
+        std::cout << value;
+    }
+};
+
+int main() {
+    a obj; // This line needs the default constructor
+    obj.print(); // This will print the value of obj which is 100
+    
+    a obj1(1);
+    obj1.print(); //100
+    return 0;
+}
+===================
+Without user-defined copy constructor, the compiler generated copy constructor will 
+perform a shallow copy of the resource that will lead to undefined results.
+================================
+although you are calling the function by the const argument object
+that function has to be const;
+class Number{
+    int m_Num{} ;
+public:
+    Number(int num){
+        m_Num = num ;
+    }
+    int GetNumber() const{
+        return m_Num ;
+    }
+    //Constructors and other members
+} ;
+ 
+void Print(const Number & num){
+    cout << num.GetNumber() ;
+}
+ 
+int main(){
+    Number n{5} ;
+    Print(n) ;
+    //Other code
+    return 0 ;
+}
+=========================
+int getNumber() {
+    return 42;
+}
+
+int num = getNumber(); // getNumber() is an rvalue
+====
+std::string concatenate = std::string("Hello") + std::string("World"); // Temporary string object is an rvalue
+===========
+L-Value and R-Value (temporary value):
+L value 
+has a name
+all variables are l-value
+can be assigned values
+++x =14; l-value perists beyond the expression
+function that return by reference return l-value
+int x =5;
+x is lvalue and 5 is rvalue; rvalue cannot come in left hand side
+
+rvalue 
+cannot be assigned a value ie 
+5=a;
+
+int x  =y+Z;//y+z is the r value return by the expression doesnt presist
+after this line;
+========
+int x =10;
+++x =14; //++x return the lvalue
+std::cout << x <<std::endl;//14
+=====
+R-value reference:
+created to temporary value
+represent temporaty
+careated with &&
+cannot bind to l-value
+l-value reference bind to lvalue;
+
+//10 is r value
+int &&r1 = 10; //r-value reference
+int &&r2=add(5,3); //add return by value (temporay)
+int &&r3 = 7+2; //expression return temporary value
+
+int x =10;
+int && r3=x; //error //r value reference cannot bind to lvalue;
+
+lvalue reference bind to lvalue
+int x =10;
+int & r3=x;
+
+int & function(int &x)
+{
+   return x;
+}
+int x;
+int &ref = function(x);
+
+lvalue can bind to temporay if it is const
+cont int &r =10;
+=============
+#include <iostream>
+
+void print(int &x)
+{
+    std::cout << "print(int &x)" << std::endl;
+}
+
+void print(const int &x)
+{
+    std::cout << "print(const int &x)" << std::endl;
+}
+
+int main()
+{
+    print(10); // Passing an classInteger literal to a const int reference
+    int x = 10;
+    print(x); // Passing an int to a non-const int reference
+    return 0;
+}
+print(const int &x)
+print(int &x)
+=============================
+#include <iostream>
+
+void print(int &x)
+{
+    std::cout << "print(int &x)" << std::endl;
+}
+
+void print(const int &x)
+{
+    std::cout << "print(const int &x)" << std::endl;
+}
+
+void print(const int &&x)
+{
+    std::cout << "print(const int &&x)" << std::endl;
+}
+
+void print( int &&x)
+{
+    std::cout << "print( int &&x)" << std::endl;
+}
+
+int main()
+{
+    print(10); //print( int &&x) // // if the && it will be called instead of const int &
+    int x = 10;
+    print(x); //print(int &x)  Passing an int to a non-const int reference
+    return 0;
+}
+=================
+#include <iostream>
+#include <utility> // for std::move
+
+void print(int &x)
+{
+    std::cout << "print(int &x)" << std::endl;
+}
+
+void print(const int &x)
+{
+    std::cout << "print(const int &x)" << std::endl;
+}
+
+void print(const int &&x)
+{
+    std::cout << "print(const int &&x)" << std::endl;
+}
+
+void print(int &&x)
+{
+    std::cout << "print(int &&x)" << std::endl;
+}
+
+int main()
+{
+    print(10); // print(int &&x)
+    int x = 10;
+    print(std::move(x)); // print(int &&x)
+    const int y = 10;
+    print(std::move(y)); // print(const int &&x)
+    return 0;
+}
+==================================
+std::shared_ptr<char> pMQBuff(new (std::nothrow) char[LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE] {0});
+
+===============
+#include <memory>
+#include <cstring> // for memset
+
+constexpr size_t LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE = 100; // Example value
+
+int main() {
+    // Create a shared pointer to an array of characters with zero initialization
+    auto pMQBuff = std::shared_ptr<char>(new char[LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE], [](char* p) { delete[] p; });
+    
+    // You can use memset to zero-initialize the memory if needed
+    memset(pMQBuff.get(), 0, LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE);
+
+    // Now pMQBuff can be used as a shared pointer to the array of characters
+    // ...
+
+    return 0;
+}
+===================
+std::make_shared does not support directly creating shared pointers to arrays of unknown size. Instead, it supports creating shared pointers
+to dynamically allocated objects.
+
+shared_ptr for array and initialization it with default value
+
+#include <memory> // For std::shared_ptr
+#include <iostream>
+
+constexpr size_t LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE = 10; // Example value
+
+int main() {
+    // Custom deleter for managing the array
+    auto deleter = [](char* ptr) { delete[] ptr; };
+
+    // Create shared pointer and initialize memory
+    auto pMQBuff = std::shared_ptr<char>(new char[LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE](), deleter);
+
+    // Access the memory through the shared pointer
+    for (size_t i = 0; i < LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE; ++i) {
+        pMQBuff.get()[i] = 'A' + (i % 26); // Initialize with alphabet characters
+    }
+
+    // Print the initialized memory
+    for (size_t i = 0; i < LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE; ++i) {
+        std::cout << pMQBuff.get()[i];
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+//ABCDEFGHIJ
+=========
+ // Custom deleter for managing the array
+    auto deleter = [](char* ptr) { delete[] ptr; };
+ auto pMQBuff = std::shared_ptr<char>(new char[LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE]("hell"), deleter);
+
+    // Print the initialized memory
+    for (size_t i = 0; i < LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE; ++i) {
+        std::cout << pMQBuff.get()[i];
+    }
+//hell
+===========
+
+
+ auto pMQBuff = std::shared_ptr<char>(new char[LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE]("hell"));
+
+    // Print the initialized memory
+    for (size_t i = 0; i < LX_MAX_SIZE_OF_OBJECT_IN_RECV_QUEUE; ++i) {
+        std::cout << pMQBuff.get()[i];
+    }
+//hell
+=============================
+    // Create a shared pointer and initialize an classInteger value
+    auto pInt = std::make_shared<int>(42);
+
+    // Access the classInteger through the shared pointer
+    std::cout << "Integer value: " << *pInt << std::endl;
+============
+shared_ptr cannot be used for array:
+    // Create shared pointer and initialize memory
+    auto pMQBuff = std::make_shared<char>('a');
+
+    // Print the initialized memory
+    for (size_t i = 0; i < 1; ++i) {
+        std::cout << pMQBuff.get()[i];
+    }
+//a
+=====================================
+copy vs move semantic:
+copy is implemented through the copy constructor
+copy of the object is created (shallow /deep)
+wasteful in case copy is created from temporary
+
+in move semantic :
+we will do the shallow copy and the original pointer value will be set 
+NULL so that it will not free the allocated memory
+This will be faster than the deep copy since there is no allocation
+==================
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include <iostream>
+
+class classInteger {
+public:
+    classInteger(int a=12) {
+        std::cout << "classInteger()" << std::endl;
+    }
+
+    classInteger(const classInteger& a) {
+        std::cout << "classInteger(const classInteger&)" << std::endl;
+    }
+
+    void add(const classInteger a1, const classInteger b1) {
+        std::cout << "Adding classIntegers" << std::endl;
+        // Perform addition here
+    }
+	    
+    void operator =(const classInteger a1)
+    {
+        std::cout << "asignement"<<std::endl;
+    }
+};
+
+int main() {
+    classInteger a(12), b(12);
+    classInteger temp;
+    temp.add(a, b); // Corrected function name and added const reference parameters
+    return 0;
+}
+
+classInteger()
+classInteger()
+classInteger(const classInteger&)
+classInteger(const classInteger&)
+Adding classIntegers
+=========================================
+n C++, when you pass an object to a function by reference, no copy of the 
+object is made, and therefore, the copy constructor is not called. Instead, 
+a reference to the original object is passed to the function.
+#include <iostream>
+#include <iostream>
+
+class classInteger {
+public:
+    classInteger(int a=12) {
+        std::cout << "classInteger()" << std::endl;
+    }
+
+    classInteger(const classInteger& a) {
+        std::cout << "classInteger(const classInteger&)" << std::endl;
+    }
+
+    
+    
+    void add(const classInteger &a1, const classInteger & b1) {
+        std::cout << "Adding classIntegers" << std::endl;
+        // Perform addition here
+    }
+    
+    void operator =(const classInteger &a1)
+    {
+        std::cout << "asignement"<<std::endl;
+    }
+};
+
+int main() {
+    classInteger a(12), b(12);
+    classInteger temp;
+    temp.add(a, b); // Corrected function name and added const reference parameters
+    return 0;
+}
+classInteger()
+classInteger()
+classInteger()
+Adding classIntegers
+=================================
+class classInteger
+{
+};
+
+classInteger add(const classInteger &a1, const classInteger &b1)	
+{
+   classInteger temp
+	temp.a = a1.a+b1.a;
+	return a; // here copy constructor is called if there is no move
+}
+
+there number constructor call == number of the destructor call.
+=============
+//move constructor taking r value reference
+classInteger(classInteger &&obj)
+{
+	m_ptr = obj.m_ptr;
+	obj.m_ptr = nullptr; //to know the original object content is moved.
+}
+
+classInteger add(const classInteger &a1, const classInteger &b1)	
+{
+   classInteger temp
+	temp.a = a1.a+b1.a;
+	return a; // here move constructor is called since object return by value
+}
+======================
+#include <iostream>
+#include <utility> // For std::swap
+
+class MyResource {
+private:
+    int* data;
+    size_t size;
+
+public:
+    MyResource(size_t size) : data(new int[size] { 0 }), size(size) {
+        std::cout << "Constructor called" << std::endl;
+        // Initialize data (e.g., set all elements to zero)
+        for (size_t i = 0; i < size; ++i) {
+            std::cout <<data[i];
+        }
+    }
+
+    ~MyResource() {
+        std::cout << "Destructor called" << std::endl;
+        delete[] data; // Deallocate the dynamically allocated array
+    }
+
+    // Move assignment operator
+    MyResource& operator=(MyResource&& other) noexcept {
+        std::cout << "Move assignment operator called" << std::endl;
+        if (this != &other) {
+            // Release resources owned by the current object
+            delete[] data;
+
+            // Transfer resources from 'other' to the current object
+            data = other.data;
+            size = other.size;
+
+            // Reset 'other' to a valid but unspecified state
+            other.data = nullptr;
+            other.size = 0;
+        }
+        return *this;
+    }
+};
+
+int main() {
+    MyResource obj1(5); // Construct obj1 with size 5
+    MyResource obj2(10); // Construct obj2 with size 10
+
+    obj1 = std::move(obj2); // Move assignment operator called
+
+    return 0;
+}
+Constructor called
+00000
+Constructor called
+0000000000
+Move assignment operator called
+Destructor called
+Destructor called
+==========================================
+rule of 5;
+if the class has the pointer. we need to have the
+destructor
+copy constructor
+copy assignement operator
+move constructor
+move assignement operator
+====
+//copy constructor
+Integer(const Integer&obj);
+//move constructor
+Integer(const Integer &&obj);
+
+copy assignement 
+classInteger & operator = (const Integer &obj)
+
+move assignement 
+classInteger & operator = (const Integer &&obj)
+================
+classInteger& classInteger::operator=(const Integer &obj)
+{
+  if (this == &obj)
+  {
+     return *this)
+  }
+  delete m_ptr;
+  m_ptr = new int(*obj.m_ptr);
+  return *this;
+}
+
+//move assignement opetaor also will have this pointer address check
+classInteger& classInteger::operator=(const Integer &&obj)
+{
+  if (this == &obj)
+  {
+     return *this)
+  }
+  delete m_ptr;
+  m_ptr = obj.m_ptr;
+  obj.m_ptr = nullptr;
+  return *this;
+}
+=================
+if a class does not explicitly declare a move constructor or a move assignment operator,
+ the compiler will generate them automatically under certain conditions. These automatically
+ generated move operations are known as "implicitly declared" move constructor and 
+move assignment operator.
+
+The conditions for the compiler to implicitly declare these move operations are as follows:
+
+The class does not have any user-declared copy constructor, copy assignment operator,
+ move constructor, or destructor.
+The class does not have any user-declared destructor if a move constructor or 
+move assignment operator is declared.
+
+==================
+I have class A which has the user defined copy, assignement and
+move , function.
+I have class B which uses the A object and doesnot have the 
+user defined parameter ,copy constructor and assignement 
+function. so the compiler generate the default functions in class Base
+
+call to the syncthesis compiler function in turn will call the
+user defined function of the class A.
+
+compiler generate : 
+default constructor, copy constructor, move , move assignement, assignement and destructor;
+
+#include <utility> // For std::move
+
+#include <iostream>
+
+class A {
+public:
+    A() { std::cout << "A constructor" << std::endl; }
+    A(const A&) { std::cout << "A copy constructor" << std::endl; }
+    A& operator=(const A&) { std::cout << "A copy assignment operator" << std::endl; return *this; }
+    A(A&&) noexcept { std::cout << "A move constructor" << std::endl; }
+    A& operator=(A&&) noexcept { std::cout << "A move assignment operator" << std::endl; return *this; }
+};
+
+class B {
+private:
+    A a;
+
+public:
+    B() { std::cout << "B constructor" << std::endl; }
+    // No user-defined copy constructor, assignment operator, or move constructor for class B
+};
+
+B createbobj()
+{
+    B obj;
+    return obj;
+}
+
+int main() {
+    B b1; // Implicitly generated constructor for B
+    B b2(b1); // Implicitly generated copy constructor for B, which in turn calls A's copy constructor
+    B b3;
+    b3 = b1; // Implicitly generated copy assignment operator for B, which in turn calls A's copy assignment operator
+    auto b4{std::move(createbobj())}; //A B constructor and move consr
+    auto b5{createbobj()}; //here A and B constructor but no move since the compiler do optimization
+    b5 = createbobj(); //call A B constructor and A move assignment opertaor
+    return 0;
+}
+A constructor
+B constructor
+A copy constructor
+A constructor
+B constructor
+A copy assignment operator
+A constructor
+B constructor
+A move constructor
+A constructor
+B constructor
+A constructor
+B constructor
+A move assignment operator
+==========================
+if the user write any one of the defult function in the B , compiler will not synthessis other  4 functions
+example if the user write the destructor in B, then the copy, copy assignement , move and move assignement 
+will not be synthesized by the compiler for B
+
+if user defined destructor is required then user can make other 4 functions as 
+default function example
+classInteger& operator=(classInteger &&a) = default;
+//the above line is also consider as custom implementation
+
+===============
+Number(Number &n):m_value{n.m_Value}{
+}
+
+Number(Number &&n):m_value{std::move(n.m_Value)}{
+}
+
+============
+when you implement move copy constructor/assignment the default copy and assignment is blocked for 
+auto genertion code. 
+example: unique_ptr has only the move and no copy constructor
+
+move constructor implemented will block other 4 function
+move assignement implementation will block other 4 functions.
+=================
+This is also consider to be the custom implementation
+argument name is not must
+class Base {
+public:
+    Base(const Base&) = default;          // Copy constructor declaration
+    Base(Base&&) = default;               // Move constructor declaration
+    Base& operator=(Base&) = default; // Copy assignment operator declaration
+};
+======================================
+assignement operator cannot be const:
+#include <iostream>
+
+class A {
+public:
+    A() { std::cout << "A constructor" << std::endl; }
+    A(const A&) { std::cout << "A copy constructor" << std::endl; }
+    A& operator=(const A&) { std::cout << "A copy assignment operator" << std::endl; return *this; }
+    A(A&&) noexcept { std::cout << "A move constructor" << std::endl; }
+    A& operator=(A&&) noexcept { std::cout << "A move assignment operator" << std::endl; return *this; }
+};
+
+class B {
+private:
+    A a;
+
+public:
+    B() = default;
+    B(const B&) = default;          // Copy constructor declaration
+    B(B&&) = default;               // Move constructor declaration
+    B& operator=(const B&) = default; 
+    B& operator=(B&&) = default;    // Corrected move assignment operator declaration
+     
+    ~B() = default;
+    // No user-defined copy constructor, assignment operator, or move constructor for class B
+};
+
+B createbobj()
+{
+    B obj;
+    return obj;
+}
+
+int main() {
+    B b1; // Implicitly generated constructor for B
+    B b2(b1); // Implicitly generated copy constructor for B, which in turn calls A's copy constructor
+    B b3;
+    b3 = b1; // Implicitly generated copy assignment operator for B, which in turn calls A's copy assignment operator
+    auto b4{std::move(createbobj())}; //A B constructor and move consr
+    auto b5{createbobj()}; //here A and B constructor but no move since the compiler do optimization
+    b5 = createbobj(); //call A B constructor and A move assignment opertaor
+    return 0;
+}
+A constructor
+A copy constructor
+A constructor
+A copy assignment operator
+A constructor
+A move constructor
+A constructor
+A constructor
+A move assignment operator
+===========================
+default keyword can be applied to the function which the compiler can synthesis the code.
+=========================================
+we cannot have the const int && in the move constructor and move assignment since we have to modify the
+original object to point to default value.
+
+const int && x =100;
+x =10; //error
+
+int && x =100;
+x =10; //no error
+
+int &&  const y = (x);//error
+int &&  const y = (10);//error 
+=================
+when the user has custom defined copy constructor
+copy assignement,no parameter constructor and destructor  is default is inserted by compiler
+move assignment and move constructor not inserted
+====
+when the user has custom defined copy assignement
+copy constructor,no parameter constructor and destructor  is default is inserted by compiler
+move assignment and move constructor not inserted
+======
+====
+when the user has custom defined move assignement
+move constructor,no parameter constructor and destructor  is default is inserted by compiler
+copy assignment and copy constructor not inserted
+====
+when the user has custom defined move constructor
+move assignement,no parameter constructor and destructor  is default is inserted by compiler
+copy assignment and copy constructor not inserted
+==========
+when the desturctot is custom 
+copy assignment, copy constructor, move assignment, move constructor are default.
+==================
+copy elison:
+Copy elision is an optimization technique used by C++ compilers to avoid unnecessary copying 
+or moving of objects.
+
+ It allows the compiler to optimize code by omitting the copy or move operations mandated by 
+ the C++ standard in certain situations.
+ 
+enable the -fno-elide-constructors. if this flag is not there  then the commpiler will call
+the copy construcror while return the obj by temp value and call paramter constructor assigning temp 
+value to the object is classInteger obj = 3;
+
+techique used by the object to elimante the temporray object.
+
+classInteger obje =3 ;// classInteger obje=classInteger(3)
+==============
+enable the -fno-elide-constructors.
+classInteger Add(int a, int b)
+{
+    classInteger temp(a+b) //classInteger(intt, int)
+	return temp; //move const classInteger(int &&)
+	//~classInteger()
+}
+
+classInteger a =Add(1,2);//move const classInteger(int &&)
+==========
+if enable the -fno-elide-constructors not their
+classInteger Add(int a, int b)
+{
+    classInteger temp(a+b) //classInteger(intt, int)
+	return temp; // copy name value optimization
+}
+
+classInteger a =Add(1,2);//~classInteger
+==========
+#include <iostream>
+
+class MyClass {
+public:
+    // Constructor
+    MyClass() {
+        std::cout << "Constructor called" << std::endl;
+    }
+
+    // Copy constructor
+    MyClass(const MyClass&) {
+        std::cout << "Copy constructor called" << std::endl;
+    }
+
+    // Destructor
+    ~MyClass() {
+        std::cout << "Destructor called" << std::endl;
+    }
+};
+
+MyClass createObject() {
+    return MyClass(); // Return a temporary object
+}
+
+int main() {
+    MyClass obj = createObject(); // Initialize obj with the returned temporary object
+    return 0;
+}
+
+Instead of creating a temporary object and then copying or moving it into obj, 
+the compiler can directly construct obj in the memory location where the temporary object would 
+have been. This optimization avoids unnecessary copying or moving and can result in more 
+efficient code.
+
+When you run this code, you might see the output:
+
+Constructor called
+Destructor called
+==========
+MyClass createObject() {
+    return MyClass(); // Return a temporary object
+}
+========
+MyClass createObject() {
+    MyClass obj;
+    return obj; // Return a named object
+}
+==============
+#include <iostream>
+
+class MyClass {
+public:
+    // Constructor
+    MyClass(int x) {
+        std::cout << "Constructor called with value: " << x << std::endl;
+    }
+
+    // Destructor
+    ~MyClass() {
+        std::cout << "Destructor called" << std::endl;
+    }
+};
+
+int main() {
+	//intstead of creating the tempory object and then copying
+    MyClass obj=42; // MyClass obj{42} or // Direct initialization with braced initialization syntax
+    return 0;
+}
+//Constructor called with value: 42
+Destructor called
+======================================
+std::move is always used with the lvalue ie typecast to rvalue reference
+it forces the copiler to use move instead of copy
+auto obj1{obj2} will call the copy constructor
+move is used for the noncopyable class object example fstream, unique_ptr and thread
+when the class has the copy constructor deleted in that case we cannot copy , here we can use move
+usage of move in the primitive type doesnt sarve any purpose , it will still be copied and not moving.
+    int x =10;
+    int y = std::move(x);
+    std::cout << y <<x <<std::endl; //10 10
+	
+casting call the move constructor:
+auto obj1 {static_cast<classInteger &&>(obj2)}
+
+the other way to call move
+auto obj1{std::move(obj2)}
+
+move is used in the utility header
+why we need move?
+state of the old object is not required any more
+
+
+void print(classInteger a)
+{
+}
+
+print (std::move(obj))
+//after the print we are not going to use the obj any more
+// after move we cannot read value from obj example obj.getfunction(); //program will crash since the 
+the object is in unspecified state
+//but you can reinitialize the object like  obj.setvalue(10); and start using it obj.getfunction()
+
+#include <iostream>
+#include <string>
+#include <utility>
+
+struct A {
+  std::string abc = "abc";
+  std::string& get() & {
+    std::cout << "get() &" << std::endl;
+    return abc;
+  }
+  std::string get() && {
+    std::cout << "get() &&" << std::endl;
+    return std::move(abc);
+  }
+  std::string const& get() const & {
+    std::cout << "get() const &" << std::endl;
+    return abc;
+  }
+  std::string get() const && {
+    std::cout << "get() const &&" << std::endl;
+    return abc;
+  }
+};
+
+int main()
+{
+  A a1;
+  a1.get();
+  const A a2{};
+  a2.get();
+  A().get();
+  const A a3{};
+  std::move(a3).get();
+}
+
+get() &
+get() const &
+get() &&
+get() const &&
+================================
+#include <iostream>
+
+class MyClass {
+public:
+    // Constructor
+    MyClass() {
+        std::cout << "Default constructor called" << std::endl;
+    }
+
+    // Copy constructor
+    MyClass(const MyClass&) {
+        std::cout << "Copy constructor called" << std::endl;
+    }
+
+    // Destructor
+    ~MyClass() {
+        std::cout << "Destructor called" << std::endl;
+    }
+};
+
+int main() {
+    MyClass obj1;
+    auto obj2{obj1};  // Copy constructor called
+    auto obj3(obj1);  // Copy constructor called
+    auto obj4 = (obj1);  // Copy constructor called
+    return 0;
+}
+Default constructor called
+Copy constructor called
+Copy constructor called
+Copy constructor called
+Destructor called
+Destructor called
+Destructor called
+Destructor called
+============================================
+This program will work only if the classinteger has the copy object ie copy object is not deleted
+void print (classinteger obj) //call copy constructor. if there is copy object is deleted  then this
+//program will give error
+{
+}
+classinteger objectl
+print(object)
+====
+if there is no copy constructor and make this program to work
+void print (classinteger obj) 
+{
+}
+classinteger objectl
+print(std::move(object))
+=================
+no error 
+int Square(int &&x){
+    return x*x;
+}
+ 
+int main(){
+    int &&res1 = Square(8) ;             //Line 1
+    const int &res2 = Square(20) ;       //Line 2
+    int res3 = Square(Square(5)) ;       //Line 3
+    return 0 ;
+}
+=================
+move: deep copy is avoided and the resources 
+are simply moved from a temporary object to another object. This increases performance.
+==============
+To make the object as not copyable
+class Foo {
+public: 
+  Foo(const F00 &) =delete;
+  Foo &operator = (const Foo &) = delete
+}
+=======================
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    std::ifstream log_cfg_file("example.txt"); // Open file for reading
+
+    if (!log_cfg_file.is_open()) { // Check if file opened successfully
+        std::cerr << "Failed to open file." << std::endl;
+        return 1; // Return error code
+    }
+
+    std::string line;
+    while (std::getline(log_cfg_file, line)) { // Read lines from file
+        std::cout << line << std::endl; // Output each line
+    }
+
+    log_cfg_file.close(); // Close file
+
+    return 0;
+}
+
+=================================================
+#include <iostream>
+#include <fstream>
+
+int main() {
+    std::ifstream log_cfg_file("example.txt");
+
+    if (!log_cfg_file.is_open()) {
+        std::cerr << "Failed to open file." << std::endl;
+        return 1;
+    }
+
+    char ch;
+    while (log_cfg_file.get(ch)) { // Read character by character
+        std::cout << ch; // Output each character
+    }
+
+    log_cfg_file.close();
+
+    return 0;
+}
+=======================================
+isalnum() is a function declared in the <cctype> header that is used
+ to check whether a character is alphanumeric.
+ 
+ #include <iostream>
+#include <cctype>
+
+int main() {
+    char c1 = 'a';
+    char c2 = '7';
+
+    std::cout << "Is 'a' alphanumeric? " << std::boolalpha << static_cast<bool>(std::isalnum(c1)) << std::endl; //true
+    std::cout << "Is '7' alphanumeric? " << std::boolalpha << static_cast<bool>(std::isalnum(c2)) << std::endl; //true
+
+    return 0;
+}
+=====================
+The character '8' is a digit, so isalnum('8') would return a non-zero value.
+The character ' ' (space) is not alphanumeric, so isalnum(' ') would return 0.
+==========================
+#include <iostream>
+#include <fstream>
+
+int main() {
+    const std::string LX_LOG_CFG_FILE_NAME = "example.txt";
+
+    // Open the file for writing, truncating its contents if it exists
+    std::ofstream log_cfg_file(LX_LOG_CFG_FILE_NAME, std::ios::trunc);
+
+    // Check if the file is opened successfully
+    if (log_cfg_file.is_open()) {
+        // File is opened successfully, you can write to it here
+        log_cfg_file << "This is a line written to the file." << std::endl;
+
+        // Close the file when done writing
+        log_cfg_file.close();
+
+        std::cout << "File written successfully." << std::endl;
+    } else {
+        // Failed to open the file
+        std::cerr << "Failed to open file for writing." << std::endl;
+    }
+
+    return 0;
+}
+===========================================
+operator overloading:
+custom implementation of primitive operators
+allow usage of user defined objects in mathematical expression
+overloaded as function but provided convenient notation
+imeplementated as member or global function
+require the usage of operator keyword
+<ret> operator <#>(arguments)
+
+as a global functions, require same no of arguments as opeands
+as a member function, one operand is passed as argument through this poinetr
+binary operator will require only one explict argument
+unary operator will not require any explict argument
+
+integer operator +(const integer &, const integer &)
+integer integer::operator+(const integer &)
+
+========
+In C++, an operator is a symbol that operates on operands to perform certain operations. For example, + is an operator that adds two operands together.
+
+Operators that can be overloaded in C++ include:
+
+Arithmetic operators: +, -, *, /, %
+Relational operators: ==, !=, <, >, <=, >=
+Logical operators: &&, ||, !
+Bitwise operators: &, |, ^, ~, <<, >>
+Assignment operators: =, +=, -=, *=, /=, %=, &=, |=, ^=, <<=, >>=
+Increment/decrement operators: ++, --
+Member access operators: . (dot), -> (arrow)
+Subscript operator: []
+Function call operator: ()
+Conditional operator: ?:
+Comma operator: ,
+Address-of operator: &
+Pointer-to-member operator: .*, ->*
+--------------------
+In C++, there are certain operators that cannot be overloaded.
+These include:
+
+#
+. dot operator
+:: (scope resolution operator)
+.* (member pointer-to-member selection operator)
+?: (ternary conditional operator)
+sizeof (size-of operator)
+typeid (type identification operator)
+These operators have specific compile-time or 
+language-defined behaviors that cannot be overridden through operator overloading. For example, sizeof is a compile-time operator used to determine the size of a type or object, and typeid is used for type identification during runtime. Attempting to overload these operators would conflict with their fundamental purposes and lead to ambiguities or unexpected behavior.
+============================================
+obj3 = obj2+obj1
+here the + operator can be overloaded either in the global scope or 
+in the class member scope and not in both ie global and class member scope
+==============
++ operator overloading:
+#include <iostream>
+
+class MyNumber {
+private:
+    int value;
+
+public:
+    MyNumber(int val) : value(val) {}
+
+    // Overloading + operator in class scope
+    MyNumber operator+(const MyNumber& other) const {
+       // return MyNumber(value + other.value);
+       return MyNumber(this->value + other.value);
+    }
+
+    int getValue() const {
+        return value;
+    }
+};
+
+int main() {
+    MyNumber num1(5);
+    MyNumber num2(3);
+    MyNumber result = num1 + num2; // Uses the overloaded + operator
+    std::cout << "Result: " << result.getValue() << std::endl; // Output: Result: 8
+    return 0;
+}
+=====================================
+//global operator + overloading
+
+#include <iostream>
+
+class MyNumber {
+private:
+    int value;
+
+public:
+    MyNumber(int val) : value(val) {}
+
+    int getValue() const {
+        return value;
+    }
+};
+
+// Global operator overloading
+MyNumber operator+(const MyNumber& num1, const MyNumber& num2) {
+    return MyNumber(num1.getValue() + num2.getValue());
+}
+
+int main() {
+    MyNumber num1(5);
+    MyNumber num2(3);
+    MyNumber result = num1 + num2; // Uses the overloaded + operator
+    std::cout << "Result: " << result.getValue() << std::endl; // Output: Result: 8
+    return 0;
+}
+===============================
+unary pre increment and post increment operator overloading?
+
+#include <iostream>
+
+class MyNumber {
+private:
+    int value;
+
+public:
+    MyNumber(int val) : value(val) {}
+
+    // Overloading unary pre-increment operator (++x)
+	//main object can return by reference 
+    MyNumber& operator++() {
+        ++value;
+        return *this;
+    }
+
+    // Overloading unary post-increment operator (x++)
+    MyNumber operator++(int) {
+	    //local object cannot retrun by reference
+        MyNumber temp = *this;
+		//or MyNumber temp(*this);
+        ++value;
+        return temp;
+    }
+
+    int getValue() const {
+        return value;
+    }
+};
+
+int main() {
+    MyNumber num(5);
+    
+    // Using unary pre-increment operator (++x)
+    ++num;
+    std::cout << "After pre-increment: " << num.getValue() << std::endl; // Output: 6
+    
+    // Using unary post-increment operator (x++)
+    const MyNumber result = num++;
+    std::cout << "After post-increment: " << result.getValue() << std::endl; // Output: 6
+    std::cout << "Original value: " << num.getValue() << std::endl; // Output: 7
+    
+    return 0;
+}
+===========================
+on what scenerio i will retrun the reference of the local object from the function:
+the local object should have global life time
+#include <iostream>
+
+// Function returning a reference to a static local object
+int& getStaticLocal() {
+    static int x = 5;
+    return x;
+}
+
+// Function returning a reference to a dynamically allocated object
+int& getDynamicObject() {
+    int* ptr = new int(10);
+    return *ptr;
+}
+
+int main() {
+    int& staticRef = getStaticLocal();
+    int& dynamicRef = getDynamicObject();
+
+    std::cout << "Static local object: " << staticRef << std::endl;
+    std::cout << "Dynamic allocated object: " << dynamicRef << std::endl;
+
+    // Don't forget to deallocate the dynamically allocated object
+    delete &dynamicRef;
+
+    return 0;
+}
+=================================================
+function returning the &&
+#include <iostream>
+
+int&& getDynamicObject() {
+    int* value = new int(42); // Dynamically allocate an integer
+    return std::move(*value); // Return an rvalue reference to the dynamically allocated integer
+ //Move choose * because we using function returning int 
+}
+
+int main() {
+    int&& ref = getDynamicObject();
+    std::cout << "Returned value: " << ref << std::endl; // Output: 42
+
+    return 0;
+}
+=========
+#include <iostream>
+
+int main() {
+    int x = 10;
+    int& lref = x; // Lvalue reference to 'x'
+    // int&& rref = x; // Error: Cannot assign lvalue to rvalue reference
+
+    int&& rref = 20; // Rvalue reference to temporary object
+    // int& lref2 = 20; // Error: Cannot assign rvalue to lvalue reference
+
+    return 0;
+}
+===========================#include <iostream>
+
+int createobject() {
+    int value = 42;
+    return (value); // Returning an rvalue reference to a movable object
+}
+
+int main() {
+    int&& object = createobject(); // Capturing the rvalue reference
+    std::cout << "Object value: " << object << std::endl; // Output: 42
+
+    return 0;
+}
+==========================
+int&& createobject() {
+    int* value = new int(42); // Dynamically allocate an integer
+    return std::move(*value); // Return an rvalue reference to the dynamically allocated integer
+}
+
+int main() {
+    int&& object = createobject(); // Capturing the rvalue reference
+    std::cout << "Object value: " << object << std::endl; // Output: 42
+
+    return 0;
+}
+===========================
+#include <iostream>
+
+int &createobject() {
+    int value = 42;
+    return (value); // Rerror returning the reference of local variable
+}
+
+int main() {
+    int&& object = createobject(); // cannot bind & to && error
+    std::cout << "Object value: " << object << std::endl; //
+    return 0;
+}
+=================================
+#include <iostream>
+
+
+int main() {
+    int x = 10;
+int &y = x;
+//int &&z = y;      // Error: Cannot bind rvalue reference to lvalue
+//int &&a = x;      // Error: Cannot bind rvalue reference to lvalue
+int &&b = std::move(x);  // Compiles, but not recommended (see explanation below)
+or
+int &&b1 = std::move(y);  // Compiles, but not recommended (see explanation below)
+object x is undefined state; so dont access after move
+    return 0;
+}
+==============================
+int &&b = std::move(x);: This line uses std::move() to cast x into an rvalue, allowing it to
+ bind to the rvalue reference b. However, this is not recommended because x is still a named
+ variable with a valid address, and moving from it might have unexpected consequences.
+ It's generally safer to move from temporaries or objects that are going out of scope.
+=============================================
+(obj++).getvalue(); //here the value is incremented after calling the function getvalue
+any function returning *this, can use class & reference.No temprary will be created.
+post increment object requires the creation of temporary object.
+===================================================
+bool operator ==(const integer &object) const;
+{
+    return (this->value == value);
+}
+
+compiler generated assignment operator perform the shallow copy;
+integer a(2), b;
+b = a; //call the compiler generated assignement operator
+========
+#include <iostream>
+
+class MyClass {
+public:
+    int value;
+
+    MyClass(int val) : value(val) {}
+
+    // Overloaded assignment operator returning a reference
+	//asignement operator takes the const argument 
+	//assignement operator will return reference
+    MyClass& operator=(const MyClass& other) {
+		if(this != &others)// this possible when we used reference; or dynmaic memory object
+		{
+		//if the old object has any heap memory it has to be freed before allocating the 
+		// value from the data from the heap memory of the argument object
+        value = other.value;
+		}
+        return *this; // Returning a reference to the modified object
+    }
+};
+
+int main() {
+    MyClass obj1(10);
+    MyClass obj2(20);
+
+    // Assign obj1 to obj2 and then assign obj2 to obj3
+    MyClass obj3 = obj2 = obj1; // Correct behavior
+	//obj2 = obj1; is assignement and obj3 = obj2 is the copy constructor
+    obj1.value =100;
+    
+    std::cout << "obj3.value after assignment: " << obj3.value << std::endl; // Output: 10
+
+    return 0;
+}
+===========================
+obj3 = obj2 = obj1; //if the assignement operator is not reurning by reference 
+operator=
+copy constructor called 
+operator=
+copy constructor called 
+=======================
+obj3 = obj2 = obj1; //if the assignement operator reurning by reference 
+operator=
+operator=
+==========================
+#include <iostream>
+
+class MyObject {
+public:
+    int* data;
+    int size;
+
+    // Constructor
+    MyObject(int sz) : size(sz), data(new int[sz]) {
+        std::cout << "Constructor called." << std::endl;
+    }
+
+    // Move constructor
+    MyObject(MyObject&& other) noexcept : data(other.data), size(other.size) {
+        std::cout << "Move constructor called." << std::endl;
+        other.data = nullptr;
+        other.size = 0;
+    }
+
+    // Move assignment operator
+    MyObject& operator=(MyObject&& other) noexcept {
+        std::cout << "Move assignment operator called." << std::endl;
+        if (this != &other) {
+            delete[] data; // Free current resources
+            data = other.data; // Transfer ownership of data
+            size = other.size;
+            other.data = nullptr; // Prevent other from deleting the data
+            other.size = 0;
+        }
+        return *this;
+    }
+
+    // Destructor
+    ~MyObject() {
+        delete[] data;
+        std::cout << "Destructor called." << std::endl;
+    }
+};
+
+int main() {
+    // Create an object using the constructor
+    MyObject obj1(5); //constructor called 
+
+    // Call the move constructor explicitly
+    MyObject obj2(std::move(obj1)); //move constructor called
+
+    // Create a new object
+    MyObject obj3(3); //constructor called
+
+    // Call the move assignment operator explicitly
+    obj3 = std::move(obj2); //move assignement called
+
+    return 0; //destructor called 3 times
+}
+=========================================
+//move assignemnt operator will && as the argument and return &
+//move contructor takes && as the argument
+#include <iostream>
+#include <vector>
+
+class MyObject {
+public:
+    int* data;
+    int size;
+
+    // Constructor
+    MyObject(int sz) : size(sz), data(new int[sz]) {
+        std::cout << "Constructor called." << std::endl;
+    }
+
+    // Destructor
+    ~MyObject() {
+        delete[] data;
+        std::cout << "Destructor called." << std::endl;
+    }
+
+    // Copy constructor
+    MyObject(const MyObject& other) : size(other.size), data(new int[other.size]) {
+        std::cout << "Copy constructor called." << std::endl;
+        std::copy(other.data, other.data + other.size, data);
+    }
+
+    // Copy assignment operator
+    MyObject& operator=(const MyObject& other) {
+        std::cout << "Copy assignment operator called." << std::endl;
+        if (this != &other) {
+            delete[] data; // Free current resources
+            size = other.size;
+            data = new int[size];
+            std::copy(other.data, other.data + other.size, data);
+        }
+        return *this;
+    }
+};
+
+MyObject createObject() {
+    MyObject obj(5);
+    return obj; // Move constructor is called here implicitly (RVO)
+}
+
+int main() {
+    MyObject obj1 = createObject();//call the move constructor
+    obj1 = createObject(); //call the move assignement operator
+
+    return 0;
+}
+======================
+type conversion:
+integer obj1(10);
+interger obj =obj1+5; //obj1.operator(5);
+if the user has the overloaded + operator  the above line 
+will work. it will resolved as
+interger obj =obj1.operator(5);
+
+=====
+interger obj =5+obj1;
+std::cout << obj <<std::endl;
+this line will not work , to make it work
+//provide a global function
+integer operator+(int x, const integer &y)
+{
+  integer temp;
+  temp.setvalue(x+y.getvalue());
+  rerurn temp;
+}
+
+//std::// return ostream & since we are not reurning the local bject
+std::ostream & operator  << (std::ostream &out, const integer &a)
+{
+   out <<a.getvalue();
+   return out
+}
+
+std::cout << obj; // resolved as 
+operator <<(std::cout, sum).operator <<(std::endl);
+===================
+#include <iostream>
+
+class integer {
+private:
+    int value;
+public:
+    // Constructor
+    integer(int val) : value(val) {}
+
+    // Getter method
+    int getvalue() const {
+        return value;
+    }
+};
+
+// Addition operator overload
+integer operator+(const integer& x, const integer& y) {
+    return integer(x.getvalue() + y.getvalue());
+}
+
+// Insertion operator overload
+std::ostream& operator<<(std::ostream& out, const integer& a) {
+    out << a.getvalue();
+    return out;
+}
+
+int main() {
+    integer obj1(5);
+    integer obj2(10);
+
+    // Usage example: addition operator
+    integer sum = obj1 + 12;
+    std::cout << "Sum: " << sum << std::endl; // Output: Sum: 17
+   operator<<(std::cout,sum).operator<<(std::endl); //17
+   std::cout << "Sum: ";
+operator<<(std::cout, sum).operator<<(std::endl); //sum 17
+//operator<<(std::cout, std::endl);//error 
+std::cout.operator<<(std::endl);
+    return 0;
+}
+===============================================================================
+#include <iostream>
+
+class integer {
+private:
+    int value;
+public:
+    // Constructor
+    integer(int val=0) : value(val) {}
+
+    // Getter method
+    int getvalue() const {
+        return value;
+    }
+
+    // Overload >> operator
+    friend std::istream& operator>>(std::istream& in, integer& obj) {
+        in >> obj.value;
+        return in;
+    }
+};
+
+int main() {
+    integer obj;
+    std::cout << "Enter an integer: ";
+    std::cin >> obj; // 12
+
+    std::cout << "You entered: " << obj.getvalue() << std::endl; // 12
+
+    return 0;
+}
+=============================
+#include <iostream>
+
+
+class integer {
+private:
+    int value;
+public:
+    // Constructor
+    integer(int val=0) : value(val) {}
+
+    // Getter method
+    int getvalue() const {
+        return value;
+    }
+
+    void setvalue(int argument) {
+        value=argument;
+    }
+    
+};
+
+// Overload >> operator
+std::istream& operator>>(std::istream& in, integer& obj) {
+    int x;
+    in >> x;
+    obj.setvalue(x);
+    return in;
+}
+    
+int main() {
+    integer obj;
+    std::cout << "Enter an integer: ";
+    std::cin >> obj; // 12
+
+    std::cout << "You entered: " << obj.getvalue() << std::endl;//12
+
+    return 0;
+}
+====================================================
+#include <iostream>
+
+class Integer {
+private:
+    int value;
+
+public:
+    // Constructor
+    Integer(int val) : value(val) {}
+
+    // Getter method
+    int getValue() const {
+        return value;
+    }
+
+    // Overload + operator
+    Integer operator+(const Integer& other) const {
+        return Integer(value + other.value);
+    }
+};
+
+int main() {
+    Integer a(5);
+    Integer b(10);
+
+    // Usage of the overloaded + operator
+    Integer sum = a + b; //15
+
+    std::cout << "Sum: " << sum.getValue() << std::endl; // Output: Sum: 15
+
+    return 0;
+}
+=======================================
+ambiguity error we cannot have both the global and local member function overloaded  for same operator
+even though we have friend function.
+
+#include <iostream>
+
+class Integer {
+public:
+    int value;
+    
+    // Constructor
+    Integer(int val) : value(val) {}
+
+    // Getter method
+    int getValue() const {
+        return value;
+    }
+
+    // Overload + operator as a member function
+    Integer operator+(Integer& other) {
+        std::cout <<"local";
+        return Integer(value + other.value);
+    }
+
+    // Declare the global + operator as a friend function
+    friend Integer operator+(Integer& other1, Integer& other);
+};
+
+// Define the global + operator
+Integer operator+(Integer& other1, Integer& other) {
+    std::cout <<"global";
+    return Integer(other1.value + other.value);
+}
+
+int main() {
+    Integer a(5);
+    Integer b(10);
+
+    // Usage of the overloaded + operator
+    Integer sum = a + b; // Calls the global operator+
+
+    std::cout << "Sum: " << sum.getValue() << std::endl; // Output: Sum: 15
+
+    return 0;
+}
+=================
+ambiguity error we cannot have both the global and local member function overloaded for the same opertor
+#include <iostream>
+
+class Integer {
+public:
+    int value;
+    
+    // Constructor
+    Integer(int val) : value(val) {}
+
+    // Getter method
+    int getValue() const {
+        return value;
+    }
+
+    // Overload + operator as a member function
+    Integer operator+(Integer& other) {
+        std::cout <<"local";
+        return Integer(value + other.value);
+    }
+};
+
+// Define the global + operator
+Integer operator+(Integer& other1, Integer& other) {
+    std::cout <<"global";
+    return Integer(other1.value + other.value);
+}
+
+int main() {
+    Integer a(5);
+    Integer b(10);
+
+    // Usage of the overloaded + operator
+    Integer sum = a + b; // Calls the global operator+
+
+    std::cout << "Sum: " << sum.getValue() << std::endl; // Output: Sum: 15
+
+    return 0;
+}
+==========================
+no ambiguity for the below function
+Integer operator+(Integer& other)
+Integer operator+(Integer& other1, Integer& other);
+==============
+friend indicate that the the class or function is friend of that class. 
+Friend function or friend class has access to all the private, public and protected member of the class 
+  
+=============
+//global function can access only the public function
+// friend function can access the private, protected and public
+//
+#include <iostream>
+
+using namespace std;
+
+class MyClass {
+private:
+    int data;
+    // Declare friend function for output
+    //friend ostream& operator<<(ostream& os, const MyClass& obj);
+    // Declare friend function for input
+    friend istream& operator>>(istream& is, MyClass& obj);
+public:
+    MyClass(int d) : data(d) {}
+    void setvalue(int a)
+    {
+        data = a;
+    }
+    
+    int getvalue()
+    {
+        return (data);
+    }
+};
+
+ostream& operator<<(ostream& os, const MyClass& obj) {
+    std::cout << "operator<<" <<std::endl;
+    os << "Data: " << obj.getvalue(); 
+	//here the object is const so const object cannot call non const function
+    return os;
+}
+
+istream& operator>>(istream& is, MyClass& obj) {
+    is >> obj.data;
+    return is;
+}
+
+int main() {
+    MyClass obj(0);
+    cout << "Enter an integer: "; //dont call our overlaod
+    cin >> obj;
+    cout <<  "result " << obj << endl; //result operator<<
+    return 0;
+}
+====
+Enter an integer: 1
+result operator<<
+Data: 1
+===================================
+main.cpp: In function ‘std::ostream& operator<<(std::ostream&, const MyClass&)’:
+main.cpp:27:35: error: passing ‘const MyClass’ as ‘this’ argument discards qualifiers [-fpermissive]
+   27 |     os << "Data: " << obj.getvalue();
+   
+ =====================================================
+ In C++, the friend keyword is used to allow a non-member function or another class to access private 
+ and protected members of a class. Here's a simple example demonstrating the usage of friend class:
+ 
+ #include <iostream>
+
+class MyClass {
+private:
+    int data;
+
+    // Declare FriendClass as a friend class
+    friend class FriendClass;
+
+public:
+    MyClass(int d) : data(d) {}
+
+    // Accessor function to retrieve the value of data
+    int getData() const {
+        return data;
+    }
+};
+
+// FriendClass can access the private members of MyClass
+class FriendClass {
+public:
+    void showData(const MyClass& obj) {
+        // Accessing private member of MyClass
+        std::cout << "Data from FriendClass: " << obj.data << std::endl; 
+		// Accessing private member directly
+    }
+};
+
+int main() {
+    MyClass obj(10);
+    FriendClass fc;
+    fc.showData(obj); // FriendClass accessing private member of MyClass
+    return 0;
+}
+Data from FriendClass: 10
+======================================================
+
+making the public function of one class the friend of other class:
+error when we use the scope resolution of not knowing class name
+// we cannot define such friend function inside the class
+#include <iostream>
+
+class FriendClass;
+
+class MyClass {
+private:
+    int data;
+
+    // Declare FriendClass::showData() as a friend function of MyClass
+    friend void FriendClass::showData(const MyClass& obj); //error since we have no idea on the firendclass
+
+public:
+    MyClass(int d) : data(d) {}
+
+    // Accessor function to retrieve the value of data
+    int getData() const {
+        return data;
+    }
+};
+
+class FriendClass {
+public:
+    // Friend function of MyClass
+    void showData(const MyClass& obj) {
+        // Accessing private member of MyClass
+        std::cout << "Data from FriendClass: " << obj.data << std::endl;
+    }
+};
+
+int main() {
+    MyClass obj(10);
+    FriendClass fc;
+    fc.showData(obj); // FriendClass accessing private member function of MyClass
+    return 0;
+}
+===============================
+making the public function of one class the friend of other class:
+// we cannot define such friend function inside the class
+//not all the friend has to be defined outside the class
+#include <iostream>
+
+class MyClass; // Forward declaration of MyClass
+
+class FriendClass {
+public:
+    // Friend function declaration
+    void showData(const MyClass& obj);
+};
+
+class MyClass {
+private:
+    int data;
+
+    // Declare FriendClass::showData() as a friend function of MyClass
+    friend void FriendClass::showData(const MyClass& obj);
+
+public:
+    MyClass(int d) : data(d) {}
+
+    // Accessor function to retrieve the value of data
+    int getData() const {
+        return data;
+    }
+};
+
+// Definition of FriendClass::showData()
+// this function needs to be defined outside the class
+void FriendClass::showData(const MyClass& obj) {
+    // Accessing private member of MyClass through accessor function
+    std::cout << "Data from FriendClass: " << obj.getData() << std::endl;
+}
+
+int main() {
+    MyClass obj(10);
+    FriendClass fc;
+    fc.showData(obj); // FriendClass accessing private member function of MyClass
+    return 0;
+}
+======
+Data from FriendClass: 10
+============================================
+//friend function defined inside the class 
+
+#include <iostream>
+
+class MyClass {
+private:
+    int data;
+
+    // Declare FriendFunction as a friend function
+    friend void FriendFunction(const MyClass& obj){
+    // Accessing private member of MyClass directly
+    std::cout << "Data from FriendFunction: " << obj.data << std::endl;
+}
+public:
+    MyClass(int d) : data(d) {}
+
+    // Accessor function to retrieve the value of data
+    int getData() const {
+        return data;
+    }
+};
+
+int main() {
+    MyClass obj(10);
+    FriendFunction(obj); // FriendFunction accessing private member of MyClass
+    return 0;
+}
+Data from FriendFunction: 10
+======================================================
+friend functon or friend class usage needs to be avoided.
+===========
+RAII:
+Resource Acquisition Is Initialization (RAII) in C++. RAII is a programming idiom 
+where the acquisition of resources (like memory or file handles) is tied to the lifetime of an object.
+#include <iostream>
+
+class integer {
+public:
+    integer(int val) : value(val) {
+        std::cout << "Integer object created with value: " << value << std::endl;
+    }
+    ~integer() {
+        std::cout << "Integer object destroyed" << std::endl;
+    }
+    
+    int getValue() const {
+        return value;
+    }
+
+private:
+    int value;
+};
+
+class intp {
+public:
+    intp(integer* ptr) : ptr(ptr) {
+        std::cout << "intp object created" << std::endl;
+    }
+    
+    ~intp() {
+        delete ptr;
+        std::cout << "intp object destroyed" << std::endl;
+    }
+
+    // Accessor function to access value of the managed integer
+    int getValue() const {
+        return ptr->getValue();
+    }
+
+private:
+    integer* ptr;
+};
+
+int main() {
+    intp myIntPtr(new integer(10));
+    std::cout << "Value managed by intp: " << myIntPtr.getValue() << std::endl;
+    return 0;
+}
+
+Integer object created with value: 10
+intp object created
+Value managed by intp: 10
+Integer object destroyed
+intp object destroyed\
+=====================================
+overload the -> and * operator 
+#include <iostream>
+
+class integer {
+public:
+    integer(int val) : value(val) {
+        std::cout << "Integer object created with value: " << value << std::endl;
+    }
+    ~integer() {
+        std::cout << "Integer object destroyed" << std::endl;
+    }
+    
+    int getValue() const {
+        return value;
+    }
+
+private:
+    int value;
+};
+
+class intp {
+public:
+    intp(integer* ptr) : ptr(ptr) {
+        std::cout << "intp object created" << std::endl;
+    }
+    
+    ~intp() {
+        delete ptr;
+        std::cout << "intp object destroyed" << std::endl;
+    }
+
+    // Overloaded operator-> to access members of integer directly
+    integer* operator->() {
+        return ptr;
+    }
+
+    // Overloaded operator* to dereference and return integer pointer
+    integer& operator*() {
+        return *ptr;
+    }
+
+private:
+    integer* ptr;
+};
+
+int main() {
+    intp myIntPtr(new integer(10));
+    
+    // Accessing member of integer through overloaded operator->
+    std::cout << "Value managed by intp (through operator->): " << myIntPtr->getValue() << std::endl;
+    
+    // Accessing member of integer through overloaded operator*
+    std::cout << "Value managed by intp (through operator*): " << (*myIntPtr).getValue() << std::endl;
+
+    return 0;
+}
+=====
+Integer object created with value: 10
+intp object created
+Value managed by intp: 10
+Integer object destroyed
+intp object destroyed
+=================================================
+#include <iostream>
+
+class Incrementer {
+public:
+    Incrementer(int value) : count(value) {}
+
+    // Overloaded function call operator ()
+    void operator()(int increment) {
+        count += increment;
+    }
+
+    int getCount() const {
+        return count;
+    }
+
+private:
+    int count;
+};
+
+int main() {
+    Incrementer incrementer(5);
+    
+    std::cout << "Before incrementing: " << incrementer.getCount() << std::endl;
+
+    // Using the object as a function by overloading ()
+    incrementer(3); // Equivalent to incrementer.operator()(3);
+
+    std::cout << "After incrementing: " << incrementer.getCount() << std::endl;
+
+    return 0;
+}
+===
+Before incrementing: 5
+After incrementing: 8
+=================================
+unique_ptr is class template , need s the type pointer that we need to managed
+unique pointer dont have copy constructor s
+
+std::unique_ptr<integer> p(new integer)
+//auto p2(p); //error dont have copy constructor
+//above line error attempt to use the deleted function
+
+void processUniquePtr(std::unique_ptr<MyClass> ptr) {
+    ptr->doSomething();
+    // The unique_ptr is now owned by the function
+}
+
+int main() {
+    std::unique_ptr<MyClass> ptr(new MyClass());
+    processUniquePtr(std::move(ptr)); // call the move constructor and Ownership transferred to the function
+    // ptr is now nullptr
+    return 0;
+}
+================
+ The destructor of the std::unique_ptr will be called after the return statement
+ ie after the block scope:
+ ===========================
+#include <iostream>
+#include <memory>
+
+class MyClass {
+public:
+    void doSomething() {
+        std::cout << "Doing something inside MyClass." << std::endl;
+    }
+};
+
+// Function taking a unique_ptr by reference
+void processUniquePtr(std::unique_ptr<MyClass>& ptr) {
+    ptr->doSomething();
+    // The unique_ptr is still valid after the function call
+}
+
+int main() {
+    // Creating a unique_ptr
+    std::unique_ptr<MyClass> ptr(new MyClass());
+
+    // Calling the function, passing the unique_ptr by reference
+    processUniquePtr(ptr);
+
+    // After the function call, ptr is still valid
+    if (ptr) {
+        std::cout << "ptr is still valid." << std::endl;
+    } else {
+        std::cout << "ptr is null." << std::endl;
+    }
+
+    return 0;
+}
+Doing something inside MyClass.
+ptr is still valid.
+=====================================
+whn you overload the operator
+
+a. it doesnot change the associativity , precedence and arity(operand count) does not change
+b. operator function should be non static except new and delete?
+
+#include <iostream>
+
+class Complex {
+private:
+    double real;
+    double imaginary;
+
+public:
+    Complex(double r, double i) : real(r), imaginary(i) {}
+
+    // Non-static member function for addition operator
+    Complex operator+(const Complex& other) const {
+        return Complex(real + other.real, imaginary + other.imaginary);
+    }
+
+    // Non-static member function for stream insertion operator (<<)
+    friend std::ostream& operator<<(std::ostream& os, const Complex& c) {
+        os << c.real << " + " << c.imaginary << "i";
+        return os;
+    }
+};
+
+int main() {
+    Complex c1(3.5, 2.8);
+    Complex c2(1.2, 4.6);
+
+    Complex sum = c1 + c2;
+    std::cout << "Sum: " << sum << std::endl;
+
+    return 0;
+}
+
+//Sum: 4.7 + 7.4i
+==============================================
+static member function is also the member function of the class hence they can access the 
+private data 
+
+#include <iostream>
+
+class Complex {
+private:
+    double real;
+    double imaginary;
+
+public:
+    Complex(double r, double i) : real(r), imaginary(i) {}
+
+    // Static member function for subtraction operator
+    static Complex subtract(const Complex& a, const Complex& b) {
+        return Complex(a.real - b.real, a.imaginary - b.imaginary);
+    }
+
+    // Getter for real part
+    double getReal() const { return real; }
+
+    // Getter for imaginary part
+    double getImaginary() const { return imaginary; }
+};
+
+int main() {
+    Complex c1(5.5, 3.2);
+    Complex c2(2.1, 1.5);
+
+    Complex diff = Complex::subtract(c1, c2);
+    std::cout << "Difference: " << diff.getReal() << " + " << diff.getImaginary() << "i" << std::endl;
+
+    return 0;
+}
+
+Difference: 3.4 + 1.7i
+========================================
+Type Conversion:
+int a =5, b =2;
+float b =a; //compiler perform implicit conversion
+float c = a/b; //2.0 integer operation cannot hold decimal part
+float d = (float) a/b; //2.5 //c stsyle cast 
+//c style casting is not encouraged in c++ since they dont check the 
+//validness of the casting
+static_cast is superior than c style casting
+float d = static_cast<float>(a)/b;
+
+int a =10;
+char *p = &a; //error
+char *p = (char*) &a; //c style casting no error
+char *p = static_cast<char*> &a; //error static cast cannot convert int* to char *
+char *p = reinterpret_cast<char*> &a; //passed
+
+const int x = 10;
+int *p = (int*) (&x) ;//c style works but leadt to bugs
+int *ptr = reinterpret_cast<int*> (&x) ;//not allowed
+const int *ptr1 = reinterpret_cast<const int*> (&x) ;//allowed
+int *ptr2 = const_cast<int*> (&x) ;//allowed
+
+===========
+#include <iostream>
+
+class MyClass {
+private:
+    int value;
+
+public:
+    MyClass(int v) : value(v) {}
+
+    void setValue(int v) {
+        value = v;
+    }
+
+    int getValue() const {
+        return value;
+    }
+};
+
+int main() {
+    const MyClass obj(10);
+
+    // Attempting to modify a const object directly (causes compilation error)
+    // obj.setValue(20); // Uncommenting this line will cause a compilation error
+
+    // Using const_cast to remove constness and modify the object
+    MyClass& nonConstObj = const_cast<MyClass&>(obj);
+    nonConstObj.setValue(20);
+
+    std::cout << "Modified value: " << obj.getValue() << std::endl; // Displays "Modified value: 20"
+
+    return 0;
+}
+Modified value: 20
+===================================
+static_cast;const_cast;reinterpret_cast works at compile time
+constructor also take part in converting one type to another
+
+integer a{10}; //paraameter constructor is invoked explicitly
+integer b = 8; ;//pameter constructor invovked implicitly
+//constructor will search, which takes integer
+
+print (integer a)
+{
+}
+
+print (5) //will call the paramter constructor
+==================
+#include <iostream>
+
+class integer {
+public:
+    integer(int val) : value(val) {} // Constructor to allow implicit conversion from int
+
+    int getValue() const {
+        return value;
+    }
+
+private:
+    int value;
+};
+//void print(const integer&& a)
+//or void print(integer&& a)
+//or void print(integer a)
+void print(const integer& a) {
+    std::cout << "Value: " << a.getValue() << std::endl;
+}
+
+int main() {
+    print((5)); // Calling print with an integer object constructed from the literal value 5
+    //or print(integer(5));
+	return 0;
+}
+
+//void print(integer& a) //main.cpp:20:12: error: cannot bind non-const lvalue reference of type ‘integer&’ to an rvalue of type ‘integer’
+========
+integer obj ;
+obj = 7; 
+//if we have the move assignement operator it will call that.
+//if there is no move assignement and we  overload assignemnt operator
+//which takes const integer &, then assignement operator will be called
+
+//initialization
+integer obj=8; //allow the user to create the object with primitive types;
+
+//assignement
+obj=10;
+
+=== 
+explicit keyword is used for the parameter constructor
+#include <iostream>
+
+class integer {
+public:
+    explicit integer(int val) : value(val) {} // Explicit constructor to avoid implicit conversion
+
+    int getValue() const {
+        return value;
+    }
+
+private:
+    int value;
+};
+
+void print(const integer& a) {
+    std::cout << "Value: " << a.getValue() << std::endl; //value:5
+}
+
+int main() {
+    //integer obj=12; //error: conversion from ‘int’ to non-scalar type ‘integer’ requested
+    integer obj=integer(12); //no error 
+    obj=integer(12); //no -error
+    //obj=(12);//error
+	// print(5); // This line would now cause a compilation error because the constructor is explicit
+    print(integer(5)); // Calling print with an integer object constructed from the literal value 5
+    return 0;
+}
+==================================
+user defined object to primitive types?
+
+type cconversion operator:
+no argument and no return type
+
+operator<type>()
+
+integer obj(12)
+int x = object;
+
+=====
+#include <iostream>
+
+class integer {
+public:
+    explicit integer(int val) : value(val) {} // Explicit constructor to avoid implicit conversion
+
+    int getValue() const {
+        return value;
+    }
+    
+    operator int() const; //this has to be in public section of the code
+private:
+    int value;
+    
+};
+
+// Conversion operator from integer to int
+integer::operator int() const {
+    return value;
+}
+    
+
+int main() {
+    //integer obj=12; //error: conversion from ‘int’ to non-scalar type ‘integer’ requested
+    integer obj=integer(12); //no error 
+    int y = obj;
+	//or 
+	//int y = static_cast<int>(y);
+    //or int y; y = obj;
+	std::cout <<y; //12
+    return 0;
+}
+===============================
+if you want to force the compiler not to auto convert
+//explicitly needs to maintain the cast
+
+#include <iostream>
+
+class integer {
+public:
+    integer(int val) : value(val) {} // Explicit constructor to avoid implicit conversion
+
+    int getValue() const {
+        return value;
+    }
+    
+    explicit operator int() const; // Declaration of the conversion operator
+
+private:
+    int value;
+};
+
+// Definition of the conversion operator
+integer::operator int() const {
+    return value;
+}
+
+int main() {
+    integer obj = integer(12); // You need to use explicit constructor to convert int to integer
+    int y = static_cast<int>(obj);
+    int z = obj; //error error: cannot convert ‘integer’ to ‘int’ in initialization
+	std::cout << y; // 12
+    return 0;
+}
+================= 
+conversion between the user defined type to another user defined type?
+
+you need to call the function manually for the type conversion?
+
+#include <iostream>
+
+class product {
+public:
+    product(int val) : value(val) {}
+
+    int getValue() const {
+        return value;
+    }
+
+private:
+    int value;
+};
+
+class integer {
+public:
+    explicit integer(int val) : value(val) {}
+
+    integer(const product& p) : value(p.getValue()) {} // Conversion constructor from product to integer
+
+    int getValue() const {
+        return value;
+    }
+
+private:
+    int value;
+};
+
+int main() {
+    product p(10);
+    integer obj = p;
+
+    std::cout << "Value: " << obj.getValue() << std::endl; // Output: Value: 10
+    return 0;
+}
+==============================
+#include <iostream>
+
+class integer {
+public:
+    explicit integer(int val) : value(val) {}
+
+    int getValue() const {
+        return value;
+    }
+
+private:
+    int value;
+};
+
+class product {
+public:
+    product() : obj(0) {} // Default constructor to initialize obj
+
+    operator integer() const { // this will block the auto genetartion of the default 
+        return obj;
+    }
+
+private:
+    integer obj;
+};
+
+int main() {
+    product p;
+    integer obj = p;
+    //obj = p; obj = p.operator integer();
+    std::cout << "Value: " << obj.getValue() << std::endl; // Output: Value: 0 (default value)
+    integer obj = p.operator integer(); //allowed
+    obj = p;//allowed
+    obj = p.operator integer(); //allowed
+	return 0;
+}
+//value:0
+==========================================
+compiler automaticall invoke the type conversion function
+
+integer obj;
+product p;
+
+//compiler automatically call the type coversion in the product p and return the 
+// integer object
+if (obj == p)
+{
+}
+
+//type conversion is called in
+integer integerobject = productobject;
+integerobject = productobject;
+integerobject == productobje
+=====
+type conversion will be invoked only when the operand on the left side
+matches the operator in the type conversion function.
+type conversion should be availble in the class in the left side of the operand
+===========================
+initialization vs assignment:
+//initilization
+integer a{9}; //call parameter constructor
+//assignment
+a=9; //temprary object is created;assignement operator
+//initialization should be preferred over the assignement.
+
+class product
+{
+   integer obj;
+  public:
+     product(integer object): object{obj}
+	 //or product(integer object): object(obj)
+	 //will call the initialization 
+	 {
+	 }
+}
+
+//to call the assignement 
+class product
+{
+   integer obj;
+  public:
+     product(integer object) 
+	 {
+		object=obj;//will call the assignement 
+	 }
+}
+
+===================
+//first 5 will be coverted to the parameter constructor integer object
+//constructor for the member variable of the product if the constructor has initializer list
+// corresponding product constructor will be called
+//inside statement of the productor constructor will be called
+
+class product{
+integer mid;
+product (const integer &obj)
+{
+   mid =obj; 
+}
+
+product p(5)
+
+
+//first 5 will be coverted to the parameter constructor integer object
+//copy constructor for the member variable of the product 
+// corresponding product constructor will be called
+//inside statement of the productor constructor will be called
+
+class product{
+integer mid;
+product (const integer &obj): mid {obj}
+{ 
+}
+=============
+you can initialize the meberlist in the same order.
+class product{
+integer mid;
+int a;
+product (const integer &obj):  mid {obj}, a{mid.getvalue()}
+{ 
+}
+=================
+RAII: lifetime of the resource is tied to lifetime of the object
+If the second operand is a primitive type, you can 
+overload as member or global function "as long as first operand is a user defined type".
+
+smart provide the overloading of basic opertaor *, ->
+
+Number n1(1);
+cout << n1 << endl ;
+//or 
+operator <<(cout,n1).operator <<(endl);
+===========
+#include <iostream>
+
+class product {
+public:
+    int getdata()
+    {
+        return d;
+    }
+private:
+    int d=100;
+};
+
+std::ostream& operator << (std::ostream &cout, product &p)
+{
+    cout << p.getdata();
+    return cout;
+}
+int main() {
+    product p;
+    std::cout << "Value: " << p << std::endl; // Output: Value: 0 (default value)
+    operator<<(std::cout,p).operator<<(std::endl);
+   // (std::cout.operator<<(p)).operator<<(std::endl);//error  no matching function for call to ‘std::basic_ostream::operator<<(product&)’
+    operator<<((operator<<(std::cout,p)),p);
+   // operator<<((operator<<(std::cout,p)),std::endl); //error
+    return 0;
+}
+============================
+int *p = new int(5) ;
+float f = ststic_cast<float>(*p)/2 ;
+if we use the meber initializerlist to initialize member of the class
+then no assignemnt is required.
+============================================
+#include <iostream>
+class sample
+{
+    public:
+     sample(){}
+     sample(sample &obj) {} //error expect the constructor argument to const in vc++
+};
+
+int main()
+{
+	//sample obj(sample()); sample() errror 'sample obj(sample (__cdecl *)(void))': prototyped function not called (was a variable definition intended?)
+    sample obj((sample()));
+    return 0;
+}
+================================================================
+#include <iostream>
+class sample
+{
+public:
+    sample() {}
+    sample(sample&& obj) {}
+};
+
+int main()
+{
+    sample obj(sample());
+    return 0;
+}
+===========================================================
+copy eliision:
+Copy Elision:
+
+Copy elision is an optimization that allows the compiler to omit unnecessary copies when returning objects from functions or when constructing 
+objects in certain contexts. It's typically used when returning a local object from a function or when passing an object by 
+value to a function. Instead of creating a temporary copy of the object, the compiler constructs the object directly in the 
+memory location of its destination.
+#include <iostream>
+struct MyClass {
+    MyClass() {}
+    MyClass(const MyClass&) { std::cout << "Copy constructor called\n"; }
+};
+
+MyClass func() {
+    MyClass obj;
+    return obj; // Copy elision can be applied here
+}
+
+int main() {
+    MyClass obj = func(); // Copy elision can be applied here //copy constructor called in vc++
+	//if copy elision happens the //copy constructor called should not be called
+    return 0;
+}
+===========
+Move elision is a specific form of copy elision that occurs when a temporary object is constructed and immediately moved from (using std::move) in 
+the same expression. In such cases, the move operation is elided, and the object is constructed directly in the memory location of its destination.
+
+For example:
+struct MyResource {
+    MyResource() {}
+    MyResource(const MyResource&) { std::cout << "Copy constructor called\n"; }
+    MyResource(MyResource&&) noexcept { std::cout << "Move constructor called\n"; }
+};
+
+MyResource func() {
+    MyResource obj;
+    return std::move(obj); // Move elision can be applied here
+}
+
+int main() {
+    MyResource obj = func(); // Move elision can be applied here
+    return 0;
+}
+//Move constructor called
+======================================
+copy elision: //copy constructor is not called in teh below scenerio
+MyClass obj((MyClass())); 
+MyClass obj = MyClass();
+===============================================
+in raw pointer we need to remeber the deletion of the pointer
+void Display(Integer *p)
+{
+    if(!p)
+	{
+	   return;
+	}
+	std::cout << p->GetValue();
+}
+
+Integer *GetPointer()
+{
+   Integer *p = new Integer{};
+   return ;
+}
+
+void Operation(int value)
+{
+	Integer *p = GetPoinetr();
+	if(p == nullptr)
+	{
+	   p = new Integer{}
+	}
+	p->setValue(100);
+	delete p;
+	p = nullptr;
+}
+===============
+uniform initialization syntax:
+Integer* p = new Integer{}; 
+using paranthesis:
+Integer* p = new Integer(); // Initialize with default constructor
+using constructior with argument:
+int value = 10; // Example value
+Integer* p = new Integer(value); // Initialize with constructor taking arguments
+*p = __LINE__; //assign the current line number to teh poinetr;
+
+=============================
+smart pointer:
+Unique_ptr:
+when the underlying part the pointer is not going to be shared.
+class template hence it requires the type name
+unique_ptr has explicit constructir so we cannot do =
+ie unique_ptr<integer> p = Getinteger(10); 
+
+assignment is not allowed , we need to use the direct initialization.
+
+integer* getvalue(int value)
+{
+	integer *p = new integer(value)
+	return p;
+}
+
+unique_ptr<integer> p = Getinteger(10);
+==============
+#include <iostream>
+#include <memory>
+
+// User-defined class 'integer'
+class integer {
+private:
+    int value;
+
+public:
+    // Constructor
+    integer(int val) : value(val) {}
+
+    // Getter method
+    int getValue() const {
+        return value;
+    }
+};
+
+// Function to create and return a unique_ptr to an integer object
+std::unique_ptr<integer> Getinteger(int value) {
+    // Create a new integer object with the specified value
+    std::unique_ptr<integer> ptr(new integer(value));
+    return ptr; //or return std::make_unique<integer>(value);
+}
+
+int main() {
+    // Create a unique_ptr to an integer object initialized with value 10
+    std::unique_ptr<integer> p = Getinteger(10);
+
+    // Access the value using the getter method and print it
+    if (p) {
+        std::cout << "Value stored in integer object: " << p->getValue() << std::endl; //10
+    }
+
+    // 'p' now owns the dynamically allocated integer object
+    // When 'p' goes out of scope, the dynamically allocated object will be automatically destroyed
+
+    return 0;
+}
+=======================
+std::unique_ptr<integer> ptr = (new integer(value));
+main.cpp:22:37: error: conversion from ‘integer*’ to non-scalar type ‘std::unique_ptr’ requested
+   22 |     std::unique_ptr<integer> ptr = (new integer(value));
+==============================
+auto&&: This is a universal reference, also known as a forwarding reference. It allows j 
+to deduce its type based on the type of the expression it's initialized with (i in this case). 
+If i is an lvalue, j will become an lvalue reference. If i is an rvalue, j will become an rvalue
+ reference.
+
+i: This is the std::unique_ptr<int> object that j is referencing.
+int main() {
+    //std::unique_ptr<int> i{new int {100}};
+    std::unique_ptr<int> i(new int {100});
+    auto&& j = i; //j is unique ptr reference since the right hand side is the lvalue
+    std::cout << typeid(decltype(j)).name() << " " << *i;
+}
+======================================
+#include <iostream>
+#include <memory>
+#include <typeinfo>
+
+int main() {
+    int x = 5;
+    //int && rref = x; // Error: cannot bind rvalue reference to lvalue
+    auto && rref = x; //ref will & reference and not &&
+    int && rref1 = 100;
+    int &re1 = rref1;
+    return 0;
+}
+==========================================
+#include <iostream>
+#include <memory>
+
+class Test {
+public:
+    int i;
+};
+
+std::unique_ptr<Test> foo1() {
+    std::unique_ptr<Test> res(new Test);
+    return res;
+}
+
+std::unique_ptr<Test> foo2(std::unique_ptr<Test> &&t) {
+     return t;  // this will produce an error!
+    //return std::move(t);
+}
+
+int main() {
+    auto test1 = foo1(); // Calling foo1
+    auto test2 = foo2(std::unique_ptr<Test>(new Test)); // Calling foo2 with temporary std::unique_ptr<Test>
+    return 0;
+}
+=========================
+std::unique_ptr<Test> foo2(std::unique_ptr<Test> t) {
+     return t;  // no error!
+ 
+}
+===============
+std::unique_ptr <Integer> p(new Integer(100));
+if (p == nullptr)
+{
+   p.reset(new Integer(100));
+   //first free the p if it has any memory
+   //then assign the new memory
+}
+p->getValue(); //p is accessed like normal pointer
+//-> works because it was overloaded in the unique_ptr class.
+
+integer *ptr = p.get(); //get will return the underlying pointer
+
+p=nullptr;//this allowed ; it will delete the underlying pointer
+//or p.reset()
+
+*p = __LINE__;//dereferencing the unique_ptr
+=============
+you cannot pass the lvalue object as the arugument to a function which takes 
+&&
+
+void function (int && a)
+{
+}
+
+int y =100;
+function(y); //error lvalue cannot be passed to rvalue
+function(std::move(y))
+============================
+n the statement MyClass &&obj = createFunction();, the move constructor will be called if the return value optimization (RVO) or the named return value optimization (NRVO) doesn't occur.
+
+createFunction() returns a temporary object of type MyClass.
+The temporary object is bound directly to the rvalue 
+reference obj.
+If the compiler doesn't perform return value optimization
+ or named return value optimization, the move constructor 
+ will be called to move the temporary object into obj.
+ 
+#include <iostream>
+#include <utility>
+
+class MyClass {
+public:
+    MyClass() { std::cout << "Default constructor called\n"; }
+    MyClass(const MyClass&) { std::cout << "Copy constructor called\n"; }
+    MyClass(MyClass&&) noexcept { std::cout << "Move constructor called\n"; }
+};
+
+MyClass createFunction() {
+    return MyClass(); // Returns a temporary object
+}
+
+int main() {
+    MyClass obj = createFunction(); // Move constructor may be called here
+    return 0;
+}
+=====================================
+what is the difference in c++ 
+classname &&obj= temporaryobject; //move operation
+classname obj2=obj //copy constructor
+================================================
+copy elision” (meaning “omitting copying”):pass by value and return by value
+RVO: copy elision for either unnamed objects or named objects
+NRVO: copy elision for named objects only [NRVO is a well-established term]
+======
+C++17: As of C++17, Copy Elision is guaranteed when an object is returned directly, and in this case, the copy or move constructor need not be accessible or present:
+
+struct C {
+  C() {}
+  C(const C&) { std::cout << "A copy was made.\n"; }
+};
+ 
+C f() {
+  return C(); //Definitely performs copy elision
+}
+C g() {
+    C c;
+    return c; //Maybe performs copy elision
+}
+ 
+int main() {
+  std::cout << "Hello World!\n";
+  C obj = f(); //Copy constructor isn't called
+}
+===================
+(Named) Return value optimization is a common form of copy elision. It refers to the situation where an object returned by value from a method has its copy elided. The example set forth in the standard illustrates named return value optimization, since the object is named.
+
+class Thing {
+public:
+  Thing();
+  ~Thing();
+  Thing(const Thing&);
+};
+Thing f() {
+  Thing t;
+  return t;
+}
+Thing t2 = f();
+Regular return value optimization occurs when a temporary is returned:
+
+class Thing {
+public:
+  Thing();
+  ~Thing();
+  Thing(const Thing&);
+};
+Thing f() {
+  return Thing();
+}
+Thing t2 = f();
+========================
+Other common places where copy elision takes place is when an object is constructed from a temporary:
+
+class Thing {
+public:
+  Thing();
+  ~Thing();
+  Thing(const Thing&);
+};
+void foo(Thing t);
+
+Thing t2 = Thing();
+Thing t3 = Thing(Thing()); // two rounds of elision
+foo(Thing()); // parameter constructed from temporary
+==============================
+
+or when an exception is thrown and caught by value:
+
+struct Thing{
+  Thing();
+  Thing(const Thing&);
+};
+ 
+void foo() {
+  Thing c;
+  throw c;
+}
+ 
+int main() {
+  try {
+    foo();
+  }
+  catch(Thing c) {  
+  }             
+}
+====================================
+shared_ptr:
+a function can return the const pointer.
+
+const int * function()
+{
+    static int i;
+	return &i;
+}
+=============
+class project
+{
+   public:
+      void setproject(char* a_name)
+	  {
+			m_projectname = a_name;
+	  }
+	  std::string getprojectname()
+	  {
+	     return (m_projectname);
+	  }
+}
+class employee
+{
+    project *m_project =NULL;
+	
+	public:
+	 void setproject(project *a_project;)
+	 {
+		*m_project = a_project;
+	 }
+	 
+	 project * setproject(project *a_project;)
+	 {
+		retun(m_project);
+	 }
+	 
+	 void display()
+	 {
+		m_project->getProjectname()
+	 }
+}
+
+int main()
+{
+	project *m_project = new project();
+	m_project->setProjectname("Senior software Engineerr");
+	employee *e1 = new employee();
+	e1->setproject(m_project)
+	e1->display();
+	delete e1;
+	e1=null;
+	delete project;
+	project=null;
+}
+===================================
+unique_ptr dont have the copy constructor or copy assignement operator.
+remember when we need to share the pointer between the employees we can go for seperate pointer
+(not recomended) or go for the shared pointer. in the below program we have created the seperate
+uniqueue pointer for each employees.
+
+#include <iostream>
+
+#include <iostream>
+#include <string>
+#include <memory> // for std::unique_ptr
+
+class Project {
+private:
+    std::string m_projectName;
+
+public:
+    void setProjectName(const std::string& projectName) {
+        m_projectName = projectName;
+    }
+
+    std::string getProjectName() const {
+        return m_projectName;
+    }
+};
+
+class Employee {
+private:
+    std::unique_ptr<Project> m_project;
+
+public:
+    void setProject(std::unique_ptr<Project> project) {
+        m_project = std::move(project); //here move is required
+		//since unique_ptr dont have the copy constructor or copy assignement operator.
+    }
+
+    Project* getProject() const {
+        return m_project.get();
+    }
+
+    void display() const {
+        if (m_project) {
+            std::cout << "Project name: " << m_project->getProjectName() << std::endl;
+        } else {
+            std::cout << "No project assigned to employee" << std::endl;
+        }
+    }
+};
+
+int main() {
+    std::unique_ptr<Project> project = std::make_unique<Project>();
+    project->setProjectName("Senior Software Engineer");
+
+    Employee employee;
+    employee.setProject(std::move(project));
+    employee.display();
+
+    // Creating another employee with the same project
+    Employee employee1;
+    employee1.setProject(std::make_unique<Project>(*employee.getProject()));
+    employee1.display();
+    employee.display();
+
+    return 0;
+}
+=======
+Project name: Senior Software Engineer
+Project name: Senior Software Engineer
+Project name: Senior Software Engineer
+========================================
+#include <iostream>
+#include <memory> // for std::unique_ptr
+
+int main() {
+    std::unique_ptr<int> p(new int(10));
+    std::unique_ptr<int> p1 = std::make_unique<int>(*p); //10
+    std::cout << *p << " " << *p1 << std::endl; //10
+
+    return 0;
+}
+=====================================
+share_ptr allow the sharing of underlying pointers with other object.
+shared_ptr can be moved but the original source will be freed.
+reference count can be checked all the shared object to know the current reference count value
+shared_pointer object.use_count(); //needs to be used only for debugging
+
+#include <iostream>
+#include <string>
+#include <memory> // for std::shared_ptr
+
+class Project {
+private:
+    std::string m_projectName;
+
+public:
+    Project(const std::string& projectName) : m_projectName(projectName) {}
+
+    std::string getProjectName() const {
+        return m_projectName;
+    }
+};
+
+class Employee {
+private:
+    std::shared_ptr<Project> m_project;
+
+public:
+    void setProject(const std::shared_ptr<Project>& project) {
+        m_project = project;
+    }
+
+    std::shared_ptr<Project> getProject() const {
+        return m_project;
+    }
+
+    void display() const {
+        if (m_project) {
+            std::cout << "Project name: " << m_project->getProjectName() << std::endl;
+        } else {
+            std::cout << "No project assigned to employee" << std::endl;
+        }
+    }
+};
+
+int main() {
+    std::shared_ptr<Project> project = std::make_shared<Project>("Senior Software Engineer");
+
+    Employee employee;
+    employee.setProject(project);
+    employee.display();
+
+    // Creating another employee with the same project
+    Employee employee1;
+    employee1.setProject(project);
+    employee1.display();
+
+    return 0;
+}
+===
+Project name: Senior Software Engineer
+Project name: Senior Software Engineer
+=========================================
+if(sharedpointer)
+{
+}
+
+if(sharedpointer == nullptr)
+{
+}
+
+if(sharedpointer.get())
+{
+}
+
+
+shared_ptr<int>p = nullptr;
+if (p.get()) //will not crash since p is initialized to nullptr, so calling p.get() will return nullptr, 
+and there will be no crash.
+======================
+// 1. std::unique_ptr<int>* p = nullptr; // Initialized to nullptr
+    std::unique_ptr<int> *p = nullptr; // Pointer to a unique_ptr initialized to nullptr
+
+    // Allocate a new unique_ptr and assign it to the pointer
+    *p = std::make_unique<int>(10); // Assign a new value using make_unique
+#include <iostream>
+#include <memory> // for std::unique_ptr
+
+int main() {
+    // 1. unique_ptr<int> *p; initialization
+    std::unique_ptr<int> p = nullptr; // Initialized to nullptr
+    p = std::make_unique<int>(10); // Assign a new value using make_unique
+
+    // 2. unique_ptr<int*> p1; initialization
+    std::unique_ptr<int*> p1(new int*(new int(42))); // Initialize with a dynamically allocated int pointer
+
+    // 3. unique_ptr<int*> *p2; initialization
+    std::unique_ptr<std::unique_ptr<int*>> p2 = std::make_unique<std::unique_ptr<int*>>(new int*(new int(42))); // Initialize with a dynamically allocated int pointer
+
+    // Accessing the value
+    std::cout << "Value of p1: " << **p1 << std::endl; //42
+    std::cout << "Value of p2: " << ***p2 << std::endl; //42
+
+    return 0;
+}
+=====================
+uniquepointer can be returned by reference.
+
+std::unique_ptr<int> createUniquePtr() {
+    return std::make_unique<int>(42); // Returns a unique_ptr by value
+}
+
+int main() {
+    std::unique_ptr<int> &&ptr = createUniquePtr(); // Move semantics transfer ownership
+	//or std::unique_ptr<int> ptr = createUniquePtr();
+    std::cout << *ptr << std::endl; // Access the value
+
+    return 0;
+}
+========
+#include <iostream>
+#include <memory>
+
+std::unique_ptr<int>& createUniquePtr() {
+    static std::unique_ptr<int> ptr = std::make_unique<int>(42);
+    return ptr;
+}
+
+int main() {
+    std::unique_ptr<int>& ptr = createUniquePtr(); // Access the unique_ptr by reference
+    std::cout << *ptr << std::endl; // Access the value
+
+    return 0;
+}
+========
+#include <iostream>
+#include <memory>
+
+std::unique_ptr<int> createUniquePtr() {
+    static std::unique_ptr<int> ptr = std::make_unique<int>(42);
+    return ptr;
+}
+
+int main() {
+    screateUniquePtr(); // error function of the unique pointer is used since the function is returning by value
+    
+    return 0;
+}
+======
+std::unique_ptr<int> createUniquePtr() {
+    std::unique_ptr<int> ptr = std::make_unique<int>(42);
+    return ptr;
+}
+
+int main() {
+    createUniquePtr(); // no error
+   
+    return 0;
+}
+================
+#include <iostream>
+
+struct MyStruct {
+    int data;
+
+    // Constructor
+    MyStruct(int d) : data(d) {}
+};
+
+MyStruct createStruct() {
+    MyStruct obj(42);
+    return obj; // NRVO can optimize this return
+}
+
+int main() {
+    MyStruct result = createStruct(); // NRVO optimizes the return value
+    std::cout << "Result: " << result.data << std::endl;
+    return 0;
+}
+
+======
+In this example, createStruct() returns a MyStruct object by value. With NRVO, the compiler 
+can optimize the return value so that the MyStruct object is constructed directly in the memory
+ location of the result variable in the main() function, avoiding unnecessary copy or move operations.
+==================
+#include <iostream>
+#include <memory>
+
+#include <iostream>
+#include <memory> // for std::shared_ptr
+
+int main() {
+    int a;
+    std::cout << "Enter an integer: ";
+    std::cin >> a;
+
+    // Create a shared pointer p to an integer dynamically allocated with the value of a
+    //std::shared_ptr<int> p = std::make_shared<int>(a);
+    //or 
+    std::shared_ptr<int> p {new int {a}};
+
+    // Print the value of the integer pointed to by p
+    std::cout << "Value of p: " << *p << std::endl;
+
+    // Alternatively, you can use p.get() to access the raw pointer and dereference it
+    std::cout << "Value of p using get(): " << *p.get() << std::endl;
+
+    return 0;
+}
+===================================
+{
+std::shared_ptr<int> p {new int {a}};
+}
+
+{
+std::shared_ptr<int> p {new int {a}};
+p.reset(); //or p = nullptr; //decrement the counter
+}
+
+====================
+to check whether the weak pointer is pointing to the valid shared
+pointer by expired and by lock?
+
+#include <iostream>
+#include <memory> // for std::shared_ptr and std::weak_ptr
+
+int main() {
+    std::shared_ptr<int> p{new int {5}}; // Creating a shared pointer pointing to a dynamically allocated integer with value 5
+    std::weak_ptr<int> wk = p; // Creating a weak pointer from the shared pointer p
+
+    p.reset(); // Resetting the shared pointer p, which will release the ownership of the dynamically allocated memory
+
+    if (wk.expired()) { // Checking if the weak pointer wk has expired (i.e., if the shared pointer p has been reset)
+        std::cout << "Reference count is already freed" << std::endl;
+        return 0; // Exiting the program since the shared pointer has been reset
+    }
+
+    // Attempting to lock the weak pointer to obtain a shared pointer
+    auto sp = wk.lock(); // Attempting to lock the weak pointer to obtain a shared pointer
+    if (sp) { // Checking if the shared pointer obtained from the weak pointer is not null
+        std::cout << *sp << " " << sp.use_count() << std::endl; // Printing the value pointed to by the shared pointer and its reference count
+    } else {
+        std::cout << "Failed to obtain shared pointer from weak pointer" << std::endl; // Printing a message indicating failure to obtain shared pointer
+    }
+
+    return 0;
+}
+===========================================
+circular reference
+
+#include <iostream>
+#include <memory>
+
+#include <iostream>
+#include <memory> // for std::shared_ptr
+
+class Employee;
+
+class Project{
+public:
+   Employee *m_emp;
+   Project()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+   ~Project()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+};
+
+class Employee{
+public:
+   Project *m_proj;
+   Employee()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+   ~Employee()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+};
+
+int main()
+{
+	Project *proj = new Project{};
+	Employee *emp = new Employee{};
+	//circular reference here
+	proj->m_emp = emp;
+	emp->m_proj = proj;
+	
+	delete emp;
+	delete proj;
+	
+	return 0;
+}
+
+Project
+Employee
+~Employee
+~Project
+==================================
+destructor is not called when there is a reference in the shared pointer
+circular reference in the shared_ptr could lead to memoruy leak since the 
+underlying pointer is not freed;
+
+#include <iostream>
+#include <memory> // for std::shared_ptr
+
+class Employee;
+
+class Project{
+public:
+  std::shared_ptr<Employee> m_emp;
+   Project()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+   ~Project()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+};
+
+class Employee{
+public:
+   std::shared_ptr<Project> m_proj;
+   Employee()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+   ~Employee()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+};
+
+int main()
+{
+	std::shared_ptr<Project> proj {new Project{}};
+	std::shared_ptr<Employee> emp {new Employee{}};
+	//circular reference here
+	proj->m_emp = emp;
+	emp->m_proj = proj;
+	
+	return 0;
+}
+
+Project
+Employee
+=============================
+when the shared_ptr is assigned to the weak_ptr the control block of the 
+shared pointer is pointed to the weak pointer. the control block contain the 
+reference count of the weak pointer.
+
+To avoid the circular memory leak;
+a. any one of the pointer can weak_ptr
+b. or both the pointer can be weak pointer
+
+#include <iostream>
+#include <memory>
+
+#include <iostream>
+#include <memory> // for std::shared_ptr
+
+class Employee;
+
+class Project{
+public:
+  std::shared_ptr<Employee> m_emp;
+   Project()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+   ~Project()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+};
+
+class Employee{
+public:
+   std::weak_ptr<Project> m_proj;
+   Employee()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+   ~Employee()
+   {
+       std::cout << __FUNCTION__<<std::endl;;
+   }
+};
+
+int main()
+{
+	std::shared_ptr<Project> proj {new Project{}};
+	std::shared_ptr<Employee> emp {new Employee{}};
+	//circular reference here
+	proj->m_emp = emp;
+	emp->m_proj = proj;
+	
+	return 0;
+}
+
+
+Project
+Employee
+~Project
+~Employee
+===========================
+class A {
+public:
+    virtual void functionA() {}
+};
+
+class B : public A {
+public:
+    void functionA() override {}
+};
+
+int main() {
+    A *ptr = new B;
+    ptr->functionA(); // This will call B's implementation of functionA
+    delete ptr; // Don't forget to delete dynamically allocated memory
+    return 0;
+}
+========================================

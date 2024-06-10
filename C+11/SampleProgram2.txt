@@ -1,3 +1,9 @@
+/*
+	Below is the sample program for the C++ features.
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
+	Author Name: Viswanathan Ramasamy
+	Email id: rviswawt@gmail.com
+*/
 =====================================================
 sizeof return type?
 strlen vs sizeof() for character array?
@@ -14,12 +20,157 @@ sscanf return value and read the content from the buffer
 true?
 map.emplace?
 array of unique_ptr
+========================================
+mumtable
+lamda
+const function
 
+string to int and int to string
+iss.peek;iss.ignore.iss.eof
 C++ was developed by Bjarne Stroustrup. 
 ==========================================
+if you want to access the external variable inside the lamda, it has to pass value, or reference or =. if it is not passed we cannot 
+access it.
+int a;
+int b;
+auto check=[&a]()
+{
+   b= 100; //error
+}
+
+auto check=[]()
+{
+   a= 100; //error a is not captured if the a is local but if is global it can access
+}
+
+auto check=[=]()
+{
+   a= 100; //error we cannot modify the external variable value and even can modify
+}
+
+lamda can access the global variable outside the main and modify it
+
+auto check=[a]()
+{
+   a= 100; //error we cannot modify the external variable value
+}
+
+auto check=[=]() mutable //capture all external variables
+{
+   a= 100; //error we cannot modify only with in function
+}
+
+auto check=[a]() mutabe //capture only a
+{
+   a= 100; //error we cannot modify only with in function
+}
+
+int a = 42;
+
+// Define a lambda function 'check' that captures 'a' by value
+auto check = [=]() mutable {
+	
+	b = 100; // not declared in this scope
+};
+
+int b =12;
+===================
+     int a = 0;
+    auto check = [a]() { // Capture 'a' by reference
+    
+        cout << a ; // Assign a value to 'a' within the lambda function //0
+    };
+    a =100;
+=======
+     int a = 0;
+    auto check = [-]() { // Capture 'a' by reference
+    
+        cout << a ; // Assign a value to 'a' within the lambda function //0
+    };
+    a =100;
+================
+    int a = 42;
+
+    // Define a lambda function 'check' that captures 'a' by value
+    auto check = [&a]() mutable {
+        // Attempt to modify the captured variable 'a'
+        a += 100; // This will not affect the original variable 'a'
+    };
+
+   a =1000;
+    
+    // Call the lambda function 'check'
+    check(); //1100
+===========================
+when we throw "hi viswa"
+catch (const char *ptr) //if no const program will abort
+{
+}
+
 char str[5] = "ABC"; 
 str[4]//needn't be necessary \0 it is unitialized value ie garbage value.
 ========================
+rethrow exception:
+
+#include <iostream>
+#include <stdexcept>
+
+void someFunction() {
+    try {
+        // Simulate throwing an exception
+        throw std::runtime_error("An error occurred in someFunction()");
+    } catch (const std::exception& e) {
+        std::cout << "Exception caught in someFunction(): " << e.what() << std::endl;
+        // Rethrow the caught exception
+        throw; // This rethrows the caught exception to be handled by an outer try-catch block
+    }
+}
+
+int main() {
+    try {
+        // Call someFunction which may throw an exception
+        someFunction();
+    } catch (const std::exception& e) { //const & is not must
+        std::cout << "Exception caught in main(): " << e.what() << std::endl;
+        // Handle the exception
+    }
+
+    return 0;
+}
+
+Exception caught in someFunction(): An error occurred in someFunction()
+Exception caught in main(): std::exception
+==========================================================
+ucaught_exception() => return true if the exception is not handled yet.
+
+class MyClass {
+public:
+  ~MyClass() {
+    throw runtime_error("This is an exception from a destructor");
+  }
+};
+
+int main() {
+  MyClass my_class;
+
+  if (std::uncaught_exception()) { //true
+    cout << "There is an uncaught exception" << endl;
+  } else {
+    cout << "There is no uncaught exception" << endl;
+  }
+
+  return 0;
+}
+======
+when the function is throwing the exception which is not supported to throw will call unexpected()
+catch is called exception handeler
+============================================
+uncaught handler return to callee
+=======================
+if the inner catch block cannot handle the exception then the outer catch block will handle it.
+unhandle exception will terminate() the program
+exception are of 2 type:
+synchronous exception , program exception and asynchronous exception outside the control of the program example HW fault
 if (number > 0) {
 	std::cout << "The number is positive." << std::endl;
 } 
@@ -165,7 +316,7 @@ int a;
 // Definition of the second function
 void function1() {}
 =======================
-std::fixed<<setprecision(2)
+std::cout << std::fixed << std::setprecision(2);
 istringstream iss; iss.str("sdkksjdhfkjsd");
 
 back_inserter(vector) =12;
@@ -222,7 +373,26 @@ int main() {
 }
 
 ====================================================
+#include <iostream>
+#include <memory>
 
+// Helper function to create a std::unique_ptr with custom deleter
+
+std::unique_ptr<int> make_unique_with_deleter() {
+    return std::unique_ptr<int>(new int(42));
+}
+
+int main() {
+    // Using make_unique_with_deleter to create a std::unique_ptr with custom deleter
+    std::unique_ptr<int> ptr = make_unique_with_deleter();
+
+    // Use the unique_ptr
+    std::cout << *ptr << std::endl;
+
+    return 0;
+}
+====================================================
+=====================================
 Serializer and deserializer based on the structure 
 what is the header file required for the uint8?
 what is the header file required for memcpy?
@@ -316,9 +486,12 @@ char str[] = "hello";
 size_t length = strlen(str);  // length will be 5 (because of "hello")
 
 =============================
+how to set the bitset to an integer value;
+how to set the bitto binary number?
+how to convert the bitset to long (int is not available)?
 how to set and check the paricular bit using c++ inbuild function?
 required header file?
-how to set, test and reset the particular bit in bit?
+how to set, test and reset, count the particular bit in bit?
 how to assign the value to bitset variable?
 what will be the output if you print bitset variable?
 bit set number starts from 0 or 1?
@@ -333,6 +506,7 @@ int main() {
     std::bitset<8> myBits =127;
 	//std::bitset<8> myBitset("10101010"); // we cannot assign to the bit set like std::bitset<8> myBitset ="10101010";
     // or  std::bitset<8> value{"101"}; //valid
+	// we can set the integer value to biset std::bitset<8> myBitset = 10;
     // Setting individual bits
     //myBits.set(1); //so 2 bit from the left will be set as bit set number starts from 0.
     //myBits.set(3);
@@ -349,6 +523,21 @@ int main() {
 
     return 0;
 }
+============================
+    // Define an integer value
+    int intValue = 10;
+
+    // Convert integer to bitset
+    std::bitset<sizeof(int) * 8> myBitset(intValue);
+
+    // Print the bitset
+    std::cout << "Bitset: " << myBitset << std::endl; // will provide the value in binary representation.
+==================================
+bit set to long?
+// Define a bitset
+std::bitset<4> myBitset("1010");
+// Convert bitset to integer
+unsigned long intValue = myBitset.to_ulong();
 ================================
 header file required for the transform and accumulate?
 what is the header file required for the back_inserter, back_insert_iterator, istream_iteratot, istreambuf_iterator and inserter?
@@ -365,8 +554,8 @@ remove_copy_if: copy the elemenet which doesn't satifies the given condition
 
 insert the square of the element in the squarees vector
 transform types:
-unary  transform:
-binary transform
+unary  transform: number of argument takes is 1 
+binary transform number of argunebt takes is 2
 
 #include <algorithm>
 #include <iterator> //required for inserter and back_in
@@ -397,26 +586,62 @@ difference between the inserter and back_inserter in the vector context?
 remove the even number using remove_copy_if? ie copying the odd number.
 there is no change in the original input vector?
 remove the even number from the given vector and copy only the odd number to the oddnumber vector:
+does remove remove the element from the original vector?
+print the element of the vector using for loop?
+
+//remove_copy_if: not matching condition items are copied
+#include <algorithm>
 std::remove_copy_if(numbers.begin(), numbers.end(), std::back_inserter(oddNumbers),
                         [](int x) { return x % 2 == 0; });
+for (int &num : oddNumbers) {
+    std::cout << num << " ";
+}
+
+std::vector<int> oddNumbers;
+
+std::copy_if(numbers.begin(), numbers.end(), std::inserter(oddNumbers,oddNumbers.end()),
+                    [](int x) { return x % 2 == 0; });
+
+//if the number of elements is less in the oddNumber we will get zeros ie 1 3 5 0 0 0 here number has 6 elements.
+//if the destination vector size is less only that many number of elements will be copied ie 2. then we have only 1 3
+
+std::vector<int> oddNumbers(numbers.size()); // or  std::vector<int> oddNumbers; oddNumbers.resize(10); //if the size of element is more we will get 0 
+std::copy_if(numbers.begin(), numbers.end(), oddNumbers.begin(),
+                        [](int x) { return x % 2 == 0; });
+
 ======
 remove the even number using copy_if? ie copying the odd number.
+copy_if: condition matching items are copied no change in the original content
 // Use std::copy_if with std::back_inserter to copy only odd numbers to a new vector
     std::copy_if(numbers.begin(), numbers.end(), std::back_inserter(oddNumbers),
                  [](int x) { return x % 2 != 0; });
-====================
+========================================================================
+what is the main difference between the back_inserter and inserter?
+
+//inserter we can insert the element any where in the begining or end or in or in any position but back_inserter only in the end;
 copy the vector to another vector using the copy?				 
 // Use std::copy with std::back_inserter to copy elements to the end of the destination vector
 std::copy(source.begin(), source.end(), std::back_inserter(destination));
 
 ====
+what happen if the destination vector size is less and more in copy?
+
+if the destination size is less only that many number of elements will be copied.
+//if the detinations size is more than we have elements and  followed by zeros
+
 replace the back_inserter by vector varaiable? and initialize all the element of the vector to zero at the declaration.
 std::vector<int> destination(5, 0); // Initialize destination with 5 zeros
 
 // Copy elements from source to destination
 std::copy(source.begin(), source.end(), destination.begin());
-	
+============
+what happen if you use back_inserter and the destination has some element?
+    std::vector<int> sourceVector = {1, 2, 3, 4, 5};
+    std::vector<int> destinationVector{1,2,3};
+    std::copy(sourceVector.begin(), sourceVector.end(), std::back_inserter(destinationVector));	// no destination.begin() allowed only vector name
+1 2 3 1 2 3 4 5
 =====================================
+how to find the length of the string?
 argument the copy_if takes?
 copy the string which has the length  > 3?]
 find the length of the string?
@@ -430,12 +655,70 @@ std::vector<std::string> words = {"apple", "banana", "orange", "grape", "kiwi"};
     // Use std::copy_if with std::back_inserter to copy only strings with length > 3 to a new vector
     std::copy_if(words.begin(), words.end(), std::back_inserter(longWords),
                  [](const std::string& word) { return word.length() > 3; });
-===================================			
+===================================	
+copy only the matching character from the to the to the destination string and print it?
+//string has no resize it has only reserve
+#include <algorithm>
+#include <string>
+#include <iterator>
+
+std::string input = "viswanathan";
+    std::string output;
+    
+    // Reserve space in the output string based on the maximum expected size
+    output.reserve(input.size()); // Assuming output will not exceed input size //not must
+    
+    std::copy_if(input.begin(), input.end(), std::back_inserter(output), //back_inserter is must
+                 [](char x) { return x == 'a' || x == 'e' || x == 'i' || x == 'o' || x == 'u'; });
+
+    // Print the contents of output
+    for (char &ch : output) {
+        std::cout << ch << " ";
+    }
+
+	//if you remove the back_inserter to putput.begin() the out put will be empty
+	//i a a a 
+===================================	
+what happen if you set the size and reserve for a vector?
+	
+when you set the size for the vector , vector.size() will not give the number of elements in vector?
+similarly for the capacity.
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> vec;
+
+    // Reserve memory for at least 100 elements
+    vec.reserve(100);
+
+    // Resize to have 50 elements, default-initialized to 0
+    vec.resize(50);
+
+    // Print the size and capacity of the vector
+    std::cout << "Size: " << vec.size() << ", Capacity: " << vec.capacity() << std::endl; //50 100
+
+    // Add elements beyond the current size using push_back
+    for (int i = 0; i < 75; ++i) {
+        vec.push_back(i);
+    }
+
+    // Print the new size and capacity of the vector
+    std::cout << "Size: " << vec.size() << ", Capacity: " << vec.capacity() << std::endl;  //75+50 100+100
+
+    return 0;
+}
+======================================
+does the string have resize?
+how to use copy for the string to another string using the copy and destination.begin()
 can copy used to copy from vector to array?	 
 can copy used to copy from string to char array? what should be considered here?
 what is the other way to copy?
 use copy to copy the string to another string variable?
 rember when your destination is the destination variable in the copy() it will have?	
+
+
+no string dont have resize.
 std::copy(myVector.begin(), myVector.end(), myArray);
 std::string sourceString = "Hello, World!";
 
@@ -452,20 +735,46 @@ destinationArray[sourceString.size()] = '\0';
 The std::copy algorithm in C++ works with iterators, and it copies elements from the source range to the destination range based on the iterator positions. 
 It doesn't inherently know about null-terminated strings.
 
-//destinationString is string
-// Copy from the string to the string and what is not required?
-std::copy(sourceString.begin(), sourceString.end(), destinationString.begin()); //destination string .begin()
-
-rember when you use the destination variable in the copy() it will have? .begin() either it can be string ot vector.
+string dont have resize
+std::string sourceString = "Hello, world!";
+std::string destinationString(sourceString.size(),' '); // Initialize with spaces //if the size is less only that many number of elements wil be copied
+std::copy(sourceString.begin(), sourceString.end(), destinationString.begin());
 ============================================
-copy from vector of int to anaother vector?
+copy from vector of int to another vector?
 std::vector<int> destinationVector;
 
 // Using std::copy to copy elements from sourceVector to destinationVector
 std::copy(sourceVector.begin(), sourceVector.end(), std::back_inserter(destinationVector));
 ===============================================
-can i replace the back_inserter by inserter?
+copy the vector of int element to end of the destination vector?
+copy the vector of int element to begining of the destination vector?
+copy the vector of int element to begining+2 of the destination vector?
 
+std::vector<int> sourceVector = {1, 2, 3, 4, 5};
+std::vector<int> destinationVector{1,2,3};
+//add to the begining
+std::copy(sourceVector.begin(), sourceVector.end(), std::inserter(destinationVector, destinationVector.begin()));
+//1 2 3 4 5 1 2 3
+ // Define source vector
+std::vector<int> sourceVector = {1, 2, 3, 4, 5};
+// Define destination vector
+std::vector<int> destinationVector = {10, 11, 12, 13, 14};
+// Copy elements from sourceVector to destinationVector starting from the third position
+std::copy(sourceVector.begin(), sourceVector.end(), std::inserter(destinationVector, destinationVector.begin()+2)); 
+//10 11 1 2 3 4 5 12 13 14 
+
+===========================
+is it necessary that when we use inserter it should have the size for the destination vector?
+
+no not required.
+std::vector<int> sourceVector = {1, 2, 3, 4, 5};
+std::vector<int> destinationVector;
+std::copy(sourceVector.begin(), sourceVector.end(), std::inserter(destinationVector, destinationVector.begin()));
+// 1 2 3 4 5
+===================
+
+can i replace the back_inserter by inserter?
+//add to the end of the destination vector
 std::copy(sourceVector.begin(), sourceVector.end(), std::inserter(destinationVector,destinationVector.end()));
 
 std::copy(sourceVector.begin(), sourceVector.end(), std::inserter(destinationVector,destinationVector.begin()));
@@ -703,11 +1012,14 @@ delete deallocates the memory that was dynamically allocated, but it doesn't cha
 the actual value that was stored at that memory location. The value remains unchanged; it's just that the memory is no longer reserved for that value.
 =================================
 user define deallocation using the functor?
+//custom delete function will not work for make_share or make_uniqueue
 always good to use the function as const if the value is not going to meodifiy the meber variable?
 //is it deleting the array?
 // const in the function object function?
 // uniquiue pointer to const and pointer is const?
 #include <memory>
+
+//const function:
 
 class CustomDeleter {
 public:
@@ -734,10 +1046,18 @@ const function will not allow to modify the member variable but we can modify th
 
 class CustomArrayDeleter {
 public:
-    template <typename T>
-    void operator()(T* p) const {
-        // Custom cleanup logic for arrays
-        delete[] p;
+    // Operator for single elements
+    template<typename T>
+    void operator()(T* ptr) const { //delete for single pointer
+        std::cout << "Deleting single element" << std::endl;
+        delete ptr;
+    }
+
+    // Operator for arrays
+    template<typename T>
+    void operator()(T* ptr[]) const { //delete for an array
+        std::cout << "Deleting array" << std::endl;
+        delete[] ptr;
     }
 };
 
@@ -893,7 +1213,7 @@ struct CustomDeleter {
 
 int main() {
     // Using a static member function as the deleter
-    std::unique_ptr<int, decltype(&CustomDeleter::deleter)> ptr1(new int(42), CustomDeleter::deleter);
+    std::unique_ptr<int, decltype(&CustomDeleter::deleter)> ptr1(new int(42), CustomDeleter::deleter);//calling the static function
 
     // ... rest of your code ...
     return 0;
@@ -1007,7 +1327,7 @@ int main() {
     Base* basePtr = new Derived();
 
     // Using typeid to get type information
-    const std::type_info& typeInfo = typeid(*basePtr); //not type_id
+    const std::type_info& typeInfo = typeid(*basePtr); //not type_id //create the const reference for the created object
 
     std::cout << "Type information: " << typeInfo.name() << std::endl;
 
@@ -1024,6 +1344,52 @@ int main() {
 Type information: 7Derived
 Pointer is of type Derived
 ================
+reference to the object will call the copy constructor or constructor?
+const reference to object will call the const function?
+
+reference to the object will not call the copy constructor?
+const reference will call the const function?
+
+#include <iostream>
+
+class MyClass {
+private:
+    // Private copy constructor
+    MyClass(const MyClass& other) {
+        std::cout << "Copy constructor called (should not be allowed)" << std::endl;
+    }
+
+public:
+    MyClass() = default;
+    void print() const {
+        std::cout << "Printing from const member function" << std::endl;
+    }
+    
+    void print() {
+        std::cout << "Printing from const member function" << std::endl;
+    }
+
+    void printNonConst() {
+        std::cout << "Printing from non-const member function" << std::endl;
+    }
+};
+
+int main() {
+    MyClass obj; // Object of const type
+
+    // Accessing a member function via a reference to a object
+    const MyClass& constRef = obj;
+    constRef.print(); // This is allowed because print() is a const member function
+
+    // Accessing a member function via a reference to a non-const object
+    // Error: Attempting to access a private member
+    MyClass& nonConstRef = (obj); // this line dont call the copy constructor
+    nonConstRef.printNonConst(); // This would be allowed if copy constructor were accessible
+
+    return 0;
+}
+
+=====================================
 redirect the output to a file:
 redirect the cout to a file?
 ofstream generate the file if it doesn't exit
@@ -1046,6 +1412,7 @@ int main() {
 
     return 0;
 }
+std::cout <<(outputFile.rdbuf()); // print the content of the file to the console
 ======================================================
 refernce to the pointer and refrence to the array?
 reference to the int pointer
@@ -1194,6 +1561,7 @@ return type of ftell?
 what is the syntax for the fseek?
 
 c has only ftell but c++ it ftellg;
+//in c++ it inputFile.tellg()
 
 size of the file calculation:
 / A Function to get the file size
@@ -1202,7 +1570,7 @@ unsigned long long int fileSize(const char *filename)
     // Open the file
     FILE *fh = fopen(filename, "rb");
     fseek(fh, 0, SEEK_END);
-    unsigned long long int size = ftell(fh);
+    unsigned long long int size = ftell(fh); 
     fclose(fh);
  
     return size;
@@ -1362,6 +1730,12 @@ int main()
 
 The interrupt signal is (22). (control+c)
 =============================================================
+    std::pair<int, int> myPair = std::make_pair(1, 2);
+    // or
+    std::pair<int, int> myPair1={1, 2};
+	std::pair<int, int> myPair1{1, 2};
+
+===========================================================
 pair initialization using the tradation approach?
 what is the header file required?
 how to print the each element of the pair?
@@ -1371,6 +1745,9 @@ how to print the each element of the pair?
 
 int main() {
     std::pair<int, int> myPair(1, 2);
+	std::pair<int, int> myPair{1, 2};
+	std::pair<int, int> myPair({1, 2});
+	std::pair<int, int> myPair={1, 2};
 
     std::cout << "First element: " << myPair.first << std::endl;
     std::cout << "Second element: " << myPair.second << std::endl;
@@ -1437,7 +1814,7 @@ std::pair<int, double> calculateValues() {
     return std::make_pair(result1, result2);
 }
 ============================================
-using make_shared?
+shared_ptr using make_shared?
 	shared_ptr<lx_nw_mgr_config> pnwmgrstate = std::make_shared<lx_nw_mgr_config>();;
 ========================================
 if condition comparision for string
@@ -1547,7 +1924,8 @@ int main() {
     return 0;
 }
 ======================================================
-dynamic cast exception:
+dynamic cast exception for reference:
+dynamic_cast null for pointer.
 
 n C++, dynamic_cast with references does not return nullptr in case of a failed cast. 
 Instead, it throws a std::bad_cast exception. Therefore, a null check is not applicable in this context. 
@@ -1569,7 +1947,7 @@ int main() {
     Base& derivedRef = derivedObj;
 
     try {
-        Derived& derivedRef2 = dynamic_cast<Derived&>(baseRef);
+        Derived& derivedRef2 = dynamic_cast<Derived&>(baseRef); or Derived& derivedRef2 = dynamic_cast<Derived&>(baseObj);
         std::cout << "Dynamic cast from Base& to Derived& succeeded." << std::endl;
     } catch (std::bad_cast& e) {
         std::cout << "Dynamic cast from Base& to Derived& failed: " << e.what() << std::endl;
@@ -1584,6 +1962,8 @@ int main() {
 
     return 0;
 }
+Dynamic cast from Base& to Derived& failed: std::bad_cast
+Dynamic cast from Derived& to Derived& succeeded.
 ==============================================
 least safe casting: reinterpret_cast
 ===============================================
@@ -1633,7 +2013,7 @@ static_cast
 should be used only when the conversion is known to be safe.
 2. used for the casting between the related class
 3. virtual function is not must.
-4. static_cast and reinterpret_cast will not work on the const variable?
+4. static_cast and reinterpret_cast will work on the const variable?
 5. int to double
 
 6. No, static_cast should be used only for safe and well-defined conversions.
@@ -1644,9 +2024,15 @@ we cannot create integer reference to the double variable;
 double f = 12.12;
 int a = static_cast<int>(f);  //
 
+const int x = 42;
+int y = static_cast<int>(x);  // Ok: static_cast allows const conversions
+
+
 double doubleValue = 0x1234567890123456; //sizeof double is 8
 
 ====================
+how to print the value in hexa decimal in console?
+
 static_cast trucate the value:
 int doubleValue = 0x12345678;
 short intValue = static_cast<short>(doubleValue);
@@ -1751,7 +2137,7 @@ public:
 };
 
 int main() {
-    Base* basePtr = new Derived;
+    Base* basePtr = new Derived; or Base* basePtr = new Derived();
 
     // Performing upcast: Derived* to Base*
     Base* castedPtr = static_cast<Base*>(basePtr); // No error; static_cast is safe for upcasting
@@ -1914,7 +2300,7 @@ int main() {
     return 0;
 }
 ==================================
-to read and write the file at the same time
+to read the file and write the file at the same time from the beging
 clear the errors
 to move to the begining of the file?
 
@@ -2033,6 +2419,7 @@ RAII stands for "Resource Acquisition Is Initialization," which is an important 
 
 Here's an example of RAII using a file resource:
 
+exception header file name?
 how the exception should be catched?
 how to open the file in multiple mode?
 if the argument to the function is not modified what we should do?
@@ -2053,6 +2440,7 @@ cpp
 
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 class FileRAII {
 private:
@@ -2100,6 +2488,8 @@ can i consvert const string* to void *?
 
 const int x = 42;
 int* ptr = const_cast<int*>(&x); // Using const_cast, not recommended
+This cast is used to add or remove const or volatile qualifiers from pointers and references.
+ It is typically used to cast away the const-ness or volatile-ness of an object
 
 const int x = 42;
 int* ptr = reinterpret_cast<int*>(&x); // error
@@ -2111,6 +2501,62 @@ If you have a const std::string* and you want to convert it to a void*, you can'
 Instead, you can use const_cast to remove the const qualifier before performing the reinterpret_cast. Here's an example:
 
 const_cast cannot be used to convert the pointer of one type to another type poiner. it can be only used to convert const pointer to pointer of same type.
+=============================================
+class MyClass {
+public:
+    void nonConstFunction() {}
+};
+
+void callFunction(const MyClass& obj) {
+    const_cast<MyClass&>(obj).nonConstFunction();
+}
+=======
+const_cast to call the non const function from the const function
+class MyClass {
+public:
+    void function() { std::cout << "Non-const function" << std::endl; }
+    void function() const {
+        const_cast<MyClass*>(this)->function(); // Call non-const version
+    }
+};
+====================
+//creating the reference to the constant object and accessing the non constant function?
+// to remove the const by using the const_cast needs the pointer or reference
+// we can modiy thevalue of the const object
+
+#include <iostream>
+
+class MyClass {
+public:
+    int value;
+
+    MyClass(int v) : value(v) {}
+
+    void print() const {
+        std::cout << "Value: " << value << std::endl;
+    }
+
+    // Non-const member function to modify value
+    void setValue(int newValue) {
+        value = newValue;
+    }
+};
+
+int main() {
+    const MyClass obj(10);
+
+    // Call print() before modifying value
+    obj.print(); //10
+
+    // Modify value using const_cast
+    MyClass& nonConstObj = const_cast<MyClass&>(obj);
+    nonConstObj.setValue(20);
+
+    // Call print() after modifying value
+    obj.print(); // Note: We're still calling print() on the original const object //20
+
+    return 0;
+}
 
 ==========================
 reinterpret_cast for const string
@@ -2207,7 +2653,9 @@ firend function amd static function dont have
 friend function can be called?
 deifining the friend funtion outside the class?
 how to call the friend function
+
 friend function is not the member of the class.
+firnd and static function dont have this pointer
 
 friend function dont have this pointer so what?
 
@@ -2379,6 +2827,9 @@ int main() {
 }
 =======================================
 
+when the destructor is called for the exit(0)?
+create the global object?
+
 exit(0) will call the destructor for the global object and global shared/unique_ptr and not for the local varaible or local unique_ptr/local shared_ptr
 #include <iostream>
 
@@ -2447,15 +2898,16 @@ int main() {
 
     return 0;
 }
-input can be 0x1234 or 1234;
+input can be 0x1234 or 1234; //unsigned int
 ======================================================
-How to skip the values in the sscanf?
+How to skip the values in the sscanf and scan?
 header file required?
 what is must in sscanf?
 what is the return value while skipping the argument?
 
-#include <cstdio>
 
+& is must in scanf and sscanf
+#include <cstdio>
 int main() {
     const char* input = "Age: 25, Height: 180";
 
@@ -2476,6 +2928,7 @@ int main() {
 }
 
 =====================================================
+does c++ header file .h?
 sprintf header file required?
 syntax for sprintf?
 c++ header file will not have .h?
@@ -2497,7 +2950,19 @@ int main() {
     return 0;
 }
 ===============================================
+conveert number to string:
+double number = 3.14159;
+    std::string str = std::to_string(number);
+===
+  double number = 3.14159;
+    std::stringstream ss;
+    ss << number;
+    std::string str = ss.str();	
+=====================
 convert the string to double in c lanaguage?
+how to restrict the buffer overflow for scanf?
+scanf and sscanf dont have the format specifier like %.2 but have %*d to sking that argument
+
 #include <stdio.h>
 
 int main() {
@@ -2514,13 +2979,16 @@ int main() {
     // Using sscanf directly on a buffer
     char buffer2[] = "123.4";
     sscanf(buffer2, "%lf", &d);
-    printf("Using sscanf directly on buffer: %f\n", d);
+    printf("Using sscanf directly on buffer: %.2f\n", d);//only 2 fraction digits
 
     return 0;
 }
 
 =============================================================
 how to convert the string to double and set it to 2 prescision?
+header file required
+string to double and integere?
+
 #include <iostream>
 #include <iomanip> // for std::setprecision
 #include <string>
@@ -2536,13 +3004,15 @@ int main() {
     return 0;
 }
 ===========================================
-scanf and scanf dont have the %3.3f format specifier?
+sscanf and scanf dont have the %3.3f format specifier?
 format specifier in the sprintf?
+%*d
+%.*f
 %*.*f
 %.1f
 what is the return value of the sprintf?
 int n=sprintf(buffer, "Height: %.1f, Age: %*d", 100.12, 10, 25); //30	//print the number of character in the console
-sprintf(buffer, "Height: %.1f, Age: %*d", 100.12, 10, 25); //10 soaces after 25
+sprintf(buffer, "Height: %.1f, Age: %*d", 100.12, 10, 25); //10 spaces after 25
 
 float value = 123;  // The integer value we want to format
 int width = 10;   // The minimum width of the formatted output
@@ -2550,6 +3020,8 @@ int precision = 5; // The precision (number of digits after the decimal point)
 
 char buffer[50];
 sprintf(buffer, "%*.*f", width, precision, value);
+=============================================
+opening the file which has the content in std::ios::out  will clear the content of the file.
 =============================================
 Write a C++ program to sort the lines of a text file in alphabetical order.
 what is the delimiter required for each line end when you are writing the string to a file?
@@ -2776,8 +3248,8 @@ int main() {
 ===========================================
 Default Open Modes:
 
-ifstream       ios::in
-ofstream       ios::out
+ifstream       ios::in   (read)
+ofstream       ios::out  (write)
 fstream        ios::in | ios::out
 
    std::ifstream fname; // Declare an input file stream object
@@ -2948,6 +3420,10 @@ const int chunkSize = 100;
     // Close the files
     input.close();
     output.close();
+
+//print the content of the file
+cout<<inputfile.rdbuf();
+
 ===================================
 how do you know whether the serach keyword is present the string line?
 Write a C++ program to search for a specific string in a text file and display its line number(s).
@@ -3049,7 +3525,7 @@ std::vector < std::string > splitString(const std::string & str, char delimiter)
   std::stringstream ss(str); //istringstream?
   std::string token;
 
-  while (std::getline(ss, token, delimiter)) {
+  while (std::getline(ss, token, delimiter)) { //read till delimiter and next loop skip dlimiter and read
     tokens.push_back(token);
   }
 
@@ -3245,19 +3721,20 @@ int main() {
 
     return 0;
 }
+//4 3 2 1
 ========
 int main() {
     std::list<int> myList = {1, 2, 3, 4, 5};
 
     // Using bidirectional iterator to traverse the list in reverse order
     std::cout << "Reverse order: ";
-    for (std::list<int>::iterator rit = myList.end(); rit != myList.begin(); --rit) {
+    for (std::list<int>::iterator rit = --myList.end(); rit != myList.begin(); --rit) {
         std::cout << *rit << " ";
     }
 
     return 0;
 }
-
+//5 4 3 2 1
 =======================
 RandomAccessIterator:
 A RandomAccessIterator allows reading and writing values from/to a container with random access, meaning you can jump to any element in constant time.
@@ -3282,6 +3759,8 @@ int main() {
 }
 
 ===============================================
+//note the front_inert_iterator declared inside the while loop?
+
 output iterator examples:
 back_insert_iterator
 front_insert_iterator
@@ -3311,10 +3790,14 @@ int main() {
 
     return 0;
 }
+5 4 3 2 1
 ==================================================================
 inserting the individuals elements in map usinsing inserter?
 std::inserter(myMap, myMap.end()) vs std::inserter(myMap, myMap.begin())
 
+
+
+std::inserter(myMap, myMap.end()) vs std::inserter(myMap, myMap.begin()) ;//no difference since the elements will be in ascending order
 #include <iostream>
 #include <map>
 #include <iterator>
@@ -3333,6 +3816,7 @@ int main() {
     return 0;
 }
 =================
+insert the lement into the set in different ways?
 inserter into the set with begin and end?
 only insert?
 #include <iostream>
@@ -3399,6 +3883,7 @@ int main() {
     return 0;
 }
 =============================================
+different ways to insert the element into the map?
 map using emplace, pair , [], =; iterover the loop?
 
 #include <iostream>
@@ -3546,6 +4031,8 @@ int main() {
     return 0;
 }
 =========================================================
+list of functions for list?
+
 lsit has
 push_front
 push_back
@@ -3554,6 +4041,30 @@ pop_back
 insert(it,10)
 erase(it)
 ====================================================
+can you replace the function<> by function pointer?
+
+#include <iostream>
+#include <functional>
+
+int main() {
+    // Using std::function
+    std::function<int(int, int)> add = [](int a, int b) {
+        return a + b;
+    };
+
+    std::cout << "Using std::function: " << add(3, 4) << std::endl;
+
+    // Using function pointer
+    int (*addPtr)(int, int) = [](int a, int b) {
+        return a + b;
+    };
+
+    std::cout << "Using function pointer: " << addPtr(3, 4) << std::endl;
+
+    return 0;
+}
+
+====================================================================
 #include <functional>
 std::function<int(int, int)> add = [](int a, int b) {
     return a + b;
@@ -3582,7 +4093,7 @@ just referred to through the variable add.
 The ability to define and use functions inline through lambda expressions provides greater flexibility and conciseness in the code, especially 
 when you need a small function for a specific purpose and don't want to create a separate named function for it
 ============================================
-hedaer file required?
+hedaer file required for the format specifier and ythe command?
 setw for the output file:
 how to check if the file is opened or not?
 
@@ -3838,7 +4349,7 @@ when the input file contains the character
         dataVector.push_back(value);
     }
 =====================
-when the input file contains the number?
+when the input file contains the number how to move it to vector?
 std::istream_iterator<int> //will skip the spaces, tab and new line
     std::istream_iterator<int> begin(inputFile);
     std::istream_iterator<int> end;
@@ -3906,10 +4417,14 @@ int main() {
 input file: 1,2,3,4,5,6
 1 2 3 4 5 6
 =================================================
-getline takes the istringstream and input file stream and delimiter
+getline takes the istringstream or input file stream and delimiter
+what happens if we use getline without the delimitter?
+
 input file: 1,2,3,4,5,6
 1 2 3 4 5 6
 getline taking the input file stream?
+
+without delimiter in the getline and input file will read the entier line.if we use the delimiter it will read till before the delimitter
 
 #include <iostream>
 #include <fstream>
@@ -3977,7 +4492,7 @@ int main() {
     while (ss >> token) { // if there ss is non integer then the loop will break //here in the first read itself the token will have 1
 
         ss.ignore(1); // will ignore the , character
-        ss.clear();
+        ss.clear(); ////better to clear the error first and then do the ignore
         // Convert the token to integer and add it to the vector
         numbersVector.push_back((token));
     }
@@ -4006,7 +4521,9 @@ std::vector<int> destinationVector(numElementsToCopy);
 	
 std::copy_n(sourceVector.begin(), numElementsToCopy, destinationVector.begin());
 ======================================================================
-
+i have string which contain character and number need to extract the name and number;
+a. on what order to clear the istringstream error and ignore the character?
+b. 
 input string: 1,2,3,4,5,6
 ouput of vector :1
 
@@ -4026,7 +4543,7 @@ int main() {
     string token;
     while (ss >> token) { //here in the first read itself the token will have "1,2,3,4,5,6"
 
-        ss.ignore(1);
+        ss.ignore(1); //better to clear the error first and then do the ignore
         ss.clear();
         // Convert the token to integer and add it to the vector
         numbersVector.push_back(stoi(token)); // will convert only the first element
@@ -4034,12 +4551,14 @@ int main() {
 
     // Print the numbers from the vector as an example
     for (int num : numbersVector) {
-        std::cout << num << " ";
+        std::cout << num << " "; //1
     }
 
     return 0;
 }
 =================================================
+how to read the content from the file character by character including while loop and read the spaces also?
+
 The std::noskipws manipulator is typically used with input streams
 noskipws for the input file stream:
 input file content :1 2 3 4 5 hello, 12 
@@ -4080,8 +4599,22 @@ int main() {
 
     return 0;
 }
+/////
+how to read the content from the file word by word
+    string ch;
+    while (inputFile >> ch) { // will read word by word
+=================
+read the content from the file line by line
+ std::ifstream inputFile("input.txt");
+    std::string line;
+
+    // Read lines from the file until end of file
+    while (std::getline(inputFile, line)) {
+        std::cout << "Read: " << line << std::endl;
+    }
+
 =====================================
-print the content of the file in single line?
+print the full content of the file in single line?
 better to close the file?
     // Print the content of the file
     std::cout << "Content of the file (" << filename << "):" << std::endl;
@@ -4089,11 +4622,22 @@ better to close the file?
     std::cout << printFile.rdbuf() << std::endl; // there is no wdbuf
     printFile.close();
 ====================================
+what are the way to read the complete values?
+different way to check the iss has ended?
+what happens when error happens iss?
+read the character from iss without removing it from iss?
+double to string
+string to double?
+
+
 input string 123west32
 output needs to 123 32 
 
 stoi(input) will give 123;
 we have clear the error state and reread it. else it will not read the next character.
+
+while(!ss.eof())
+while(ss>>number)
 
 lese case can also be replaced by 
 if (iss.fail()) {
@@ -4123,7 +4667,42 @@ int main() {
 
     return 0;
 }
+===========================================
+what is the pupose of ignore?
+how to ignore more than one character?
+can ignore and read work if there is failure?
+what will be the value in teh case of failure?
+
+#include <iostream>
+#include <sstream>
+
+int main() {
+    std::istringstream iss("123abc");
+    int number;
+    std::string s;
+    // Attempt to read an integer from the stringstream
+    iss >> number; //123
+    iss >> number; //number reset to zero
+    std::cout << number; //0
+    
+    if (iss.fail()) {
+        iss.clear(); // you need to clear the element and perform the read
+		iss.ignore(); //or ignore(1); //ignore one character
+		//iss.ignore(2); //ignore 2 character
+        iss >> s;
+        std::cout << "Failed to read an integer from the stringstream." << s << std::endl; //bc
+    } else {
+        std::cout << "Successfully read the integer: " << number << std::endl;
+    }
+    
+    return 0;
+}
+
 ==================
+how to check whether the file is opened or not?
+how to close the file?
+open the file in both read and write?
+
 fstream file.open() will open the file in what mode?
 
 #include <iostream>
@@ -4132,7 +4711,7 @@ fstream file.open() will open the file in what mode?
 int main() {
     std::fstream file("viswa.txt");  // Open the file "viswa.txt" in both read and write
     
-    if (file.is_open()) {
+    if (file.is_open()) { // or if (file) {
         std::cout << "File is open." << std::endl;
         // ... you can perform other operations on the file here ...
         file.close();  // Close the file when done
@@ -4146,15 +4725,16 @@ int main() {
 you can change the mode of the fstream
 std::fstream file("viswa.txt", std::ios::in);
 ===============================================
-stringstream to append the string.
+stringstream or ostringstream to append the string.
 string to get and concatente the string?
 if this line ss.seekp(0, std::ios_base::end); is not there it will replace hi with out and the output will be out
 if this line ss.seekp(0, std::ios::end); is not there it will replace hi with out and the output will be out
+
 #include <iostream>
 #include <sstream>
 
 int main() {
-    std::stringstream ss("hi");  // Initialize with "hi"
+    std::stringstream ss("hi");  // Initialize with "hi" // or std::ostringstream ss("hi");
     
     // Set the position of the stringstream to the end
     ss.seekp(0, std::ios_base::end);
@@ -4166,7 +4746,66 @@ int main() {
     return 0;
 }
 ===============================================
+usage mutable keyword in 
+a. lamda functionb. member constant function
+mutable keyword in the lamda expression:
 
+In C++, the mutable keyword is used in conjunction with 
+lambda expressions to allow modifying variables captured by value within the lambda, even if the lambda itself is declared as const.
+#include <iostream>
+
+int main() {
+    int x = 5;
+    int y = 10;
+
+    // Create a lambda that captures x by value
+    auto lambda = [x, y]() mutable {
+        // Modify the captured variable x
+        x = x + y;
+        std::cout << "Inside lambda: x = " << x << std::endl; //15
+    };
+
+    x =100;
+    // Execute the lambda
+    lambda();
+
+    // The original x remains unchanged
+    std::cout << "Outside lambda: x = " << x << std::endl; //100
+
+    return 0;
+}
+==============================
+When you declare a member variable as mutable within a class, it means that the variable is exempt from the constness
+\ of the member function it belongs to. This allows you to modify the mutable member variable even within a const member function.
+
+object is not const
+member function is const 
+
+#include <iostream>
+
+class MyClass {
+public:
+    MyClass(int value) : m_value(value) {}
+
+    // Const member function that modifies a mutable member variable
+    void printValue() const {
+        std::cout << "Value: " << m_value << std::endl;
+        m_counter++; // OK, even though this is a const member function
+        std::cout << "Counter: " << m_counter << std::endl;
+    }
+
+private:
+    int m_value;
+    mutable int m_counter = 0; // Mutable member variable //if the mutable is not there it will give error
+};
+
+int main() {
+    MyClass obj(5);
+    obj.printValue(); // Calls the const member function
+    return 0;
+}
+
+===============================================================
 How to free the unique_ptr?
 how to find the cin failure?
 when you assign the value to the char * in the declaration it has to be ?

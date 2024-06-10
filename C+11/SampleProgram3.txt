@@ -1,0 +1,3128 @@
+/*
+	Below is the sample program for the C++ features.
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
+	Author Name: Viswanathan Ramasamy
+	Email id: rviswawt@gmail.com
+*/
+mktime return -1 on failure
+mktime convert the calender date+time to epoc time
+setjmp and longjmp are functions used for non-local jumps, allowing you to perform 
+a jump from one part of your program to another, even across function calls
+setjmp saves the current execution context into a jmp_buf object, allowing you to later return to that context using longjmp.
+longjmp restores the saved execution context, causing the program to "jump" back to the point where setjmp was called.
+
+===============================
+Header file required
+
+#include <setjmp.h>
+
+int setjmp(jmp_buf env);
+
+#include <stdio.h>
+#include <setjmp.h>
+
+jmp_buf jump_buffer;
+
+void error_handling() {
+    printf("An error occurred.\n");
+    longjmp(jump_buffer, 1); // Jump back to the setjmp call
+}
+
+int main() {
+    if (setjmp(jump_buffer) == 0) {
+        printf("Normal execution flow.\n");
+        error_handling(); // Simulate an error condition
+    } else {
+        printf("Error handling code.\n");
+    }
+
+    return 0;
+}
+========================================================
+extract the number from the string which has starting numberand strings. 
+//if the starting is character , there will no number
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    char *str = "12345we123"; 
+    char *endptr;
+    long num;
+
+    num = strtol(str, &endptr, 10);
+
+    if (endptr == str) {
+        printf("No digits were found\n");
+    } else {
+        printf("Number: %ld\n", num); 12345
+        printf("Remaining string: %s\n", endptr); we123
+    }
+
+    return 0;
+}
+
+=============================================
+gmtime() provide the UTC or greenwhich mean time
+there are only 2 list sequence container.forward_list and list
+forward list has remove_if
+===================
+remove all the lements from the list which has the certail condition meet?
+
+fwlist.remove_if([](int x) return x > 3) //remove all the lements greated than 3 from the list
+=========================
+How to rase the element in the forward list
+forward list and erase needs iterator?
+
+forwardlist insert
+forwardlist erase can erase only one element and take only one iterator.
+list assignment
+fwlist.assign(10,5) or flist.assign({1,2,3,4,5})
+
+ // Create an empty forward_list
+    //std::forward_list<int> myList({1,2,3,4,5});
+    //std::forward_list<int> myList{1,2,3,4,5};
+    std::forward_list<int> myList={1,2,3,4,5};
+
+    // Assign values to the forward_list using assign
+    myList.insert_after(myList.begin(),10);  //insert after the firsta element
+	 myList.insert_after(myList.begin(),{1,2,3,10});
+	
+	forwardlist<int>::iterator it=fwlist.begin()
+	fwlist.erase(it); 
+===============
+//not allowed in copying the list
+
+forward_list<int> v2 = {1,2,310};
+
+    // Insert v2 after the first element
+    myList.insert_after(myList.begin(), v2);
+
+=============================
+move one element .begin()
+
+forwardlist to remove the elemt till the 3 position
+    std::forward_list<int> myList = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    // Erase elements after the first iterator up to the second iterator
+    auto it = myList.before_begin(); // Get the iterator before the first element
+    auto end = std::next(it, 4);     // Advance the iterator to the fourth element
+
+    // Loop to erase elements after 'it' up to 'end'
+    while (std::next(it) != end) {
+        myList.erase_after(it);
+    }
+//4 5 6 7 8 9 10
+==============================
+forward_list assignment?
+copy from other list and clear it?
+
+std::forward_list<int> myList1 = {1, 2, 3};
+std::forward_list<int> myList2 = {4, 5, 6};
+auto it = myList1.before_begin(); // Before the first element
+myList1.splice_after(it, myList2); // Transfer elements from myList2 to myList1
+// myList1: 4 5 6 1 2 3
+// myList2: (empty)
+=====================================
+stoi,strcmp,
+difference between the two pointer will always gives the number of element ie difference/sizeof(datatype)
+subraction pointers needs to be of same type.
+fprintf can be used to print the content to console screen as stdout,stderr
+point to array of element ie int(*ptr)[colum]
+
+floor(1.49)1
+ceil(1.49) 2
+mktime on failure return -1 ; return the epoc time for the date+time
+
+macro can also be used to check the greater of the 2 given number
+=================================================
+<iomanip>
+
+std::setw(10); //set the width and to clear std::width(0)
+cout.width(10)
+
+cout<<std::precision(2);; set the decimal point 2
+cout<<std::precision(0);; set 
+
+cout<<std::fixed; set the decimal point to fixed 
+================
+
+// C++ code to demonstrate the working of 
+// make_heap() using syntax 2 
+
+#include<iostream> 
+#include<algorithm> // for heap 
+#include<vector> 
+using namespace std; 
+
+// comparator function to make min heap 
+struct greaters{ 
+bool operator()(const long& a,const long& b) const{ 
+	return a>b; 
+} 
+}; 
+
+int main() 
+{ 
+	// initializing vector; 
+	vector<int> vi = { 15, 6, 7, 9, 11, 45 }; 
+	
+	// using make_heap() to transform vector into 
+	// a min heap 
+	make_heap(vi.begin(),vi.end(), greaters()); 
+	
+	// checking if heap using 
+	// front() function 
+	cout << "The minimum element of heap is : "; 
+	cout << vi.front() << endl; 
+	
+} 
+==================================
+heap STL
+
+make_heap
+push_heap
+pop_heap
+
+after removing element using pop_heap, element will be heapified
+
+// C++ code to demonstrate the working of 
+// make_heap() using syntax 2 
+
+#include<iostream> 
+#include<algorithm> // for heap 
+#include<vector> 
+using namespace std; 
+
+// comparator function to make min heap 
+struct greaters { 
+    bool operator()(const long& a, const long& b) const { 
+        return a > b; 
+    } 
+}; 
+
+int main() { 
+    // initializing vector; 
+    vector<int> vi = { 15, 6, 7, 9, 11, 45 }; 
+    
+    // using make_heap() to transform vector into 
+    // a min heap 
+    make_heap(vi.begin(), vi.end(), greaters());  6 7 9 11 15 45
+    
+    // checking if heap using 
+    // front() function 
+    cout << "The minimum element of heap is : "; 
+    cout << vi.front() << endl;  //6 
+    
+    // Adding a new element to the heap
+    int new_element = 5;
+    vi.push_back(new_element); // Add the new element to the end of the vector
+    for (int &a:vi)
+    {
+       std::cout << a <<std::endl; //6 7 9 11 15 45 5
+    }
+    push_heap(vi.begin(), vi.end(), greaters()); // Re-establish the heap property // 5  6 7 9 11 15 45
+    
+    // Displaying the new minimum element
+    cout << "After adding a new element, the new minimum element of heap is : "; 
+    cout << vi.front() << endl; //5 
+    
+    // Removing the minimum element from the heap
+    pop_heap(vi.begin(), vi.end(), greaters()); // //6 7 9 11 15 45
+    vi.pop_back(); // Remove the last element  6 7 9 11 15
+    
+    // Displaying the new minimum element
+    cout << "After removing the minimum element, the new minimum element of heap is : "; 
+    cout << vi.front() << endl; //6 
+} 
+
+if (std::is_heap(v.begin(), v.end())) {
+======================
+unique we should not add the elment when the condition is true
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+struct approx_equal{
+    bool operator()(float l, float r) {
+        return std::abs(l - r) < 0.02; 
+    }
+};
+
+int main(){
+    std::vector<float> v{1.0, 1.0, 3.5, 3.5, 3.7,3.69 };
+
+    approx_equal f;
+
+    v.erase(std::unique(v.begin(), v.end(),f),v.end());
+
+    // sorry this is c++11, replace with iterator loop to see output pre-c++11
+    for (const auto& x : v) std::cout << x << " ";  
+}
+1 3.5 3.7 
+======================================================
+ vector<int> v = {2, 3, 4, 5, 6, 2, 3, 7};
+
+    // Loop to erase all occurrences of 2
+    auto it = v.begin();
+    while (it != v.end()) {
+        if (*it == 2) {
+            it = v.erase(it); // Erase the current element and update the iterator
+        } else {
+            ++it; // Move to the next element
+        }
+    }
+=====================
+inheritated constructor
+using namespace std;
+
+class Base {
+public:
+    Base()
+    {
+        cout << " Viswa" <<endl;
+    }
+    Base(int x) : value(x) {
+        cout << "Base constructor called with value: " << value << endl;
+    }
+
+    void display() {
+        cout << "Value in base class: " << value << endl;
+    }
+
+private:
+    int value;
+};
+
+class Derived : public Base {
+public:
+    using Base::Base; // Inherit constructor from Base class
+
+    void displayDerived() {
+        display(); // Accessing base class member function
+        cout << "Value in derived class: " << endl; // Accessing base class member variable
+    }
+};
+
+int main() {
+    Derived d(5);
+    Derived d1;
+    
+    d.displayDerived();
+
+    return 0;
+}
+
+Base constructor called with value: 5
+ Viswa
+Value in base class: 5
+Value in derived class: 
+========
+inderived class if the use the below line then ther is no use of the using Base::Base;
+//derived class constructor will call the empty base class
+    using Base::Base; // Inherit constructor from Base class
+    Derived(int x)  {
+        cout << "Base constructor called with value: " << endl;
+    }
+============================
+=============================================================
+the operator that cannot be overloaded are 
+. Member selection operator
+.* Member selection through pointer to member operator
+?:
+::
+=================
+when the class is derived it inherrit
+constructor , destructor, assignment, copy constructor, overloading and all public member function
+============================
+#include <iostream>
+using namespace std;
+
+struct MyStruct {
+    int x;
+    int y;
+};
+
+int main() {
+    MyStruct obj = {10, 20};
+    MyStruct* ptr = &obj;
+
+    // Define pointer to member variables
+    int MyStruct::* ptrX = &MyStruct::x;
+    int MyStruct::* ptrY = &MyStruct::y;
+
+    // Access members using .* operator
+    cout << "Value of x: " << obj.*ptrX << endl; // Access x through ptrX
+    cout << "Value of y: " << ptr->*ptrY << endl; // Access y through ptrY
+
+    return 0;
+}
+===========================
+#include <iostream>
+using namespace std;
+
+class Animal {
+public:
+    virtual void sound() const {
+        cout << "Animal sound" << endl;
+    }
+};
+
+class Bird : virtual public Animal {
+public:
+    void sound() const override {
+        cout << "Bird sound" << endl;
+    }
+};
+
+class Mammal : virtual public Animal {
+public:
+    void sound() const override {
+        cout << "Mammal sound" << endl;
+    }
+};
+
+class Bat : public Bird, public Mammal {
+public:
+    void combinedSound() const {
+        sound(); // This would be ambiguous without virtual inheritance
+    }
+};
+
+int main() {
+    Bat bat;
+    bat.combinedSound(); // Outputs "Animal sound"
+
+    return 0;
+}
+=====================
+Constructor with a single parameter: When a constructor has a single parameter, 
+it can be used for implicit conversions. This might lead to unexpected behavior.
+class MyClass {
+public:
+    explicit MyClass(int x) { 
+        // Constructor with single parameter
+    }
+};
+
+int main() {
+    MyClass obj = 5; // Error: Implicit conversion prevented by explicit keyword
+	MyClass obj = static_cast<MyClass>(5); //no error
+    MyClass obj2(5); // OK: Explicit conversion
+    return 0;
+}
+==================
+Conversion functions: If a conversion function is declared with the explicit keyword, it cannot be used for implicit conversions.
+
+cpp
+Copy code
+class MyClass {
+public:
+    explicit operator int() const { 
+        // Conversion function to int
+        return 10; 
+    }
+};
+
+int main() {
+    MyClass obj;
+    int value = obj; // Error: Implicit conversion prevented by explicit keyword
+    int value2 = static_cast<int>(obj); // OK: Explicit conversion
+    return 0;
+}
+===================#include <iostream>
+using namespace std;
+
+// Forward declaration of MyClassB
+class MyClassB;
+
+// MyClassA declaration
+class MyClassA {
+private:
+    int privateMemberA;
+
+public:
+    MyClassA(int val) : privateMemberA(val) {}
+
+    // Declare MyClassB as a friend of MyClassA
+    friend class MyClassB;
+};
+
+// MyClassB declaration
+class MyClassB {
+public:
+    void displayPrivateMemberA(const MyClassA& obj) {
+        // Access privateMemberA of MyClassA
+        cout << "Private member of MyClassA accessed by MyClassB: " << obj.privateMemberA << endl;
+    }
+};
+
+int main() {
+    MyClassA objA(10);
+    MyClassB objB;
+
+    // MyClassB can access the private member of MyClassA
+    objB.displayPrivateMemberA(objA);
+
+    return 0;
+}
+==============================
+#include <iostream>
+using namespace std;
+
+// Forward declaration of Base class
+class Base;
+
+// Another class that declares a member function as friend of Base
+class FriendClass {
+public:
+    void friendFunction(Base& obj);
+};
+
+// Base class declaration
+class Base {
+private:
+    int privateMember;
+
+public:
+    Base(int val) : privateMember(val) {}
+
+    // Declare friendFunction of FriendClass as a friend of Base
+    friend void FriendClass::friendFunction(Base& obj);
+};
+
+// Definition of friendFunction
+void FriendClass::friendFunction(Base& obj) {
+    cout << "Accessing private member of Base from friendFunction: " << obj.privateMember << endl;
+}
+
+int main() {
+    Base obj(10);
+    FriendClass friendObj;
+
+    // Call friendFunction which can access private members of Base
+    friendObj.friendFunction(obj);
+
+    return 0;
+}
+===========================
+#include <iostream>
+#include <any>
+
+int main() {
+    try {
+        std::any value = 42;
+        // Attempt to cast the stored value to a string (incompatible type)
+        std::string strValue = std::any_cast<std::string>(value);
+    } catch (const std::bad_any_cast& e) {
+        // Catch and handle the bad_any_cast exception
+        std::cerr << "Caught std::bad_any_cast: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+===========================
+#include <iostream>
+#include <any>
+
+int main() {
+    std::any value;
+
+    // Store an integer value
+    value = 42;
+
+    // Retrieve and print the stored integer value
+    if (value.has_value()) {
+        std::cout << "Stored integer value: " << std::any_cast<int>(value) << std::endl;
+    } else {
+        std::cout << "No value stored." << std::endl;
+    }
+
+    // Store a string value
+    value = std::string("Hello, world!");
+
+    // Retrieve and print the stored string value
+    if (value.has_value()) {
+        std::cout << "Stored string value: " << std::any_cast<std::string>(value) << std::endl;
+    } else {
+        std::cout << "No value stored." << std::endl;
+    }
+
+    return 0;
+}
+===================================
+#include <iostream>
+#include <variant>
+#include <stdexcept> // Include for std::bad_variant_access
+
+int main() {
+    try {
+        // Define a std::variant that can hold either an integer or a double
+        std::variant<int, double> var;
+
+        // Attempt to access the value as an integer (invalid state)
+        int value = std::get<int>(var);
+    } catch (const std::bad_variant_access& e) {
+        // Catch and handle the bad_variant_access exception
+        std::cerr << "Caught std::bad_variant_access: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+==================
+#include <iostream>
+#include <variant>
+
+int main() {
+    // Define a std::variant that can hold either an int or a double
+    std::variant<int, double> var;
+
+    // Check if var holds an int
+    if (std::holds_alternative<int>(var)) {
+        std::cout << "var holds an int" << std::endl;
+    } else {
+        std::cout << "var does not hold an int" << std::endl;
+    }
+
+    // Check if var holds a double
+    if (std::holds_alternative<double>(var)) {
+        std::cout << "var holds a double" << std::endl;
+    } else {
+        std::cout << "var does not hold a double" << std::endl;
+    }
+
+    return 0;
+}
+===============================
+In C++, an lvalue (locator value) refers to an object that occupies some identifiable memory location in the 
+computer's memory. It's a value that can appear on the left-hand side of an assignment statement. On the other hand, 
+an rvalue (right value) refers to a temporary or unnamed value that doesn't necessarily 
+have an identifiable memory location. It's a value that can appear on the right-hand side of an assignment statement.
+#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 5;          // 'x' is an lvalue, as it has an identifiable memory location
+    int y = 10;         // 'y' is an lvalue
+    int z = x + y;      // 'x + y' is an rvalue, it's a temporary value calculated at runtime
+    int& ref = x;       // 'ref' is an lvalue reference, it refers to 'x'
+
+    x = 15;             // 'x' is an lvalue
+    // 5 = x;           // Error! 5 is an rvalue and cannot be assigned to
+
+    cout << "x: " << x << endl;    // Output: x: 15
+    cout << "y: " << y << endl;    // Output: y: 10
+    cout << "z: " << z << endl;    // Output: z: 15
+    cout << "ref: " << ref << endl;// Output: ref: 15
+
+    return 0;
+}
+=====================
+when the object is returned from the function it is temporary value hence it will be rvalue and it need const
+#include <iostream>
+
+class MyClass {
+public:
+    // Default constructor
+    MyClass() {
+        std::cout << "Default constructor called" << std::endl;
+    }
+
+    // Copy constructor (deleted)
+    MyClass(MyClass &ref) = delete;
+
+    // Copy constructor (const reference)
+    MyClass(const MyClass &ref) {
+        std::cout << "Copy constructor called" << std::endl;
+        // Additional copy constructor logic
+    }
+};
+
+int main() {
+     MyClass obj1;
+    // Attempting to use the deleted copy constructor will result in a compilation error
+    // MyClass obj2 = obj1; // Error: use of deleted function 'MyClass::MyClass(MyClass&)'
+    MyClass obj2 = obj1; // This line will not compile if the object is not const
+
+    return 0;
+}
+======================================================
+destructor can throw the exception
+#include <iostream>
+#include <stdexcept>
+
+class MyClass {
+public:
+    MyClass() {
+        std::cout << "Constructor called" << std::endl;
+    }
+
+    ~MyClass() noexcept(false) { //if it set to true then the function is not support to throw the exceptiom
+        std::cout << "Destructor called" << std::endl;
+        // Throw an exception from the destructor
+        throw std::runtime_error("Exception thrown from destructor");
+    }
+};
+
+int main() {
+    try {
+        MyClass obj;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+Destructor called
+Exception caught: Exception thrown from destructor
+===============================================================
+//by default the destructor will not be allowed to throw the exception in c++11.
+//hence nelow code will give the warning
+// ~MyClass() noexcept(false) // no warning
+#include <iostream>
+#include <stdexcept>
+
+class MyClass {
+public:
+    MyClass() {
+        std::cout << "Constructor called" << std::endl;
+    }
+
+    ~MyClass() noexcept(false) {
+        std::cout << "Destructor called" << std::endl;
+        throw 'c';
+    }
+};
+
+int main() {
+    try {
+        MyClass obj;
+    } catch (...) {
+        std::cerr << "Exception caught: " << std::endl;
+    }
+
+    return 0;
+}
+
+//if the destructor cannot throw exception:
+Destructor called
+terminate called after throwing an instance of 'char'
+=================================
+#include <iostream>
+#include <stdexcept>
+#include <cstdlib>
+
+void myTerminate() {
+    std::cerr << "Uncaught exception! Program terminating." << std::endl;
+    std::exit(EXIT_FAILURE);
+}
+
+int main() {
+    // Set custom terminate handler
+    std::set_terminate(myTerminate);
+
+    try {
+        // Throw an uncaught exception
+        throw std::runtime_error("Uncaught exception");
+    } catch (char a) {
+        // This catch block will not catch the exception
+        std::cerr << "Caught exception inside main" << std::endl;
+    }
+
+    return 0;
+}
+"Uncaught exception! Program terminating."
+
+or 
+ void (*fp)() = &myTerminate;
+    std::set_terminate(fp);
+======================================================
+any is the stl container:
+std::any is a part of the C++ Standard Library introduced in C++17. It provides a type-safe 
+container that can hold any type of value.
+
+#include <iostream>
+#include <any>
+#include <string>
+
+int main() {
+    // Create an empty std::any object
+    std::any myAny;
+
+    // Assign an integer value to myAny
+    myAny = 42;
+
+    // Retrieve and print the value stored in myAny
+    if (myAny.has_value()) {
+        std::cout << "myAny contains an integer value: " << std::any_cast<int>(myAny) << std::endl;
+    } else {
+        std::cout << "myAny is empty" << std::endl;
+    }
+
+    // Assign a string value to myAny
+    myAny = std::string("Hello, world!");
+
+    // Retrieve and print the value stored in myAny
+    if (myAny.has_value()) {
+        std::cout << "myAny contains a string value: " << std::any_cast<std::string>(myAny) << std::endl;
+    } else {
+        std::cout << "myAny is empty" << std::endl;
+    }
+
+    // Reset myAny to empty
+    myAny.reset();
+
+    // Check if myAny is empty
+    if (myAny.has_value()) {
+        std::cout << "myAny contains a value" << std::endl;
+    } else {
+        std::cout << "myAny is empty" << std::endl;
+    }
+
+    return 0;
+}
+
+myAny contains an integer value: 42
+myAny contains a string value: Hello, world!
+myAny is empty
+==========
+#include <iostream>
+#include <any>
+#include <string>
+
+int main() {
+    // Create an empty std::any object
+    std::any myAny;
+
+    // Assign an integer value to myAny
+    myAny = 42;
+
+    // Retrieve and print the value stored in myAny
+    try {
+        int intValue = std::any_cast<int>(myAny);
+        std::cout << "myAny contains an integer value: " << intValue << std::endl;
+    } catch (const std::bad_any_cast& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    // Assign a string value to myAny
+    myAny = std::string("Hello, world!");
+
+    // Retrieve and print the value stored in myAny
+    try {
+        std::string strValue = std::any_cast<std::string>(myAny);
+        std::cout << "myAny contains a string value: " << strValue << std::endl;
+    } catch (const std::bad_any_cast& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    // Attempt to retrieve an integer value from a string
+    try {
+        int intValue = std::any_cast<int>(myAny);
+        std::cout << "myAny contains an integer value: " << intValue << std::endl;
+    } catch (const std::bad_any_cast& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+==============================
+tring str = "hellow"
+str=str+'a';
+string str = "hellow"
+str.push_back('a')
+===============================
+p and q are char , r and t and s are int which is correct 
+t = (r*s)/(r+s)
+t = (p+q)/(r+s)
+
+both are correct
+if p = q =127 and r= s =1 ; t = 127
+==========================
+A "checked iterator" typically refers to an iterator implementation that includes additional runtime checks
+ to help detect and prevent certain types of errors,
+ such as accessing elements out of bounds of a container or dereferencing an iterator that has been invalidated.
+ 
+     std::vector<int> vec = {1, 2, 3, 4, 5};
+
+    // Using checked iterators
+    std::vector<int>::iterator it = vec.begin();
+    std::advance(it, 100); // Move iterator 100 positions forward
+	//here we can increment only by 4 to reach 5
+=============================================
+we cannot make the  [] operator to be friend
+#include <iostream>
+
+class MyClass {
+private:
+    int value;
+
+public:
+    MyClass(int val) : value(val) {}
+
+    // Overloading subscript operator as a member function
+    int operator[](int index) const {
+        return value + index;
+    }
+};
+
+int main() {
+    MyClass obj(5);
+    
+    // Using subscript operator on object
+    std::cout << "Element at index 2: " << obj[2] << std::endl;
+
+    return 0;
+}
+=============================
+#include <iostream>
+
+class MyClass {
+private:
+    int value;
+
+public:
+    MyClass(int val) : value(val) {}
+
+    // Declaring friend functions
+    friend MyClass operator+(const MyClass& obj1, const MyClass& obj2);
+    friend MyClass operator++(MyClass& obj);
+    friend bool operator==(const MyClass& obj1, const MyClass& obj2);
+
+    // Getter for private member value
+    int getValue() const {
+        return value;
+    }
+};
+
+// Overloading + operator
+MyClass operator+(const MyClass& obj1, const MyClass& obj2) {
+    return MyClass(obj1.value + obj2.value);
+}
+
+// Overloading ++ operator (prefix increment)
+MyClass operator++(MyClass& obj) {
+    ++obj.value;
+    return obj;
+}
+
+// Overloading == operator
+bool operator==(const MyClass& obj1, const MyClass& obj2) {
+    return obj1.value == obj2.value;
+}
+
+int main() {
+    MyClass obj1(5);
+    MyClass obj2(10);
+
+    // Using overloaded + operator
+    MyClass sum = obj1 + obj2;
+    std::cout << "Sum: " << sum.getValue() << std::endl;
+
+    // Using overloaded ++ operator (prefix increment)
+    ++obj1;
+    std::cout << "After incrementing obj1: " << obj1.getValue() << std::endl;
+
+    // Using overloaded == operator
+    if (obj1 == obj2) {
+        std::cout << "obj1 is equal to obj2" << std::endl;
+    } else {
+        std::cout << "obj1 is not equal to obj2" << std::endl;
+    }
+
+    return 0;
+}
+===
+Sum: 15
+After incrementing obj1: 6
+obj1 is not equal to obj2
+============================================
+#include <iostream>
+
+class MyClass {
+public:
+    MyClass() {
+        std::cout << "Constructor called" << std::endl;
+    }
+
+    ~MyClass() {
+        std::cout << "Destructor called" << std::endl;
+    }
+
+    void operator delete(void* ptr) {
+        std::cout << "Custom delete operator called" << std::endl;
+        free(ptr); // Free memory using standard deallocation function
+    }
+
+    void operator delete[](void* ptr) {
+        std::cout << "Custom delete[] operator called" << std::endl;
+        free(ptr); // Free memory using standard deallocation function
+    }
+};
+
+int main() {
+    MyClass* objArray = new MyClass[3];
+
+    delete objArray; // Delete array of objects
+
+    return 0;
+}
+
+Constructor called
+Constructor called
+Constructor called
+Destructor called
+Custom delete operator called
+munmap_chunk(): invalid pointer
+=========================================
+#include <iostream>
+
+class MyClass {
+public:
+    MyClass() {
+        std::cout << "Constructor called" << std::endl;
+    }
+
+    ~MyClass() {
+        std::cout << "Destructor called" << std::endl;
+    }
+
+    void operator delete(void* ptr) {
+        std::cout << "Custom delete operator called" << std::endl;
+        free(ptr); // Free memory using standard deallocation function
+    }
+
+    void operator delete[](void* ptr) {
+        std::cout << "Custom delete[] operator called" << std::endl;
+        free(ptr); // Free memory using standard deallocation function
+    }
+};
+
+int main() {
+    MyClass* objArray = new MyClass[3];
+
+    delete []objArray; // Delete array of objects
+
+    return 0;
+}
+Constructor called
+Constructor called
+Constructor called
+Destructor called
+Destructor called
+Destructor called
+Custom delete[] operator called
+====================================================
+new operator will be called 
+constructor will called
+destructor
+delete
+===
+you can overload the delete[] operator with an additional size parameter. This overloaded delete[] operator will be called when deallocating memory for arrays.
+
+The prototype for the overloaded delete[] operator with an additional size parameter looks like this:
+
+void operator delete[](void* ptr, size_t sz);
+=============
+#include <iostream>
+
+class MyClass {
+public:
+    MyClass() {
+        std::cout << "Constructor called" << std::endl;
+    }
+
+    ~MyClass() {
+        std::cout << "Destructor called" << std::endl;
+    }
+
+    void operator delete[](void* ptr, size_t sz) {
+        std::cout << "Custom delete[] operator called with size: " << sz << std::endl;
+        free(ptr); // Free memory using standard deallocation function
+    }
+};
+
+int main() {
+    MyClass* objArray = new MyClass[3];
+
+    delete[] objArray; // Delete array of objects
+
+    return 0;
+}
+Constructor called
+Constructor called
+Constructor called
+Destructor called
+Destructor called
+Destructor called
+Custom delete[] operator called with size: 11
+=================
+delete will take the first argument as void *
+
+::operator delete [] (ptr); is not same as ::operator delete [] ptr;
+    void operator delete[](void* ptr, size_t sz) {
+        std::cout << "Custom delete[] operator called with size: " << sz << std::endl;
+        ::operator delete [] (ptr); //
+    }
+====
+int* myarray = new int[5];
+// Use myarray...
+delete[] myarray; // Correct
+=====
+    void operator delete[](void* ptr, size_t sz) {
+        std::cout << "Custom delete[] operator called with size: " << sz << std::endl;
+        delete [] (ptr); /// recurvive call the same function //warning in passing void pointer
+    }
+	
+	    void operator delete[](void* ptr, size_t sz) {
+        std::cout << "Custom delete[] operator called with size: " << sz << std::endl;
+        delete [] ((MyClass*)ptr); 
+    }
+======================
+different to create the constructor?
+Default Constructor: This constructor does not take any arguments. It is invoked 
+automatically when an object is created without any arguments.
+MyClass obj; // Default constructor invoked
+
+Parameterized Constructor: This constructor takes one or more arguments. It allows you to
+ initialize the object with specific values at the time of creation.
+MyClass obj(42); // Parameterized constructor invoked
+
+Copy Constructor: This constructor takes a reference to another object of the same type,
+ creating a new object with the same values as the original object.
+MyClass obj1(42);
+MyClass obj2(obj1); // Copy constructor invoked
+
+Move Constructor (C++11 and later): This constructor takes an rvalue reference to another 
+object of the same type, transferring ownership of the resources from the source object 
+to the new object.
+MyClass obj1(42);
+MyClass obj2(std::move(obj1)); // Move constructor invoked
+
+Implicit Conversion Constructor: This constructor takes a single argument of a 
+different type, allowing implicit conversion from the argument type to the class type.
+
+class MyClass {
+public:
+    MyClass(int value) { /* Constructor definition */ }
+};
+
+MyClass obj = 42; // Implicit conversion constructor invoked
+
+Aggregate Initialization (C++11 and later): For aggregate types (arrays and classes 
+with public members only), constructors can be invoked using aggregate initialization syntax.
+struct Point {
+    int x;
+    int y;
+};
+
+Point p = {1, 2}; // Constructor implicitly invoked for each member
+======================================
+Containers in C++ can be constructed in various ways, depending on the container 
+type and the desired initialization method. Here are the common ways containers can be 
+constructed:
+
+Default Constructor: All standard containers have a default constructor that constructs 
+an empty container. This constructor is implicitly called when a container object is created 
+without any arguments.
+std::vector<int> vec; // Default constructor invoked, creating an empty vector
+
+Initializer List Constructor: Many containers support initialization using an initializer list. 
+This allows you to specify the initial elements of the container directly within braces {}.
+std::vector<int> vec = {1, 2, 3, 4, 5}; // Initialized with an initializer list
+
+Range Constructor: Some containers support initialization from a range of elements, such as
+ iterators. This constructor allows you to specify a range of elements to be copied or moved 
+ into the container.
+std::vector<int> src = {1, 2, 3, 4, 5};
+std::vector<int> vec(src.begin(), src.end()); // Initialized from a range
+
+Size Constructor: Certain containers allow initialization with a specific size and optionally
+ a default value for the elements.
+std::vector<int> vec(5); // Initialized with 5 default-initialized elements
+
+Copy Constructor: All standard containers have a copy constructor that constructs a container 
+with a copy of the elements of another container.
+std::vector<int> src = {1, 2, 3, 4, 5};
+std::vector<int> vec(src); // Constructed as a copy of 'src'
+
+Move Constructor: C++11 introduced move constructors for containers, which allow efficient
+ transfer of resources from one container to another.
+std::vector<int> src = {1, 2, 3, 4, 5};
+std::vector<int> vec(std::move(src)); // Move constructor, transferring ownership from 'src'
+ to 'vec'
+
+Allocator-Aware Constructor: Some containers provide constructors that take an allocator object
+ as an argument, allowing customization of the memory allocation strategy.
+std::vector<int, MyAllocator<int>> vec(MyAllocator<int>(...)); // Constructed with a custom 
+allocator
+These are the common ways containers can be constructed in C++
+=============================================
+my allocator vector:
+#include <iostream>
+#include <vector>
+
+// Custom allocator
+template<typename T>
+class MyAllocator {
+public:
+    using value_type = T;
+
+    // Constructor
+    MyAllocator() {}
+
+    // Allocate memory for 'n' objects
+    T* allocate(std::size_t n) {
+        std::cout << "Custom allocator: Allocating memory for " << n << " objects" << std::endl;
+        return static_cast<T*>(::operator new(n * sizeof(T)));
+    }
+
+    // Deallocate memory
+    void deallocate(T* p, std::size_t n) {
+        std::cout << "Custom allocator: Deallocating memory for " << n << " objects" << std::endl;
+        ::operator delete(p);
+    }
+};
+
+int main() {
+    // Create a vector with a custom allocator
+    std::vector<int, MyAllocator<int>> vec(MyAllocator<int>());
+
+    // Add elements to the vector
+    for (int i = 0; i < 5; ++i) {
+        vec.push_back(i);
+    }
+
+    // Display the elements of the vector
+    std::cout << "Vector elements: ";
+    for (const auto& elem : vec) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+==================================================
+#include <iostream>
+#include <limits>
+
+int main() {
+    if (255 < std::numeric_limits<char>::max()) {
+        std::cout << "char is larger than 8 bits or unsigned" << std::endl;
+    } else {
+        std::cout << "char is 8 bits or signed" << std::endl;
+    }
+
+    return 0;
+}
+// 127 std::numeric_limits<char>::max()
+======================================
+input and output iterator?
+
+#include <iostream>
+#include <iterator>
+#include <algorithm>
+
+int main() {
+    // Input from standard input
+    std::istream_iterator<int> input(std::cin);
+    int value = *input; // Read a value from input iterator
+
+    // Output to standard output
+    std::ostream_iterator<int> output(std::cout, " ");
+    *output = value; // Write a value to output iterator
+
+    return 0;
+}
+=========================
+Allocators in C++ are used to manage the memory allocation and deallocation for container classes like std::vector, std::list, std::map, and so on. They allow you to customize how memory is allocated 
+for the elements stored in these containers.
+
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <iostream>
+#include <vector>
+#include <memory>
+
+// Custom allocator
+template<typename T>
+class MyAllocator {
+public:
+    using value_type = T;
+
+    // Constructor
+    MyAllocator() {}
+
+    // Allocate memory for 'n' objects
+    T* allocate(std::size_t n) {
+        std::cout << "Custom allocator: Allocating memory for " << n << " objects" << std::endl;
+        return static_cast<T*>(::operator new(n * sizeof(T)));
+    }
+
+    // Deallocate memory
+    void deallocate(T* p, std::size_t n) {
+        std::cout << "Custom allocator: Deallocating memory for " << n << " objects" << std::endl;
+        ::operator delete(p);
+    }
+};
+
+int main() {
+    // Create a vector with a custom allocator
+    std::vector<int, MyAllocator<int>> vec{MyAllocator<int>()}; // Use braces instead of parentheses
+
+    // Add elements to the vector
+    for (int i = 0; i < 5; ++i) {
+        vec.push_back(i); // Correct usage of push_back
+    }
+
+    // Display the elements of the vector
+    std::cout << "Vector elements: ";
+    for (const auto& elem : vec) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+Custom allocator: Allocating memory for 1 objects
+Custom allocator: Allocating memory for 2 objects
+Custom allocator: Deallocating memory for 1 objects
+Custom allocator: Allocating memory for 4 objects
+Custom allocator: Deallocating memory for 2 objects
+Custom allocator: Allocating memory for 8 objects
+Custom allocator: Deallocating memory for 4 objects
+Vector elements: 0 1 2 3 4 
+Custom allocator: Deallocating memory for 8 objects
+=================================
+int v = 0x20+56+8 //allowed 32 +56+8
+
+#include <complex>
+std::complex<double> z(3.0, 4.0); // 3 + 4i
+cout<<z => (3,4)
+
+complex<double> complexnumber(2, -INFINITY);
+cout << "proj" << complexnumber;
+proj(2,-inf)
+==================
+to check whether the given input is space, \t or \r*s
+#include <iostream>
+#include <cctype>
+
+int main() {
+    char ch = ' '; // Example character (can be any character)
+
+    // Check if the character is a space, newline, tab, or carriage return
+    if (std::isspace(static_cast<unsigned char>(ch))) {
+        std::cout << "The character is a whitespace character." << std::endl;
+    } else {
+        std::cout << "The character is not a whitespace character." << std::endl;
+    }
+
+    return 0;
+}
+=========================
+#include <iostream>
+#include <cctype>
+
+int main() {
+    char ch = '\t'; // Example character (can be any character)
+
+    // Check if the character is a space, newline, tab, or carriage return
+    if (std::isspace(static_cast<unsigned char>(ch)) || ch == '\t' || ch == '\r') {
+        std::cout << "The character is a whitespace character, tab, or carriage return." << std::endl;
+    } else {
+        std::cout << "The character is not a whitespace character, tab, or carriage return." << std::endl;
+    }
+
+    return 0;
+}
+==================================
+va_list: va_list is a type that is used to hold the information needed to traverse
+ the list of arguments. It's typically used as a pointer type.
+va_start: va_start initializes a va_list object to start traversing the list of arguments. 
+It takes two arguments: the va_list object to initialize and the name of the last named 
+parameter before the ellipsis in the function declaration.
+va_arg: va_arg retrieves the next argument from the list. It takes two arguments: the va_list 
+object and the type of the next argument.
+va_end: va_end cleans up the va_list object after traversing the list of arguments. It takes
+ one argument: the va_list object to clean up.
+ #include <iostream>
+#include <cstdarg>
+
+// Function to calculate the sum of variable arguments
+double sum(int num_args, ...) {
+    double total = 0.0;
+
+    // Initialize va_list
+    va_list args;
+    va_start(args, num_args);
+
+    // Traverse the list of arguments
+    for (int i = 0; i < num_args; ++i) {
+        // Get the next argument
+        double arg = va_arg(args, double);
+        total += arg;
+    }
+
+    // Clean up va_list
+    va_end(args);
+
+    return total;
+}
+
+int main() {
+    // Calculate the sum of variable arguments
+    double result = sum(4, 1.0, 2.5, 3.7, 4.2);
+
+    // Output the result
+    std::cout << "Sum of arguments: " << result << std::endl;
+
+    return 0;
+}
+===================================
+different ways to create the user defined data type:
+
+Structs: Structs allow you to group different variables of possibly different types under 
+a single name. They are commonly used for creating aggregate data types.
+cpp
+Copy code
+struct Point {
+    int x;
+    int y;
+};
+Classes: Classes are similar to structs but provide additional features like member
+ functions and access specifiers (public, private, protected). They are used for creating
+ more complex data types with behavior.
+cpp
+Copy code
+class Rectangle {
+private:
+    int width;
+    int height;
+public:
+    Rectangle(int w, int h) : width(w), height(h) {}
+    int area() { return width * height; }
+};
+Enums: Enums allow you to define a set of named constants, which are typically integers. They are useful for creating custom data types with a limited set of possible values.
+cpp
+Copy code
+enum Color { RED, GREEN, BLUE };
+Typedef: Typedef allows you to create an alias for an existing data type. It's useful for 
+creating more descriptive names or simplifying complex type declarations.
+cpp
+Copy code
+typedef int Age;
+Using Alias: The using keyword can also be used to create type aliases. It's similar to 
+typedef but provides more flexibility and clarity.
+cpp
+Copy code
+using Age = int;
+Unions: Unions allow you to define a data type that can hold different types of data, but 
+only one type at a time. They are useful when you need to represent a value that can be of 
+different types at different times.
+cpp
+Copy code
+union Data {
+    int i;
+    double d;
+    char c;
+};
+Templates: Templates allow you to create generic data types and functions 
+that can work with any data type. They are used for creating reusable and flexible code.
+cpp
+Copy code
+template<typename T>
+class Container {
+private:
+    T data;
+public:
+    Container(T value) : data(value) {}
+    T getValue() { return data; }
+};
+================================
+level of exception 
+
+Basic Guarantee: This level ensures that if an exception is thrown, the program remains in a 
+valid state and no resources are leaked. However, the state of the program may not be the same 
+as it was before the operation that caused the exception was initiated. In other words, the
+ program is rolled back to a consistent state, but not necessarily the original state.
+
+Strong Guarantee: This level provides a stronger guarantee than the basic guarantee. 
+It ensures that if an exception is thrown, the program remains in its original state and no 
+resources are leaked. If an operation fails due to an exception, it has no observable effects 
+on the program's state or resources. In other words, the operation is either completed 
+successfully or has no effect at all.
+
+No-Throw Guarantee: This level guarantees that a function will never throw an exception 
+under any circumstances. If an operation fails, it will return an error code or perform 
+some other form of error handling, but it will not throw an exception. This level is the 
+strongest guarantee because it eliminates the need for exception handling entirely.
+===============
+we can define the macro inside and outside the class?
+class MyClass {
+public:
+    int myVar;
+};
+
+// Define macro to access member variable
+#define MAC(obj, member) obj.member
+
+int main() {
+    MyClass obj;
+    obj.myVar = 42;
+
+    // Accessing myVar using the macro
+    int value = MAC(obj, myVar);
+    std::cout << "Value of myVar: " << value << std::endl;
+
+    return 0;
+}
+
+=============================
+storage type: how the elements are stored internally in the container
+memory type: memory is managed
+value type: what type of lement it holds
+iterator type: how the element will moved to the next element
+=================
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+// Define a structure to represent a student
+struct Student {
+    std::string name;
+    int score;
+};
+
+// Function to print the array of students
+void printStudents(const std::vector<Student>& students) {
+    for (const auto& student : students) {
+        std::cout << student.name << ": " << student.score << std::endl;
+    }
+}
+
+int main() {
+    // Create an array of students
+    std::vector<Student> students = {
+        {"Alice", 85},
+        {"Bob", 90},
+        {"Charlie", 85},
+        {"David", 80},
+        {"Eve", 90}
+    };
+
+    // Sort the students by their scores using a stable sorting algorithm
+    std::stable_sort(students.begin(), students.end(), [](const Student& a, const Student& b) {
+        return a.score < b.score; // Sort by score in ascending order
+    });
+
+    // Print the sorted array of students
+    std::cout << "Sorted by score:" << std::endl;
+    printStudents(students);
+
+    return 0;
+}
+In this example, we're sorting the array of students by their scores using std::stable_sort, which is a stable sorting algorithm.
+
+Now, let's examine the output:
+
+vbnet
+Copy code
+Sorted by score:
+David: 80
+Alice: 85
+Charlie: 85
+Bob: 90
+Eve: 90
+As you can see, both Alice and Charlie have the same score of 85. In the original array, 
+Alice appears before Charlie. After sorting, 
+Alice still appears before Charlie, preserving the relative order of elements with equal keys
+================================
+
+//max 9 character read from the user
+#include <iostream>
+#include <cstring> // for strlen
+
+int main() {
+    const int maxLength = 9; // Size of array - 1 for null-termination
+    char str[maxLength + 1]; // +1 for null-termination
+
+    // Read input from the user, ensuring it doesn't exceed the size of the array
+    std::cin.getline(str, maxLength + 1); // Use getline to prevent buffer overflow
+
+    // Output the input string
+    std::cout << str << std::endl;
+
+    return 0;
+}
+================
+#include <iostream>
+
+class MyInt {
+private:
+    int value;
+
+public:
+    // Constructor
+    MyInt(int v) : value(v) {}
+
+    // Conversion operator: Convert MyInt to int
+    operator int() const {
+        return value;
+    }
+};
+
+int main() {
+    MyInt myInt(42);
+
+    // Implicit conversion using the conversion operator
+    int intValue = myInt;
+
+    // Output the converted value
+    std::cout << "Converted value: " << intValue << std::endl;
+
+    return 0;
+}
+
+=============================
+#include <iostream>
+#include <queue>
+
+// Custom comparison function
+struct CustomCompare {
+    bool operator()(int a, int b) const {
+        // Custom comparison logic
+        return a > b; // Reverse order
+    }
+};
+
+int main() {
+    // Declare a priority queue with custom comparison function
+    std::priority_queue<int, std::vector<int>, CustomCompare> pq;
+	//or  std::priority_queue<int, std::vector<int>, std::less<int>> pq;
+
+    // Insert elements into the priority queue
+    pq.push(10); //add the element to the end
+    pq.push(20);
+    pq.push(5);
+    pq.push(30);
+
+    // Output elements from the priority queue
+    while (!pq.empty()) {
+        std::cout << pq.top() << " ";
+        pq.pop();
+    }
+
+    return 0;
+}
+30 20 10 5
+=========================
+#include <iostream>
+#include <any>
+#include <typeinfo>
+
+int main() {
+    std::any value = 12.12;
+    
+    // Get type information using typeid
+    const std::type_info& typeInfo = value.type();
+    
+    // Get the type name as a string
+    std::cout << "Type name: " << typeInfo.name() << std::endl; //d
+     std::cout << "Type name: " << value.type().name() << std::endl; //d
+    
+    return 0;
+}
+=================================
+ "full specialization" in C++ is "explicit specialization."
+ 
+ template <typename T>
+class MyClass {
+    // Generic implementation
+};
+
+template <>
+class MyClass<int> {
+    // Specialized implementation for T = int
+};
+
+===
+template <typename T, int N>
+class MyClass {
+    // Generic implementation
+};
+
+template <typename T>
+class MyClass<T, 0> {
+    // Partial specialization for N = 0
+};
+
+====
+In C++, the + operator (addition operator) is left-associative. Left-associativity means that when there are multiple occurrences of the + operator in an expression, the operations are grouped from left to right.
+
+For example:
+
+cpp
+Copy code
+int result = 1 + 2 + 3; // (1 + 2) + 3 = 3 + 3 = 6
+=============
+unsigned int isolateRightmostSetBit(unsigned int n) {
+    return n & -n;
+}
+unsigned int n = 18; // 0b10010
+unsigned int result = isolateRightmostSetBit(n); // 0b00010
+==================
+//it will get the int value from the user if the user gives non int value ir a or special symbols
+, input will be marked as zero
+// if the enter or space it will keep wiating for the user int input
+#include <iostream>
+#include <iterator>
+
+int main() {
+    // Create istream_iterator to read input from cin
+    std::istream_iterator<int> iter(std::cin);
+
+    // Read two integers from cin
+    int num1 = *iter;
+    ++iter;
+    int num2 = *iter;
+
+    // Multiply the two numbers
+    int result = num1 * num2;
+
+    // Output the result
+    std::cout << "Multiplication result: " << result << std::endl;
+
+    return 0;
+}
+==========
+#include <iostream>
+#include <exception>
+
+class MyException : public std::exception {
+public:
+    MyException(const char* msg) : message(msg) {}
+
+    // Override the what() function to provide an error message
+    const char* what() const noexcept override {
+        return message;
+    }
+
+private:
+    const char* message;
+};
+
+int main() {
+    try {
+        // Throw an instance of MyException
+        throw MyException("Something went wrong!");
+    } catch (const MyException& e) {
+        // Catch the exception and print the error message
+        std::cout << "Caught exception: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+
+caught exception something went wrong
+===============
+Type-Specific:
+int smaller = std::min(5, 10);  // Type-specific version
+
+ietrator specific:
+std::vector<int> vec = {5, 10, 3, 8};
+auto min_it = std::min_element(vec.begin(), vec.end());  // Iterator-specific version
+
+Variable-Specific:
+float smaller_float = std::min(5.0f, 10);  // Variable-specific version
+============
+std::any var;
+var.emplace<double>(3.2);  // Construct a double object in place within var
+
+std::any var;
+var = 3.2;  // Assign the double value 3.2 to var
+
+========================
+++ and -- operator cannot work on bool typoe
+====
+wide character
+#include <iostream>
+
+int main() {
+    wchar_t wide_char = L'€';  // Define a wide character representing the Euro symbol
+    std::wcout << "Wide character: " << wide_char << std::endl;
+    return 0;
+}
+wide character Euro symbol
+=================
+#include <iostream>
+#include <memory> // Include the <memory> header for allocator
+#include <vector>
+
+int main() {
+    // Create a vector of integers
+    std::vector<int> myvector;
+
+    // Allocate memory for 5 integers using the allocator from myvector
+    int *p = myvector.get_allocator().allocate(5);
+
+   // Construct objects in the allocated memory using placement new
+    for (int i = 0; i < 5; ++i) {
+        // Use placement new to construct an integer object at the memory address &p[i] with the value i
+        new (&p[i]) int(i);
+    }
+
+    // Access and print the constructed integers
+    for (int i = 0; i < 5; ++i) {
+        std::cout << "p[" << i << "] = " << p[i] << std::endl;
+    }
+
+    // Deallocate the memory when done using it
+    myvector.get_allocator().deallocate(p, 5);
+
+    return 0;
+}
+p[0] = 0
+p[1] = 1
+p[2] = 2
+p[3] = 3
+p[4] = 4
+=================
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string str = "Hello";
+
+    // Append another string
+    str.append(" World");
+
+    std::cout << "\n";
+    // Append a substring
+    str.append(" Universe", 3, 4); // Appends " Univer"
+    std::cout << str << std::endl;
+    // Append a character array
+    str.append("!");
+
+    // Append a character multiple times
+    str.append(3, '*'); // Appends "***"
+
+    std::cout << str << std::endl; // Output: Hello World Univer***!
+
+    return 0;
+}
+Hello Worldiver
+Hello Worldiver!***
+=====================
+str.capacity()  will greater than or equal to the size of string
+str.erase(str.begin()+5,str.end()-7); leave the 5th character and last 7 character
+character array can contain character other than character needn't be reminated by NULL character
+
+cin >> str; //Hello words
+then str will contain only Hello
+there is no strin.cat() in string; string object of dynamic size;character array is fixed size;
+=================
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string str = "hello";
+
+    // Using the at() function
+    str.at(0) = 'e'; // Modify the first character to 'e'
+
+    // Using pointer arithmetic
+    char* ptr = &str[1]; // Get a pointer to the first character
+    *ptr = 's'; // Modify the first character to 'e'
+    
+    str[3] = 'r';
+    std::cout << str << std::endl; // Output: "eello"
+
+    return 0;
+}
+=======================
+string.substr(3).substr(4) =>strin.substr(7)
+string.back() ='a'; to replace the last character
+string str('w'); /error
+string str("w"); //allowed
+string str ;str += 'a';//allowed
+===============================
+forward_list dont have the reverse_iterator
+  forward_list<int> my_list = {1, 2, 3, 4, 5};
+
+  // Reverse the list
+  my_list.reverse();
+======
+#include <forward_list>
+
+using namespace std;
+
+int main() {
+  forward_list<int> my_list = {1, 2, 3, 4, 5};
+
+  // Create a new forward list to store the reversed elements.
+  forward_list<int> reversed_list;
+
+  // Iterate over the original list and add the elements to the reversed list in reverse order.
+  for (auto it = my_list.begin(); it != my_list.end(); ++it) {
+    reversed_list.push_front(*it);
+  }
+
+  // Print the reversed list.
+  for (auto it = reversed_list.begin(); it != reversed_list.end(); ++it) {
+    cout << *it << " ";
+  }
+
+  cout << endl;
+
+  return 0;
+}
+====================
+std::tuple<char, int, bool> mytuple()
+{
+    char a = 'a';
+    int i = 123;
+    bool b = true;
+    return std::make_tuple(a, i, b);
+}
+char a;
+int i;
+bool b;
+
+std::tie(a, i, b) = mytuple();
+or
+auto [a, i, b] = mytuple();
+=======================  
+auto [itelem, success] = mymap.insert(std::pair(’a’, 100));
+If (!success) {
+    // Insert failure
+}
+
+if (auto [itelem, success] = mymap.insert(std::pair(‘a’, 100)); success) {
+    // Insert success
+}
+===
+#include <iostream>
+#include <map>
+
+int main() {
+    std::map<char, int> mymap;
+    
+    // Corrected usage of std::pair
+    auto mapret = mymap.insert(std::pair<char, int>('a', 100));
+    
+    // Check if the insertion was successful
+    if (mapret.second) {
+        std::cout << "Insertion successful!" << std::endl;
+    } else {
+        std::cout << "Insertion failed! Key already exists." << std::endl;
+    }
+
+    return 0;
+}
+=============
+auto a = ‘a’;
+auto i = 123;
+auto b = true;
+which defines variables a as type char with initial value ‘a’, i as type int with initial 
+value 123 and b as type bool with initial value true.
+
+Using Structured Bindings, this can be written as:
+
+auto [a, i, b] = tuple(‘a’, 123, true);    // With no types needed for the tuple!\
+========================
+====
+In C++, lambda functions can't directly accept a variadic number of arguments using ... 
+like function templates or variadic functions. However, you can achieve a similar effect by \
+capturing an 
+initializer_list or by using parameter packs in the lambda's function call operator.
+#include <iostream>
+#include <initializer_list>
+
+int main() {
+    auto print_values = [](std::initializer_list<int> values) {
+        for (int value : values) {
+            std::cout << value << std::endl;
+        }
+    };
+
+    print_values({1, 2, 3, 4, 5});
+
+    return 0;
+}
+================
+#include <iostream>
+
+int main() {
+    auto print_values = [](auto... args) {
+        (std::cout << ... << args) << std::endl;
+    };
+
+    print_values(1, 2, 3, 4, 5);
+
+    return 0;
+}
+================================
+auto mytuple()
+{
+    char a = 'a';
+    int i = 123;
+    bool b = true;
+    return std::tuple(a, i, b);  // No types needed
+}
+This is a much cleaner way of coding – and in this case we could even wrap it as:
+
+auto mytuple()
+{
+    return std::tuple(‘a’, 123, true);  // Auto type deduction from arguments
+}
+===================================
+auto p = std::pair(2, 4.5);
+or
+
+std::pair p(2, 4.5);
+auto p = std::pair<int, double>(2, 4.5)
+std::pair<int, double> p(2, 4.5);
+Here, p is an instance of the class pair and is initialized with values of 2 and 4.5. 
+Or the other method of achieving this would be:
+
+auto p = std::make_pair(2, 4.5);
+========================
+
+#include <iostream>
+#include <map>
+#include <string>
+
+int main() {
+    std::map<unsigned long, std::string> boxes = {
+        {123, "Box 1"},
+        {456, "Box 2"},
+        {789, "Box 3"}
+    };
+
+    // Example input string
+    std::string p = "456";
+	//std::stoul(p) //string to unsigned long
+
+    if (auto [box, bit] = std::pair<unsigned long, 
+    std::map<unsigned long, std::string>::iterator>(std::stoul(p), boxes.begin()); 
+    (bit = boxes.find(box)) != boxes.end()) {
+        // Process if using both box and bit variables
+        std::cout << "Box ID: " << box << ", Name: " << bit->second << std::endl;
+    } else {
+        std::cout << "Box not found" << std::endl;
+    }
+
+    return 0;
+}
+Box ID: 456, Name: Box 2
+
+//if (const auto [box, bit] = std::pair(std::stoul(p), boxes.find(box)); bit != boxes.end()) {
+//error use of box before detection of auto
+=======================================
+#include <iostream>
+#include <map>
+#include <string>
+
+#include <iostream>
+#include <map>
+#include <string>
+
+int main() {
+    std::map<unsigned long, std::string> boxes = {
+        {123, "Box 1"},
+        {456, "Box 2"},
+        {789, "Box 3"}
+    };
+
+    // Example input string
+    std::string p = "456";
+
+    auto bit = boxes.find(std::stoul(p));
+    if (bit != boxes.end()) {
+        // Process if using both box and bit variables
+        const auto& [box, name] = *bit;
+        std::cout << "Box ID: " << box << ", Name: " << name << std::endl;
+    } else {
+        std::cout << "Box not found" << std::endl;
+    }
+
+    return 0;
+}
+============================
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    std::string head = "Hello World";
+    
+    for (auto [iss, name] = std::pair<std::istringstream, 
+        std::string>(std::istringstream(head), std::string {}); std::getline(iss, name); ) {
+        // Process name
+        std::cout << "Processed: " << name << std::endl;
+    }
+
+    return 0;
+}
+//Hello World;
+==================
+int main() {
+    for (auto [i, ch] = std::pair<unsigned int, char>(0U, ' '); i < 42; ++i) {
+        // Use i and ch
+        std::cout << "i: " << i << ", ch: " << ch << std::endl;
+    }
+
+    return 0;
+}
+i: 0, ch:  
+i: 1, ch:  
+i: 2, ch:  
+i: 3, ch:  ....
+==============
+constexpr auto times2 = [] (int n) { return n * 2; };
+Such lambdas can then be used in contexts evaluated at compile time:
+
+static_assert(times2(3) == 6);
+====================
+#include <iostream>
+
+class MyType {
+public:
+    MyType(int value) : value_(value) {}
+
+    auto getLambda() {
+        // Capture 'value_' by value in the lambda
+        return [value = value_] {
+            std::cout << "Captured value: " << value << std::endl;
+        };
+    }
+
+private:
+    int value_;
+};
+
+int main() {
+    auto lambda = MyType{42}.getLambda(); //or MyType(42).getLambda();
+    lambda();
+    lambda();
+
+    return 0;
+}
+
+Captured value: 42
+================
+#include <iostream>
+
+struct Node {
+    int data;
+    Node* next;
+    
+    Node(int value) : data(value), next(nullptr) {}
+};
+
+class LinkedList {
+private:
+    Node* head;
+
+public:
+    LinkedList() : head(nullptr) {}
+
+    // Insert node at the end of the linked list
+    void insert(int value) {
+        Node* newNode = new Node(value);
+        if (!head) {
+            head = newNode;
+            return;
+        }
+        Node* temp = head;
+        while (temp->next) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+
+    // Reverse the linked list
+    void reverse() {
+        Node* prev = nullptr;
+        Node* current = head;
+        Node* next = nullptr;
+
+        while (current != nullptr) {
+            next = current->next; // Store next node
+            current->next = prev; // Reverse current node's pointer
+            prev = current;       // Move pointers one position ahead
+            current = next;
+        }
+        head = prev; // Set the new head
+    }
+
+    // Display the linked list
+    void display() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            std::cout << temp->data << " ";
+            temp = temp->next;
+        }
+        std::cout << std::endl;
+    }
+
+    // Destructor to free memory
+    ~LinkedList() {
+        Node* temp;
+        while (head) {
+            temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+};
+
+int main() {
+    LinkedList list;
+
+    // Insert elements into the linked list
+    list.insert(1);
+    list.insert(2);
+    list.insert(3);
+    list.insert(4);
+    list.insert(5);
+
+    std::cout << "Original list: ";
+    list.display();
+
+    // Reverse the linked list
+    list.reverse();
+
+    std::cout << "Reversed list: ";
+    list.display();
+
+    return 0;
+}
+================================
+#include <iostream>
+
+struct Node {
+    int data;
+    Node* prev;
+    Node* next;
+    
+    Node(int value) : data(value), prev(nullptr), next(nullptr) {}
+};
+
+class DoublyLinkedList {
+private:
+    Node* head;
+    Node* tail;
+
+public:
+    DoublyLinkedList() : head(nullptr), tail(nullptr) {}
+
+    // Insert node at the end of the doubly linked list
+    void insert(int value) {
+        Node* newNode = new Node(value);
+        if (!head) {
+            head = newNode;
+            tail = newNode;
+            return;
+        }
+        tail->next = newNode;
+        newNode->prev = tail;
+        tail = newNode;
+    }
+
+    // Reverse the doubly linked list
+    void reverse() {
+        if (!head || !head->next) {
+            return;
+        }
+        Node* current = head;
+        Node* temp = nullptr;
+        while (current != nullptr) {
+            // Swap prev and next pointers of the current node
+            temp = current->prev;
+            current->prev = current->next;
+            current->next = temp;
+            // Move to the next node
+            current = current->prev;
+        }
+        // Update head and tail pointers
+        tail = head;    // New tail is the previous head
+        head = temp->prev;    // New head is the last node processed
+    }
+
+    // Display the doubly linked list
+    void display() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            std::cout << temp->data << " ";
+            temp = temp->next;
+        }
+        std::cout << std::endl;
+    }
+
+    // Destructor to free memory
+    ~DoublyLinkedList() {
+        Node* temp;
+        while (head) {
+            temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+};
+
+int main() {
+    DoublyLinkedList list;
+
+    // Insert elements into the doubly linked list
+    list.insert(1);
+    list.insert(2);
+    list.insert(3);
+    list.insert(4);
+    list.insert(5);
+
+    std::cout << "Original list: ";
+    list.display();
+
+    // Reverse the doubly linked list
+    list.reverse();
+
+    std::cout << "Reversed list: ";
+    list.display();
+
+    return 0;
+}
+=====================================
+my own share_ptr
+=====
+#include <iostream>
+
+template<typename T>
+class SharedPtr {
+private:
+    T* ptr;
+    size_t* refCount;
+
+public:
+    // Constructor
+    explicit SharedPtr(T* p = nullptr) : ptr(p), refCount(new size_t(1)) {}
+
+    // Destructor
+    ~SharedPtr() {
+        decrementRefCount();
+    }
+
+    // Copy constructor
+    SharedPtr(const SharedPtr<T>& other) : ptr(other.ptr), refCount(other.refCount) {
+        incrementRefCount();
+    }
+
+    // Move constructor
+    SharedPtr(SharedPtr<T>&& other) noexcept : ptr(other.ptr), refCount(other.refCount) {
+        other.ptr = nullptr;
+        other.refCount = nullptr;
+    }
+
+    // Assignment operator
+    SharedPtr<T>& operator=(const SharedPtr<T>& other) {
+        if (this != &other) {
+            decrementRefCount();
+            ptr = other.ptr;
+            refCount = other.refCount;
+            incrementRefCount();
+        }
+        return *this;
+    }
+
+    // Move assignment operator
+    SharedPtr<T>& operator=(SharedPtr<T>&& other) noexcept {
+        if (this != &other) {
+            decrementRefCount();
+            ptr = other.ptr;
+            refCount = other.refCount;
+            other.ptr = nullptr;
+            other.refCount = nullptr;
+        }
+        return *this;
+    }
+
+    // Get reference count
+    size_t getRefCount() const {
+        if (refCount) {
+            return *refCount;
+        }
+        return 0;
+    }
+
+private:
+    // Helper function to increment reference count
+    void incrementRefCount() {
+        if (refCount) {
+            ++(*refCount);
+        }
+    }
+
+    // Helper function to decrement reference count and delete if necessary
+    void decrementRefCount() {
+        if (refCount) {
+            --(*refCount);
+            if (*refCount == 0) {
+                delete ptr;
+                delete refCount;
+            }
+        }
+    }
+};
+
+int main() {
+    SharedPtr<int> ptr1(new int(5));
+    std::cout << "ptr1 ref count: " << ptr1.getRefCount() << std::endl;
+
+    SharedPtr<int> ptr2 = ptr1;
+    std::cout << "ptr1 ref count after copy: " << ptr1.getRefCount() << std::endl;
+    std::cout << "ptr2 ref count after copy: " << ptr2.getRefCount() << std::endl;
+
+    SharedPtr<int> ptr3(std::move(ptr1));
+    std::cout << "ptr1 ref count after move: " << ptr1.getRefCount() << std::endl;
+    std::cout << "ptr3 ref count after move: " << ptr3.getRefCount() << std::endl;
+
+    ptr2 = ptr3;
+    std::cout << "ptr2 ref count after assignment: " << ptr2.getRefCount() << std::endl;
+
+    return 0;
+}
+===========================
+ptr1 ref count: 1
+ptr1 ref count after copy: 2
+ptr2 ref count after copy: 2
+ptr1 ref count after move: 0
+ptr3 ref count after move: 2
+ptr2 ref count after assignment: 2
+===============================================\
+#include <iostream>
+#include <cstring>
+
+class MyString {
+private:
+    char* str;
+
+public:
+    // Constructor
+    MyString(const char* s = nullptr) {
+        if (s == nullptr) {
+            str = new char[1];
+            *str = '\0';
+        } else {
+            str = new char[strlen(s) + 1];
+            strcpy(str, s);
+        }
+    }
+
+    // Destructor
+    ~MyString() {
+        delete[] str;
+    }
+
+    // Copy Constructor
+    MyString(const MyString& other) : str(nullptr) {
+        str = new char[strlen(other.str) + 1];
+        strcpy(str, other.str);
+    }
+
+    // Move Constructor
+    MyString(MyString&& other) noexcept : str(other.str) {
+        other.str = nullptr;
+    }
+
+    // Assignment Operator
+    MyString& operator=(const MyString& other) {
+        if (this != &other) {
+            delete[] str;
+            str = new char[strlen(other.str) + 1];
+            strcpy(str, other.str);
+        }
+        return *this;
+    }
+
+    // Move Assignment Operator
+    MyString& operator=(MyString&& other) noexcept {
+        if (this != &other) {
+            delete[] str;
+            str = other.str;
+            other.str = nullptr;
+        }
+        return *this;
+    }
+
+    // Getter method
+    const char* getStr() const {
+        return str;
+    }
+};
+
+int main() {
+    MyString str1("Hello");
+    MyString str2 = str1; // Copy constructor
+    MyString str3;
+    str3 = str1; // Assignment operator
+
+    std::cout << "str1: " << str1.getStr() << std::endl;
+    std::cout << "str2: " << str2.getStr() << std::endl;
+    std::cout << "str3: " << str3.getStr() << std::endl;
+
+    MyString str4("World");
+    str3 = std::move(str4); // Move assignment
+
+    std::cout << "str3 after move assignment: " << str3.getStr() << std::endl;
+    std::cout << "str4 after move assignment: " << str4.getStr() << std::endl;
+
+    return 0;
+}
+========
+str1: Hello
+str2: Hello
+str3: Hello
+str3 after move assignment: World
+str4 after move assignment:
+=============================
+shared_mutex lock:
+when any thread is performing the read , no write operation
+when the write is happeining , no read operation.
+but multiple read can happen in parallel
+
+#include <iostream>
+#include <shared_mutex>
+#include <thread>
+#include <vector>
+
+std::vector<int> data; // Shared data
+std::shared_mutex mtx; // Shared mutex
+
+// Function to read data
+void readData(int id) {
+    std::shared_lock<std::shared_mutex> lock(mtx);
+    std::cout << "Thread " << id << " reads: ";
+    for (int val : data) {
+        std::cout << val << " ";
+    }
+    std::cout << std::endl;
+}
+
+// Function to write data
+void writeData(int id, int value) {
+    std::unique_lock<std::shared_mutex> lock(mtx);
+    data.push_back(value);
+    std::cout << "Thread " << id << " writes: " << value << std::endl;
+}
+
+int main() {
+    // Create threads for reading and writing
+    std::thread t1(readData, 1);
+    std::thread t2(writeData, 2, 10);
+    std::thread t3(readData, 3);
+    std::thread t4(writeData, 4, 20);
+    std::thread t5(readData, 5);
+
+    // Join threads
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    t5.join();
+
+    return 0;
+}
+======================================================
+1 2 3 4 5 6 
+
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
+std::mutex mtx;
+std::condition_variable cv;
+int count = 1;
+const int max_count = 100;
+
+void printEven() {
+    while (count <= max_count) {
+        std::unique_lock<std::mutex> lock(mtx);
+        cv.wait(lock, [] { return (count % 2) == 0 && (count % 10) != 0; });
+        if (count <= max_count) {
+            std::cout << "Even Thread: " << count << std::endl;
+            count++;
+            cv.notify_all();
+        }
+    }
+}
+
+void printOdd() {
+    while (count <= max_count) {
+        std::unique_lock<std::mutex> lock(mtx);
+        cv.wait(lock, [] { return (count % 2) == 1 && (count % 10) != 0; });
+        if (count <= max_count) {
+            std::cout << "Odd Thread: " << count << std::endl;
+            count++;
+            cv.notify_all();
+        }
+    }
+}
+
+void printMultiplesOfTen() {
+    while (count <= max_count) {
+        std::unique_lock<std::mutex> lock(mtx);
+        cv.wait(lock, [] { return (count % 10) == 0; });
+        if (count <= max_count) {
+            std::cout << "Multiples of 10 Thread: " << count << std::endl;
+            count++;
+            cv.notify_all();
+        }
+    }
+}
+
+int main() {
+    std::thread t1(printEven);
+    std::thread t2(printOdd);
+    std::thread t3(printMultiplesOfTen);
+
+    t1.join();
+    t2.join();
+    t3.join();
+
+    return 0;
+}
+===============================
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
+std::mutex mtx;
+std::condition_variable cv;
+int count = 1;
+const int max_count = 6;
+
+void printEven() {
+    while (count <= max_count) {
+        std::cout << "Even thread waiting "<<std::endl;;
+        std::unique_lock<std::mutex> lock(mtx);
+        cv.wait(lock, [] { return (count % 2) == 0 && (count % 5) != 0; });
+        //if (count <= max_count) 
+        {
+            std::cout << "Even Thread: " << count << std::endl;
+            count++;
+            cv.notify_all();
+            std::cout << "Even other Thread: notified "<<std::endl;;
+        }
+    }
+    std::cout << "thread 1 ends"<<std::endl;;
+}
+
+void printOdd() {
+    while (count < max_count) {
+        std::cout << "odd thread waiting "<<std::endl;;
+        std::unique_lock<std::mutex> lock(mtx);
+        cv.wait(lock, [] { return (count % 2) == 1 && (count % 5) != 0; });
+        //if (count <= max_count)
+        {
+            std::cout << "Odd Thread: " << count << std::endl;
+            count++;
+            cv.notify_all();
+            std::cout << "odd other Thread: notified "<<std::endl;;
+        }
+    }
+    std::cout << "thread 2 ends"<<std::endl;;
+}
+
+void printMultiplesOfTen() {
+    while (count <= max_count) {
+        std::cout << "5 thread waiting "<<std::endl;;
+        std::unique_lock<std::mutex> lock(mtx);
+        cv.wait(lock, [] { return (count % 5) == 0; });
+        //if (count <= max_count) 
+        {
+            std::cout << "Multiples of 5 Thread: " << count << std::endl;
+            count++;
+            cv.notify_all();
+            std::cout << "5 other Thread: notified " <<std::endl;
+        }
+    }
+    std::cout << "thread 3 ends"<<std::endl;;
+}
+
+int main() {
+    std::thread t1(printEven);
+    std::thread t2(printOdd);
+    std::thread t3(printMultiplesOfTen);
+
+    t1.join();
+    t2.join();
+    t3.join();
+
+    return 0;
+}
+
+5 thread waiting 
+odd thread waiting 
+Odd Thread: 1
+odd other Thread: notified 
+odd thread waiting 
+Even thread waiting 
+Even Thread: 2
+Even other Thread: notified 
+Even thread waiting 
+Odd Thread: 3
+odd other Thread: notified 
+odd thread waiting 
+Even Thread: 4
+Even other Thread: notified 
+Even thread waiting 
+Multiples of 5 Thread: 5
+5 other Thread: notified 
+5 thread waiting 
+Even Thread: 6
+Even other Thread: notified 
+thread 1 ends
+Odd Thread: 7
+odd other Thread: notified 
+thread 2 ends
+=============================================
+two condition:
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
+std::mutex mtx;
+std::condition_variable cvEvenOdd;
+std::condition_variable cvOdd10;
+int count = 1;
+const int max_count = 100;
+
+void printEven() {
+    while (count <= max_count) {
+        std::unique_lock<std::mutex> lock(mtx);
+        cvEvenOdd.wait(lock, [] { return (count % 2) == 0; });
+        if (count <= max_count) {
+            std::cout << "Even Thread: " << count << std::endl;
+            count++;
+            if ((count % 2) != 0)
+            cvEvenOdd.notify_one();
+            if ((count % 10) == 0)
+            cvOdd10.notify_one();
+        }
+    }
+}
+
+void printOdd() {
+    while (count <= max_count) {
+        std::unique_lock<std::mutex> lock(mtx);
+        cvEvenOdd.wait(lock, [] { return (count % 2) == 1; });
+        if (count <= max_count) {
+            std::cout << "Odd Thread: " << count << std::endl;
+            count++;
+            cvEvenOdd.notify_one();
+        }
+    }
+}
+
+void printMultiplesOfTen() {
+    while (count <= max_count) {
+        std::unique_lock<std::mutex> lock(mtx);
+        cvOdd10.wait(lock, [] { return (count % 10) == 0; });
+        if (count <= max_count) {
+            std::cout << "Multiples of 10 Thread: " << count << std::endl;
+            count++;
+            cvEvenOdd.notify_one();
+        }
+    }
+}
+
+int main() {
+    std::thread t1(printEven);
+    std::thread t2(printOdd);
+    std::thread t3(printMultiplesOfTen);
+
+    cvEvenOdd.notify_one(); // Start with the even thread
+
+    t1.join();
+    t2.join();
+    t3.join();
+
+    return 0;
+}
+====
+Odd Thread: 1
+Even Thread: 2
+Odd Thread: 3
+Even Thread: 4
+Odd Thread: 5
+Even Thread: 6
+Odd Thread: 7
+Even Thread: 8
+Odd Thread: 9
+Even Thread: 10
+Odd Thread: 11
+========================
+#include <iostream>
+
+class MyClass {
+private:
+    int* data;
+    size_t size;
+
+public:
+    // Constructor
+    MyClass(size_t s) : size(s) {
+        data = new int[size];
+        std::cout << "Constructor called" << std::endl;
+    }
+
+    // Destructor
+    ~MyClass() {
+        delete[] data;
+        std::cout << "Destructor called" << std::endl;
+    }
+
+    // Copy constructor
+    MyClass(const MyClass& other) : size(other.size) {
+        data = new int[size];
+        for (size_t i = 0; i < size; ++i) {
+            data[i] = other.data[i];
+        }
+        std::cout << "Copy constructor called" << std::endl;
+    }
+
+    // Move constructor
+    MyClass(MyClass&& other) noexcept : data(nullptr), size(0) {
+        swap(*this, other);
+        std::cout << "Move constructor called" << std::endl;
+    }
+
+    // Move assignment operator
+    MyClass& operator=(MyClass&& other) noexcept {
+        if (this != &other) {
+            delete[] data;
+            swap(*this, other);
+            std::cout << "Move assignment operator called" << std::endl;
+        }
+        return *this;
+    }
+
+    // Swap function (used by move operations)
+    friend void swap(MyClass& first, MyClass& second) noexcept {
+        using std::swap;
+        swap(first.data, second.data);
+        swap(first.size, second.size);
+    }
+};
+
+int main() {
+    MyClass obj1(5);
+    MyClass obj2 = std::move(obj1); // Move constructor
+
+    MyClass obj3(3);
+    obj3 = std::move(obj2); // Move assignment operator
+
+    MyClass obj4 = obj3; // Copy constructor
+
+    return 0;
+}
+============================================
+Structured Bindings: This feature allows you to unpack the elements of a tuple or other 
+structured types into separate variables in a more concise and readable way.
+auto [x, y] = std::make_tuple(10, 20);
+
+if with Initialization: In C++17, you can declare and initialize variables directly within 
+the condition of an if statement.
+if (auto result = some_function(); result > 0) {
+    // Use result
+}
+
+constexpr if: This allows you to conditionally compile code based on constant expressions
+ at compile time, improving compile-time branching.
+if constexpr (sizeof(int) == 4) {
+    // Code for 32-bit systems
+} else {
+    // Code for 64-bit systems
+}
+=============================================
+td::optional: This template class provides a way to represent optional values, which may 
+or may not be present. It's useful for functions that may fail to return a value.
+#include <iostream>
+#include <optional>
+
+// Function that may or may not return a value
+std::optional<int> get_optional_value(bool condition) {
+    if (condition) {
+        return 42; // Return a value if condition is true
+    } else {
+        return std::nullopt; // Return empty optional if condition is false
+    }
+}
+
+int main() {
+    std::optional<int> result = get_optional_value(true);
+
+    // Check if result has a value
+    if (result.has_value()) {
+        std::cout << "Result: " << result.value() << std::endl; // Access the value
+    } else {
+        std::cout << "Result is empty" << std::endl;
+    }
+
+    // Another example
+    std::optional<int> empty_result = get_optional_value(false);
+    if (!empty_result) {
+        std::cout << "Empty Result" << std::endl;
+    } else {
+        std::cout << "Empty Result has a value: " << empty_result.value() << std::endl;
+    }
+
+    return 0;
+}
+Result: 42
+Empty Result
+===========================
+This class template represents a type-safe union of types. 
+It can hold values of different types, but only one value at a time.
+
+#include <iostream>
+#include <variant>
+#include <string>
+
+int main() {
+    std::variant<int, double, std::string> var = 42;
+
+    // Accessing the value stored in the variant
+    if (std::holds_alternative<int>(var)) {
+        std::cout << "Variant holds an integer: " << std::get<int>(var) << std::endl;
+    } else if (std::holds_alternative<double>(var)) {
+        std::cout << "Variant holds a double: " << std::get<double>(var) << std::endl;
+    } else if (std::holds_alternative<std::string>(var)) {
+        std::cout << "Variant holds a string: " << std::get<std::string>(var) << std::endl;
+    }
+
+    // Assigning a new value to the variant
+    var = 3.14;
+
+    // Accessing the new value
+    if (std::holds_alternative<double>(var)) {
+        std::cout << "Variant now holds a double: " << std::get<double>(var) << std::endl;
+    }
+
+    // Assigning a string to the variant
+    var = std::string("Hello, Variant!"); //or "Hello, Variant!"
+
+    // Accessing the string value
+    if (std::holds_alternative<std::string>(var)) {
+        std::cout << "Variant now holds a string: " << std::get<std::string>(var) << std::endl;
+    }
+
+    return 0;
+}
+====
+Variant holds an integer: 42
+Variant now holds a double: 3.14
+Variant now holds a string: Hello, Variant!
+====================================================
+std::invoke: This function template provides a uniform interface for invoking callable objects,
+ such as functions, function objects, or member functions.
+ 
+ #include <iostream>
+#include <functional>
+#include <stdexcept>
+
+void bar(const std::string& message) {
+    std::cout << "Message from bar: " << message << std::endl;
+}
+
+int main() {
+    try {
+        // Invoke the function bar with a string argument
+        std::string msg = "Hello from std::invoke!";
+        std::invoke(bar, msg);
+
+        // Attempt to invoke the function bar with an invalid argument type
+        int value = 42;
+        std::invoke(bar, value); // This will result in a compilation error
+    } catch (const std::exception& ex) {
+        std::cerr << "Exception caught: " << ex.what() << std::endl;
+    }
+
+    return 0;
+}
+================================
+#include <iostream>
+#include <functional>
+#include <tuple>
+
+void print_tuple(int a, float b, const std::string& c) {
+    std::cout << "Tuple values: " << a << ", " << b << ", " << c << std::endl;
+}
+
+int main() {
+    // Define a tuple with three elements
+    std::tuple<int, float, std::string> my_tuple(10, 3.14f, "Hello");
+
+    // Invoke the function print_tuple with the elements of the tuple
+    std::invoke(print_tuple, my_tuple);
+
+    return 0;
+}
+=============================
+#include <iostream>
+#include <functional>
+
+void print_sum(int a, int b) {
+    std::cout << "Sum of " << a << " and " << b << " is: " << (a + b) << std::endl;
+}
+
+int main() {
+    // Invoke the function print_sum with two integer arguments
+    std::invoke(print_sum, 10, 20);
+
+    return 0;
+}
+==================================
+std::clamp is a C++ utility function available in the <algorithm> header since C++17. 
+It ensures that a value remains within a specified range. If the value is within the range,
+ it returns the original value. If the value is less than the lower bound of the range, it returns the lower bound. If the value is greater than the upper bound, it returns the upper bound.
+
+Here's an example demonstrating the usage of std::clamp:
+
+#include <iostream>
+#include <algorithm>
+
+int main() {
+    int value = 25;
+    int lower_bound = 10;
+    int upper_bound = 50;
+
+    // Ensure that 'value' remains within the range [lower_bound, upper_bound]
+    int clamped_value = std::clamp(value, lower_bound, upper_bound);
+
+    std::cout << "Original value: " << value << std::endl;
+    std::cout << "Clamped value: " << clamped_value << std::endl;
+
+    // Trying with a value that's out of range
+    int out_of_range_value = 115;
+    int clamped_out_of_range = std::clamp(out_of_range_value, lower_bound, upper_bound);
+
+    std::cout << "Original out-of-range value: " << out_of_range_value << std::endl;
+    std::cout << "Clamped out-of-range value: " << clamped_out_of_range << std::endl;
+
+    return 0;
+}
+======================================
+Move semantics can improve performance by avoiding unnecessary copying of resources,
+ particularly in cases where copying is expensive. It can also enable the efficient transfer 
+ of ownership of resources between objects, reducing memory overhead.
+ 
+What is an lvalue in C++?
+An lvalue refers to an object that has an identifiable memory address, typically an object
+ with a name. It can appear on the left-hand side of an assignment.
+
+What is an rvalue in C++?
+An rvalue refers to a temporary object that does not have an identifiable memory address. 
+It is typically the result of an expression or a literal value.
+
+What is the difference between an lvalue and an rvalue?
+The key difference is in the addressability of the object. An lvalue has a memory address 
+and can be modified, whereas an rvalue does not have a memory address and is typically temporary.
+====================
+#include <iostream>
+#include <utility>
+
+class MyClass {
+public:
+    MyClass() { std::cout << "Constructor invoked" << std::endl; }
+    ~MyClass() { std::cout << "Destructor invoked" << std::endl; }
+    MyClass(const MyClass&) { std::cout << "Copy constructor invoked" << std::endl; }
+    MyClass(MyClass&&) { std::cout << "Move constructor invoked" << std::endl; }
+};
+
+int main() {
+    MyClass original;
+    MyClass moved = std::move(original); // Move construct
+
+    // Reset or reassign original if needed
+    original = MyClass(); // Reset original to a default-constructed state
+
+    return 0;
+}
+
+Constructor invoked
+Move constructor invoked
+Constructor invoked
+Destructor invoked
+Destructor invoked
+=================================
+#include <iostream>
+#include <utility>
+
+class MyClass {
+public:
+    MyClass() = default;
+    MyClass(const MyClass&) {
+        std::cout << "Copy constructor invoked" << std::endl;
+    }
+    MyClass(MyClass&&) {
+        std::cout << "Move constructor invoked" << std::endl;
+    }
+};
+
+int main() {
+
+    // Moving from an lvalue
+    MyClass original; // Create an object
+    MyClass lvalue_moved = std::move(original); // Move construct from lvalue
+
+    return 0;
+}
+=====================
+#include <iostream>
+#include <utility>
+
+// Forward declaration of process function
+void process(int&& value);
+
+// Function template with perfect forwarding for rvalue references
+template<typename T>
+void forwarder(T&& arg) {
+    // Forward the argument to another function
+    process(std::forward<T>(arg));
+}
+
+// Overload for lvalue references
+template<typename T>
+void forwarder(T& arg) { //const is not allowed here
+    std::cout << arg; //42
+    // Forward the argument to another function
+    process(std::forward<T>(arg));
+}
+
+// Function to process the forwarded argument
+void process(int&& value) {
+    std::cout << "Received rvalue: " << value << std::endl;
+}
+
+int main() {
+    int x = 42;
+
+    // Call forwarder with an lvalue
+    forwarder(x);
+
+    // Call forwarder with an rvalue
+    forwarder(123);
+
+    return 0;
+}
+42Received rvalue: 42
+Received rvalue: 123
+////////////////////////
+*ptr++ = *ptr2++ copies the value pointed to by ptr2 to 
+the memory location pointed to by ptr, and then both ptr and ptr2 are incremented to point to the next memory locations.

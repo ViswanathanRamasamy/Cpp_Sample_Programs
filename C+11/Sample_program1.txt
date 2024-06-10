@@ -9,11 +9,16 @@ C++11
 =====
 some mistake what i have done:
 #include <cstdint> =>int16_t
-array of character to print (cout<<array.data();
+array of character from array<char> to print (cout<<array.data();
 delete can be on the global function
 false value is false
 fork is used when executeing the exe
-inavlid_argument
+
+pass the inavlid argument expection?
+inavlid_argument not invalid arguments
+
+How to find whether the element is find in the set?
+if (mySet.find(valueToFind) != mySet.end()) 
 
 ====================================
 =======================================================================================
@@ -209,8 +214,8 @@ Here, the value retutned by getData() is temporary i.e. it will not persist beyo
 int * ptr = &getData(); // Compile error - Cannot take address of rvalue
 Therefore, getData() is a rvalue and we cannot take the address of rvalue.
 ==========================================================================================]\
-Turns out that the temporary lifetime extension rule applies only to direct references to temporary objects, not to references obtained 
-indirectly via a member function.
+Turns out that the temporary lifetime extension rule applies only to direct references to temporary objects, 
+not to references obtained indirectly via a member function.
 #include <iostream>
 #include <string>
 
@@ -2826,9 +2831,13 @@ int main() {
     }
 
     // The source map is now empty
-    std::cout << "Source map size: " << sourceMap.size() << std::endl;
+    std::cout << "Source map size: " << sourceMap.size() << std::endl; //size is still 3 better to clear the mymap.clear after doing the move
 
     return 0;
+}
+----------------
+for (auto& element : sourceMap) {
+    destinationMap.insert(element);  // No need for std::move if copying is fine
 }
 ==========================
 move from the function returning the map
@@ -2858,14 +2867,6 @@ int main() {
 }
 
 ============================
-/******************************************************************************
-
-                              Online C++ Compiler.
-               Code, Compile, Run and Debug C++ program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
 #include <iostream>
 
 using namespace std;
@@ -3028,7 +3029,7 @@ int main() {
 }
 
 ===========================================
-singleton design pattern to proecct it from multiple threads.
+singleton design pattern to protect it from multiple threads.
 header file required
 mutex class initialization
 type of the mutex?
@@ -3074,6 +3075,64 @@ int main() {
     return 0;
 }
 ======================
+<arpa/inet.h> //also you will will working with ip address like ip validation , sockets
+ntohl
+htonl
+htons
+ntohs
+========================
+find the number of ones set
+int popcount(unsigned int num) {
+    int count = 0;
+    while (num) {
+        num &= (num - 1);  // Clear the least significant bit set
+        count++;
+    }
+    return count;
+}
+========================
+// Function with __fastcall calling convention
+__fastcall int AddNumbers(int a, int b) { //forcing the register to store into the argument
+    return a + b;
+}
+=================================
+sizeof(void) will give the error.
+=================================
+g++ -std=c++11 your_file.cpp -o output_name
+==================================
+C++98: The original ISO/IEC 14882:1998 standard.
+C++03: The minor update to C++98, reflecting the year of its publication.
+=========================================
+// Callee Function: addNumbers
+int addNumbers(int a, int b) {
+    return a + b;
+}
+
+int main()
+{
+//caller
+addNumbers(1,2)
+}
+=============================
+calling conversation:
+// Function with cdecl calling convention
+// caller is responsible 
+extern "C" int __cdecl AddNumbersCdecl(int a, int b) { //left to right
+    return a + b;
+}
+
+//calle responsible for cleaning
+// Function with stdcall calling convention
+extern "C" int __stdcall AddNumbersStdCall(int a, int b) { //left to right
+    return a + b;
+}
+
+
+stdcall
+cdecl
+fastcall
+thicall-- non static function
+======================================
 mutex declaration inside the class?
 
 class MyClass {
@@ -3085,7 +3144,8 @@ public:
         // Other constructor code
     }
 };
-
+===============
+std::thread t1(sharedFunction); //not as std::thread t1(&sharedFunction);
 ============================
 mutex declaration in the main?
 
@@ -3100,6 +3160,19 @@ int main() {
     return 0;
 }
 ==========================
+MyClass(): y(10), x(y + 10) { //x= 10; y =20;
+{
+}
+#include <intrin.h>  // Include this header for __popcnt
+unsigned int num = 15;  // Binary representation: 1111
+int count = __popcnt(num);
+=======================
+unsigned int num = 15;  // Binary representation: 1111
+int count = __builtin_popcount(num);
+================================
+nm -g my_executable //list the global symbol
+nm -C -f my_executable //Display all symbols, demangle C++ names, and show the filename:
+
 C++ 11 introduced lambda expressions to allow inline functions which can be used for short snippets of code that are
  not going to be reused and therefore do not require a name. In their simplest form a lambda expression can be defined 
  as follows: 
@@ -3109,14 +3182,24 @@ C++ 11 introduced lambda expressions to allow inline functions which can be used
    definition of method   
 } 
 =====================
+global variable and  global/local static variable are stored in bss (uninitialized)
+global variable and  global/local static variable are stored in data segment (initialized)
+local initialized or unitialized variable are stored in stack.
+==================================
+//     We can also access function by storing this into variable
+auto square = [](int i)
+{
+	return i * i;
+};
 
-    //     We can also access function by storing this into variable
-    auto square = [](int i)
-    {
-        return i * i;
-    };
- 
-    cout << "Square of 5 is : " << square(5) << endl; //25
+cout << "Square of 5 is : " << square(5) << endl; //25
+===
+int i =5;
+[](int i) //not necessary to store the lamda function into the variable.
+{
+	return i * i; //25
+};
+
 =============================
 unique:
 #include <iostream>
@@ -3271,7 +3354,9 @@ int main() {
 =====
 Factorial of 5 is: 120
 =====================
-constexpr for class
+constexpr for class object 
+how the class member variable?
+
 
 #include <iostream>
 
@@ -3918,7 +4003,7 @@ int main() {
     return 0;
 }
 ================================
-Find the Maximum Number: Write a function that takes an array of integers and returns the maximum number.
+Find the Maximum Number: Write a function that takes an array of integers and returns the maximum number.//or you can use stl max_element()
 cpp
 
 #include <iostream>
@@ -4707,7 +4792,8 @@ int main()
     {
     { "First", 1 },
     { "Second", 2 },
-    { "Third", 3 } });
+    { "Third", 3 } 
+	});
 	
     // Iterate over an unordered_map and display elements
     for (std::pair<std::string, int> element : wordMap)
@@ -4742,6 +4828,7 @@ Third :: 3
 Second :: 2
 First :: 1
 =====================================
+//iterator needs to use pointer ->
 find whether the key present in map without using for loop?
 
 include <iostream>
@@ -4832,7 +4919,7 @@ int main() {
     std::unordered_map<std::string, int> wordMap( { { "First", 1 }, { "Second",
             2 }, { "Third", 3 }, { "Fourth", 4 }, { "Fifth", 5 } });
 //Erase element by key
-    if (wordMap.erase("Second") == 1)
+    if (wordMap.erase("Second") == 1) //return the number of element erased.
         std::cout << "Element Deleted" << std::endl;
     return 0;
 }
@@ -5103,7 +5190,7 @@ public:
 };
 int main()  
 {
-    std::thread threadObj( (WorkerThread()) );
+    std::thread threadObj( (WorkerThread()) ); //note ( is expected before workthread and ()
     // Program will terminate as we have't called either join or detach with the std::thread object.
     // Hence std::thread's object destructor will terminate the program
     return 0;
@@ -5135,44 +5222,8 @@ Therefore, before calling join() or detach() we should check if thread is join-a
         threadObj2.join();
     }
 ================================
-Thread Termination: When the std::thread object threadObj goes out of scope without being joined or detached, it will terminate the 
-program by calling std::terminate(). In your code, you have commented out the threadObj.detach() line, which means the thread is 
-not detached. However, you haven't explicitly joined the thread either.
-It's important to manage threads appropriately based on your application's requirements. Detaching a thread is useful when you don't need to synchronize or wait for its completion. 
-Joining a thread is helpful when you want to synchronize and obtain the result of a thread's execution
 
-class ThreadRAII
-{
-    std::thread & m_thread;
-    public:
-        ThreadRAII(std::thread  & threadObj) : m_thread(threadObj)
-        {
-            
-        }
-        ~ThreadRAII()
-        {
-            // Check if thread is joinable then detach the thread
-            if(m_thread.joinable())
-            {
-                m_thread.detach();
-            }
-        }
-};
-void thread_function()
-{
-    for(int i = 0; i < 10000; i++);
-        std::cout<<"thread_function Executing"<<std::endl;
-}
- 
-int main()  
-{
-    std::thread threadObj(thread_function);
-    //threadObj.detach();
-    // If we comment this Line, then program will crash
-    //ThreadRAII wrapperObj(threadObj);
-    std::cout << "viswa" <<std::endl;
-    return 0;
-}
+
 ====================================
 hen the thread is detached and the main thread exits does the program ends above?
 ChatGPT
@@ -6467,38 +6518,6 @@ int main() {
     return 0;
 }
 ========================================
-firend function dont have
-friend function can be called?
-deifining the friend funtion outside the class?
-how to call the friend function
-
-friend function dont have this pointer so what?
-
-#include <iostream>
-
-class MyClass {
-private:
-    int privateData;
-
-public:
-    MyClass(int data) : privateData(data) {}
-
-    friend void friendFunction(MyClass& obj);
-};
-
-// Friend function definition
-void friendFunction(MyClass& obj) {
-    // The friend function can access the private member of MyClass directly
-    std::cout << "Friend function accessing privateData: " << obj.privateData << std::endl;
-}
-
-int main() {
-    MyClass obj(42);
-    friendFunction(obj); 
-	//obj.friendFunction(obj); //error
-
-    return 0;
-}
 
 =====================================
 async to add the numbers inside the class member function
@@ -7589,54 +7608,6 @@ int main() {
     return 0;
 }
 ==============================
-storing the pointer address to the number and back to the pointer
-header files required?
-casting required?
-
-#include <iostream>
-#include <cstdint>
-
-int main() {
-    int number = 42;
-    int* pointer;
-
-    // Method 1: Using the address-of operator
-    pointer = &number;
-
-    std::cout << "Method 1 - Pointer value: " << pointer << std::endl;
-
-    // Method 2: Assigning a numeric value directly
-    uintptr_t address = reinterpret_cast<uintptr_t>(&number);
-    pointer = reinterpret_cast<int*>(address);
-
-    std::cout << "Method 2 - Pointer value: " << pointer << std::endl;
-
-    return 0;
-}
-In this example, number is an integer variable, and pointer is a pointer to an integer (int*).
-
-Method 1 uses the address-of operator (&) to assign the address of number to pointer. This is the most common and recommended way to store the 
-address of a variable in a pointer.
-
-Method 2 demonstrates an alternative approach where the address is first stored in a numeric variable (address) using reinterpret_cast<uintptr_t>. 
-Then, the numeric address is cast to the appropriate pointer type (int*) using reinterpret_cast<int*> and assigned to pointer. This approach should
- be used with caution and is generally less preferred unless you have a specific need for it, such as working with low-level or platform-specific 
- operations.
-
-In both cases, the pointer variable will hold the address of number, allowing you to access or manipulate the value stored in number indirectly 
-through the pointer.
-
-
-====================================================
-To store the address value in the pointer
-#include <iostream>
-
-int main() {
-    int* ptr = reinterpret_cast<int*>(0xfff08000);
-    std::cout << *ptr << std::endl;
-
-    return 0;
-}
 =====================================================
 which header file is required for is_heap?
 which version of c++ ?
@@ -8193,134 +8164,10 @@ int main() {
 }
 
 ----------------------------------------------------------------------------------------
-system can do arithmetic operations upto 32 bit.write function to do 64 bit addition, multiplication in c proram
-
-header file?
-format specifier?
-
-#include <stdio.h>
-#include <stdint.h>
 
 
-typedef struct {
-    uint32_t low;
-    uint32_t high;
-} uint64_t;
-
-void add64(uint64_t* result, const uint64_t* a, const uint64_t* b) {
-    uint32_t carry = 0;
-    
-    result->low = a->low + b->low;
-    if (result->low < a->low) {
-        carry = 1;
-    }
-    
-    result->high = a->high + b->high + carry;
-}
-
-int main() {
-    uint64_t num1 = {0x12345678, 0x87654321};
-    uint64_t num2 = {0x98765432, 0xabcdef01};
-    uint64_t result;
-    
-    add64(&result, &num1, &num2);
-    printf("64-bit Addition Result: 0x%08X%08X\n", result.high, result.low);
-    
-    return 0;
-}
-=======================
-header file?
-format specifier?
-MULTIPLICATION?
-
-#include <stdio.h>
-#include <stdint.h> //cstdint
-
-/// Function to perform 64-bit multiplication using 32-bit arithmetic
-uint32_t multiply64(uint16_t a_low, uint16_t a_high, uint16_t b_low, uint16_t b_high) {
-    uint32_t result_low = (uint32_t)a_low * b_low;
-    uint32_t result_middle1 = (uint32_t)a_low * b_high;
-    uint32_t result_middle2 = (uint32_t)a_high * b_low+result_low>>16;
-    uint32_t result_high = ((uint32_t)a_high * b_high)+result_low>>16;
-
-
-
-    uint32_t final_result = (result_high) | result_low;
-    return final_result;
-}
-
-
-int main() {
-  uint16_t num1_low = 0x12;
-    uint16_t num1_high = 0x12;
-    uint16_t num2_low = 0x12;
-    uint16_t num2_high = 0x12;
-
-    uint32_t result = multiply64(num1_low, num1_high, num2_low, num2_high);
-
-    printf("64-bit Multiplication Result: %lu\n", result);
-
-    return 0;
-}
-=================
-some ommon fomat speifiers?
-
-%ll => long long int
-%ld => long int
-%lf => double
-%llu =>long long unsigned
-
-===========================
-exit(0) will call the destructor for the global object and global shared/unique_ptr and not for the local varaible or local unique_ptr/local shared_ptr
-#include <iostream>
-
-class MyClass {
-public:
-    ~MyClass() {
-        std::cout << "Destructor called." << std::endl;
-    }
-};
-
-MyClass globalObj;
-
-int main() {
-    std::cout << "Before exit." << std::endl;
-    exit(0);
-    std::cout << "After exit." << std::endl;  // This line is never reached.
-    return 0;
-}
-====
-Before exit.
-Destructor called.
 =============================
-unique pointer initilization?
-#include <iostream>
-#include <memory>
-using namespace std;
-class MyClass {
-public:
-    ~MyClass() {
-        std::cout << "Destructor called." << std::endl;
-    }
-};
 
-unique_ptr<MyClass> globalObj; //global
-
-int main() {
-    globalObj.reset(new MyClass());
-    std::cout << "Before exit." << std::endl;
-    exit(0);
-    std::cout << "After exit." << std::endl;  // This line is never reached.
-    return 0;
-}
-============
-====
-Before exit.
-Destructor called.
-=============================
-cerr
-#include <cstring> : strerror cerr
-================================================
 header file required?
 forward reference or universal reference for the thread creation?
 thread creation using emplace_back? with universal reference
@@ -8511,21 +8358,7 @@ int main() {
 Member function called with argument: 10
 Member function called with argument: 3.14
 ===============================================================================================
-defining the static function outside the class?
 
-// MyClass.h (Header file)
-class MyClass {
-public:
-    static void staticFunction(); // Declaration of the static member function
-};
-// MyClass.cpp (Source file)
-#include "MyClass.h"
-
-void MyClass::staticFunction() {
-    // Definition of the static member function
-    // Add your implementation here
-}
-====================================================================
 singleton object without using the pointer
 
 location of the copy and assignement operator and how to remove them;
@@ -9078,17 +8911,60 @@ Thread 4 is running.
 
 Main thread exiting.
 ========================================
+is_arithmetic_v check if t is of type int, flaot, double 
+#include <iostream>
+
+template <typename T>
+T add(T a, T b) {
+    static_assert(std::is_arithmetic_v<T>, "T must be an arithmetic type");
+    return a + b;
+}
+
+int main() {
+    int result = add(3, 4);
+    std::cout << "Result: " << result << std::endl;
+
+    // This line will cause a compilation error because std::string is not an arithmetic type
+    // add("Hello", "World");
+
+    return 0;
+}
+===============================================
+#include <iostream>
+#include <thread>
+
+void myFunction() {
+    std::cout << "Thread is executing..." << std::endl;
+}
+
+int main() {
+    // Create and launch a thread
+    std::thread myThread(myFunction);
+
+    // Wait for the thread to finish
+    myThread.join();
+
+    // Attempt to join the thread again (undefined behavior)
+    myThread.join();
+
+    std::cout << "Main thread continues..." << std::endl;
+
+    return 0;
+}
+========================================
 there is no need to specify the data type if you declaring the variable in the lamda capture;
 
-    void createThread(int x) {
-        auto boundFunction = [x=100](){
+    
+    void createThread() {
+	    int x =10
+        auto boundFunction = [x=100](){ //changing the value of x here has no impact outer
             std::cout << x <<"  ";
         };
         boundFunction();
-        std::cout << x << "  ";
+        std::cout << x << "  "; //use the global function
         
     }
-100 0 100 1 100 2
+100 10 
 ================================================
 if there is no & in the [] we cannot access the argument parameter.
 thread cannot take args...
@@ -9149,6 +9025,9 @@ int main() {
 }
 
 =====================================================================================
+get the individual element from tupel:
+moving the tuple in capture list
+std::cout << std::get<0>(arguments) << std::endl;
 passing the local tuple to the thread creation function? without the local callable object
 what is the difference between the make_tuple() and tuple()
 make_tuple : uses the template function
@@ -9171,8 +9050,9 @@ int main() {
     auto arguments = std::make_tuple(a, b, c);
 
     // Use std::thread to call the lambda that captures the tuple
-    std::thread myThread([tuple = std::move(arguments)]() {
+    std::thread myThread([tuple = std::move(arguments)]() { //note move has removed the contemt of the argument
         std::apply(threadFunction, tuple);
+		std::cout << std::get<0>(tuple); //accessing the first element of the tuple
     });
 
     // Wait for the thread to finish
@@ -9500,8 +9380,8 @@ public:
 private:
     Singleton() {} // Private constructor to prevent instantiation
 
-    Singleton(const Singleton&) = delete;
-    Singleton& operator=(const Singleton&) = delete;
+    Singleton(const Singleton&) = delete; //not neccessary to have see the next program
+    Singleton& operator=(const Singleton&) = delete;  //not neccessary to have see the next program
 
     ~Singleton() {} // Private destructor to prevent manual destruction
 
@@ -9523,6 +9403,46 @@ int main() {
 In this updated example, I've added a destroyInstance() member function to the Singleton class. When called, it sets the isInstanceDestroyed 
 flag to true, indicating that the instance is destroyed.
 =========================================================================================================================================
+
+class Singleton {
+private:
+    // Private constructor to prevent instantiation
+    Singleton() {
+        std::cout << "Singleton instance created." << std::endl;
+    }
+
+    // Private destructor to prevent deletion
+    ~Singleton() {
+        std::cout << "Singleton instance destroyed." << std::endl;
+    }
+
+public:
+    // Public method to access the singleton instance
+    static Singleton& getInstance() {
+        static Singleton instance; // The only instance of Singleton
+        return instance;
+    }
+
+    // Public method to perform singleton tasks
+    void someFunction() {
+        std::cout << "Executing someFunction." << std::endl;
+        // Add your functionality here
+    }
+};
+
+int main() {
+    // Access the singleton instance
+    Singleton &singletonInstance = Singleton::getInstance();
+    Singleton singletonInstance1=(singletonInstance); /error destructor is in provate section . assignement has no issue
+    // Use the singleton instance
+    singletonInstance.someFunction();
+
+    // No explicit destruction needed, handled automatically
+
+    return 0;
+}
+
+===========================================================================================================================================
 how  to check whether the 2 data types are same ?
 what header file to include?
 how to print true and false in the cconsole?
@@ -9567,11 +9487,49 @@ int main() {
     return 0;
 }
 =========================================
+callable object can point to different function provided the parameter and the return types are the same.
+we cannot set the functional object to NULL
+#include <functional>
+#include <iostream>
+
+int main() {
+    // Initialize std::function to a default "null" state
+    std::function<void(int)> func1 = [](int) {
+        // Default behavior (can be empty or have a specific default action)
+        std::cout << "Default behavior or null state." << std::endl;
+    };
+
+    // Use the std::function
+    func1(42);  // Calls the default lambda behavior
+
+    // Set std::function to a new function
+    func1 = [](int x) {
+        // New behavior
+        std::cout << "New behavior with x = " << x << std::endl;
+    };
+
+    // Use the std::function again
+    func1(10);  // Calls the new lambda behavior
+
+    // Set std::function back to the default "null" state
+    func1 = [](int) {
+        std::cout << "Default behavior or null state." << std::endl;
+    };
+
+    // Use the std::function after setting it to the "null" state
+    func1(99);  // Calls the default lambda behavior
+
+    return 0;
+}
+=======================================
 which version std::function is introduced?
 a. how one class memeber function void <int> as the callable object in another class objecct?
 b. how to check whether the callable variable is initialized ?
 c. header file
 d. remember to use const &
+e. how to remove the placeholders from the bind function.
+
+using namespace std::placeholders;
 
 function was introduced in c++11
 header file name is functional not function
@@ -9627,44 +9585,119 @@ int main() {
 ======================================================================================
 ==================================================================================
 string to void* and back to string;
-#include <iostream>
-
-int main() {
-    std::string originalString = "Hello, world!";
-
-    // Convert string to void*
-    void* voidPtr = reinterpret_cast<void*>(&originalString);
-
-    // Convert void* back to string
-    std::string* stringPtr = reinterpret_cast<std::string*>(voidPtr);
-    std::string restoredString = *stringPtr;
-
-    // Output the restored string
-    std::cout << "Restored String: " << restoredString << std::endl;
-
-    return 0;
-}
 
 ===============================================
-can i consvert const string* to void *?
 
-
-If you have a const std::string* and you want to convert it to a void*, you can't use reinterpret_cast directly. 
-Instead, you can use const_cast to remove the const qualifier before performing the reinterpret_cast. Here's an example:
-
-const_cast cannot be used to convert the pointer of one type to another type poiner. it can be only used to convert const pointer to pointer.
-
-cpp
-
-const std::string* strPtr = ...;  // Assuming you have a const string pointer
-
-void* voidPtr = reinterpret_cast<void*>(const_cast<std::string*>(strPtr));
-However, keep in mind that casting away constness can lead to potential issues if you modify the object through the resulting void*
-========================
 // Disable copy constructor and assignment operator
 	  LxThreadManager(const LxThreadManager&) = delete;
       LxThreadManager& operator=(const LxThreadManager&) = delete;
 ==========================================================
+function taking lamda function with argument and calling the class member function
+#include <functional>
+
+class MyClass {
+public:
+    void myFunction(int x) {
+        // Your function code here
+    }
+};
+
+int main() {
+    MyClass obj;
+
+    // Using std::bind
+    std::function<void(int)> funcPtr = std::bind(&MyClass::myFunction, &obj, std::placeholders::_1);
+
+    // Using a lambda function
+    std::function<void(int)> funcRef = [&obj](int x) { obj.myFunction(x); };
+
+    // Now you can call the function through the std::function objects
+    funcPtr(42);
+    funcRef(42);
+
+    return 0;
+}
+======================================================
+#include <functional>
+
+class MyClass {
+public:
+    void myFunction(int x) {
+        // Your function code here
+    }
+};
+
+int main() {
+    MyClass obj;
+
+    // Using function pointer
+    std::function<void(int)> funcPtr = &MyClass::myFunction;//error since not static
+
+    // Using function reference
+    std::function<void(int)> &funcRef = obj.myFunction; //error. can take only global and static and not member function
+
+    // Now you can call the function through the pointer or reference
+    funcPtr(42);
+    funcRef(42);
+
+    return 0;
+}
+==============================================================
+function<> can call only the static member function or global function.assignement dont take take value
+bind cal call the static and calass member function?. assignment can take value.
+class MyClass {
+public:
+    static void myFunction(int x) {
+        // Your function code here
+    }
+};
+
+int main() {
+    MyClass obj;
+
+    // Using function pointer
+    std::function<void(int)> funcPtr = &MyClass::myFunction;
+
+    // Using function reference
+    std::function<void(int)> funcRef = MyClass::myFunction;
+   // std::function<void(int)> &funcRef1 = MyClass::myFunction; //we cannot create the reference for the function
+    // Now you can call the function through the pointer or reference
+    funcPtr(42);
+    funcRef(42);
+
+    return 0;
+}
+
+===========================================================
+how to create the reference for the static function?
+can i create the reference for the static function using the function pointer?
+create the alias for the function pointer type?
+
+#include <iostream>
+
+class MyClass {
+public:
+    static void myFunction(int x) {
+        std::cout << "myFunction called with " << x << std::endl;
+    }
+};
+
+int main() {
+    // Using a function pointer
+    void (*funcPtr)(int) = &MyClass::myFunction;
+
+    // Using a reference to the function's type
+    using FuncRefType = void(*)(int); //alias
+    FuncRefType &funcRef = MyClass::myFunction;//creating the reference to the function pointer type FuncRefType
+	//FuncRefType &funcRef = &MyClass::myFunction; //error
+    const FuncRefType &funcRef = &MyClass::myFunction;
+    // Now you can call the function through the pointer or reference
+    funcPtr(42);
+    funcRef(42);
+
+    return 0;
+}
+============================================================
 to call the callobject function inside the static member function withe arguments.
 static memeber function calling the other member function of the class
 
@@ -9692,66 +9725,6 @@ int main() {
     return 0;
 }
 =================
-how to create the const string;
-assign const string to void*
-how to use const_cast void?
-
-
-const std::string s = "hello";
-const void* const_ptr = &s;
-void* ptr = const_cast<void*>(const_ptr);//const_cast can be used only to remove the const out
-
-
--===================================
-can i convert the const string to void*
-
-
-can i convert the const string to void*
-#include <iostream>
-#include <string>
-
-int main() {
-    const std::string str = "Hello, World!"; //string needn't be const here
-
-    void* ptr = const_cast<char*>(str.c_str());// note you are converting the const character and not string
-
-    std::cout << "Pointer value: " << ptr << std::endl;
-
-    return 0;
-}
-
-=======================================
-const_cast cannot be used to convert one pointer to another pointer type?
-const string* const_ptr = &s;
-void* ptr = const_cast<void*>(const_ptr) //wrong cannot be used to convert the string* to void*
-==============================================
-how to assin the size of the characcter buffer for the ?
-how to assign the string to the buffer?
-
-std::string str = "example";
-char* buffer = new char[str.size() + 1]; // Allocate space for null-terminated string
-std::copy(str.begin(), str.end(), buffer); // Copy string characters
-buffer[str.size()] = '\0'; // Add null terminator
-
-lx_bt_install(buffer, ST_ARR, CALLBACK_ARR, LxThreadManager::SignalHandlerCallback);
-
-delete[] buffer; // Remember to deallocate the buffer
-===================
-void* to string*?
-
-here bt_install take const_cast
-param is void*
-std::string* strPtr = reinterpret_cast<std::string*>(param);
-lx_bt_install(strPtr->c_str(), ST_ARR, CALLBACK_ARR, LxThreadManager::SignalHandlerCallback);
-===============================================================================
-how to convert void* to char*?
-callable object need to public function and maynot be the static.
-
-bt_install take the char*
-std::string* strPtr = reinterpret_cast<std::string*>(param);
-char* charPtr = const_cast<char*>(strPtr->c_str());
-lx_bt_install(charPtr, ST_ARR, CALLBACK_ARR, LxThreadManager::SignalHandlerCallback);
-==================
 assiging global static function return type void and takes void argument to the callable object and calling it:
 function needs &?
 does void(void) ?
@@ -9826,6 +9799,31 @@ int main() {
     return 0;
 }
 ========================================
+std::string originalString(10, ' ');
+    originalString.clear();
+    originalString.resize(10, '\0');
+	originalString.assign(10, '\0'); 
+	datasend.erase(datasend.length()-1); //erase the last character
+	 myString.erase(0, 2);//erase first 2 character of the string
+===============	
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string originalString;
+    originalString.resize(10);
+    
+    if (originalString.size() > 5) {
+        originalString.assign("Hello, World!", 5);
+        std::cout << "Substring: " << originalString << std::endl;
+    } else {
+        std::cout << "The string is too short." << std::endl;
+    }
+
+    return 0;
+}
+Substring: Hello
+=======================================
 assiging function to the callable object to the function without local variable:
 
 static void myStaticFunction(void) {
@@ -9893,11 +9891,26 @@ static void myStaticFunction(int a) { //10 will be passed
 }
 
 void function1(std::function<void(int)> funcParam) {
-    funcParam(0); // 0 will not be taken
+    funcParam(0); // 0 will be taken since (int) is specified
 }
 
 int main() {
    function1(std::bind(&myStaticFunction,10)); // std::function<void(int)> funcParam = std::bind(&myStaticFunction,10); function1(funcParam);
+
+    return 0;
+}
+=========================================================================
+static void myStaticFunction(int a) {
+    std::cout << "Static function called." << " " << a << std::endl;
+}
+
+void function1(std::function<void(int)> funcParam) {
+    funcParam(0); // 0 will not be taken
+}
+
+int main() {
+    std::function<void()> funcParam = std::bind(&myStaticFunction, 10); //& is not must here
+    funcParam();
 
     return 0;
 }
@@ -9957,6 +9970,8 @@ It's important to note that while the executable file is stored on the hard disk
 during runtime. The RAM provides fast access to instructions and data, allowing the program to run efficiently. Once you close the program, 
 its data is typically cleared from the RAM, freeing up the memory for other programs or tasks.
 
+Yes, the file system is typically cached in RAM to improve performance. When you access files on a storage device, the operating system may cache frequently 
+used data and metadata in RAM. 
 
 #include <iostream>
 
@@ -10104,7 +10119,7 @@ int main() {
     return 0;
 }
 ===============================================================================
-binary value setting:
+binary value setting:or binary literal
 =================
 // C++ code to demonstrate working of
 // "binary" numbers
@@ -10123,7 +10138,7 @@ where can be the declaration of delete and default function
 deleted function can be only inline
 / Sample C++ code to demonstrate the
 // incorrect syntax of declaring a member
-// function as deleted
+// function as delete
 class C
 {
 public:
@@ -10196,7 +10211,10 @@ void myFunction(int) {
 ========================================================
 default memeber function cannot take?
 
+argument constructor.
+
 A defaulted function needs to be a special member function (default constructor, copy constructor, destructor etc), or has no default arguments. 
+ should be generated by the compiler and follow its default behavior.
 For example, the following code explains that non-special member functions 
 can’t be defaulted: 
  
@@ -10363,7 +10381,17 @@ Placement new is a variation new operator in C++. Normal new operator does two t
 
 Placement new allows us to separate above two things. In placement new, we can pass a preallocated memory 
 and construct an object in the passed memory. 
- 
+================================================
+pointer to the next element:
+pointer to the end of the array
+
+int* ptr = &myArray[0] + 1;
+int* ptr = myArray+ 1; //pointer to the 2nd element
+// ptr now points to the address of the second elemen
+==========
+int myArray[] = {1, 2, 3, 4, 5};
+int* ptr = &(myArray + 1);
+================================================== 
 
 new vs placement new
 
@@ -10529,12 +10557,45 @@ X : 100
 mem : 0x69fee8
 &X : 0x69fee8
 ==============================================================
+// Read the entire line, including spaces
+string input;
+    std::getline(std::cin, input);
+	
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    // Open a file for reading
+    std::ifstream inputFile("example.txt");
+
+    // Check if the file is open
+    if (!inputFile.is_open()) {
+        std::cerr << "Error opening the file." << std::endl;
+        return 1;  // Return with an error code
+    }
+
+    // Read the file line by line
+    std::string line;
+    while (std::getline(inputFile, line)) {
+        // Process each line
+        std::cout << line << std::endl;
+    }
+
+    // Close the file
+    inputFile.close();
+
+    return 0;
+}
+
 ===============================================================
 structure binding is introduced in which version?
 structured binding (c++17) in the map? 
 when make_pair is not required in map?
 when we need make_pair?
 what are different ways to print string in c++?
+
+cout <<string name or cout <<strinmae.c_str();
 
 Structured binding in C++ :alias to the reference object
 #include <bits/stdc++.h>
@@ -10660,7 +10721,7 @@ int x_coord, y_coord;
 tie(x_coord, y_coord) = p();
 
 ===>
-auto [x_coord, y_coord]= p();
+auto [x_coord, y_coord]= p(); //tuple can be used with tie and auto also
 or
 auto [x_coord, y_coord]= p;
 
@@ -11040,6 +11101,35 @@ compilation array size using the variable
  const int a = 5;
  std::array<int, a> myArray = {1, 2, 3, 4, 5}; // a has to constant
 =====================================================
+array:
+front, back, at, size, empty, fill and initialization in 2 different lines?
+range exception
+to get pointer from array
+array has begin and end?
+array initialization 
+
+std::array<int, 5> myArray = {1, 2, 3, 4, 5};
+std::size_t arraySize = myArray.size(); //5
+
+    std::array<int, 0> myArray ;//= {1, 2, 3, 4, 5};
+std::size_t arraySize = myArray.size(); //0 here emptyArray.empty(); is true
+
+    std::array<int, 5> myArray ;//= {1, 2, 3, 4, 5};
+std::size_t arraySize = myArray.empty(); //1
+
+std::array<int, 5> myArray;
+myArray.fill(42);  // {42, 42, 42, 42, 42} 
+//or
+ std::fill(std::begin(myArray), std::end(myArray), 23);
+
+std::array<int, 5> myArray = {1, 2, 3, 4, 5};
+int* dataArray = myArray.data();
+
+std::array<int, 5> myArray;
+myArray = {1, 2, 3, 4, 5};
+	
+we cannot change the size of the stl::array
+==========================================
 find the front and back
 
 #include <iostream>
@@ -11255,7 +11345,9 @@ Destination vector (std::copy): 1 2 3 4 5
 Destination vector (std::copy_n): 1 2 3 4 5 
 =========================
 
-3 different way to initialize the vector
+3 different way to initialize the vector with set of individual elements:
+
+we cannot use the () for vector initialization using the individual element
 
 std::vector<int> numbers(5, 0);
 std::vector<int> numbers(5); // Default-initialized with 0
@@ -11269,11 +11361,14 @@ std::vector<int> numbers={{1, 2, 3, 4, 5}};
 
 std::vector<int> source = {1, 2, 3, 4, 5};
 std::vector<int> numbers(source.begin(), source.end());
+ std::vector<int> v = std::vector<int>{1, 2, 3, 4, 5};
 =====================================================================
 how to change the value of the class member variable inside the lamda function.
 member function takes an integer variable. lamda function having that value and object as pass by value;
 mutuable is not required if the local variable initilization inside the class lamda function
 data type is not required for declaring the new variable inside the [] here obj
+
+passing the argumentof the member function to the capture list:
  
 lamda taking the object as pass by value inside the member function.
 use of mutable
@@ -11373,7 +11468,8 @@ functions. In this case, the increment function increments the mutableCount vari
 ==================================
 bind third argument needn't be the placeholders it can be the value also?
 calling bind object?
-
+//iterator header file// begin and end
+//fill //algorithm header file
 #include <iostream>
 #include <functional>
 
@@ -11398,7 +11494,7 @@ int main() {
 
     auto boundFunc = std::bind(&MyClass::memberFunction, &myObject, additionalArgument);
 
-    boundFunc();
+    boundFunc(); //boundFunc(12); //no use in passing 12 it is not used
 
     return 0;
 }
@@ -11437,6 +11533,25 @@ int main() {
     return 0;
 }
 ===================================================
+#include <iostream>
+#include <functional>
+
+// Function taking an int and a float, and returning void
+void printValues(int value1, float value2) {
+    std::cout << "Value 1: " << value1 << std::endl;
+    std::cout << "Value 2: " << value2 << std::endl;
+}
+
+int main() {
+    // Define a std::function with the desired signature
+    std::function<void(int, float)> func = printValues;
+
+    // Call the std::function with int and float arguments
+    func(42, 3.14f);
+
+    return 0;
+}
+====================================================
 static member function taking object pointer returning
 lamda function taking integer, integer argument and calling other member function and returning integer inside
 when we put return for the lamda for the lamda function
@@ -11737,7 +11852,7 @@ lamda function pass by value
 int main() {
     int x = 5;
     auto lambda = [x]() {
-        std::cout << "Captured value: " << x << std::endl;
+        std::cout << "Captured value: " << x << std::endl; //5
     };
 
     x = 10;  // Modifying x after capturing
@@ -11754,7 +11869,7 @@ lamda function pass by reference
 int main() {
     int x = 5;
     auto lambda = [&x]() {
-        std::cout << "Captured value by reference: " << x << std::endl;
+        std::cout << "Captured value by reference: " << x << std::endl;//10
     };
 
     x = 10;  // Modifying x after capturing
@@ -11773,7 +11888,7 @@ int main() {
     int y = 10;
     auto lambda = [=]() {
 	//=: The equals sign = denotes that all variables accessed within the lambda expression will be captured by value.
-        std::cout << "Captured values: " << x << ", " << y << std::endl;
+        std::cout << "Captured values: " << x << ", " << y << std::endl; //5 10
     };
 
     x = 15;
@@ -11823,10 +11938,23 @@ int main() {
 }
 
 ==========================================================
+mymap.insert({key,value})
+mymap.insert(make_par(key,value))
+object() =>call the functor
+char pointer to tuple?
+
 function pointer
 -> taking void function argument and returning void
 -> taking int , int argument and returning int
 
+different ways to use the function pointer assignement and calling the function from function pointer
+ 
+ funcPtr = sayHello; // Assign the function address to the pointer
+  funcPtr = &sayHello; // Assign the function address to the pointer
+ (funcPtr)()
+ (*funcPtr)()
+ funcPtr()
+ 
 A function pointer and a function object (also known as a functor) 
 
 #include <iostream>
@@ -11863,6 +11991,7 @@ Functors were introduced in earlier versions of C++ and have been part of the la
 functor example:'
 
 ====================================
+different way to call the function in functor?
 functor function to print the hellow message
 MyFunctor(); will not call the function
 
@@ -11937,7 +12066,7 @@ int main() {
 
     // Use the functor in an algorithm
     auto it = std::find_if(numbers.begin(), numbers.end(), divisibleByThree);
-
+   // auto it = std::find_if(numbers.begin(), numbers.end(), DivisibleBy()); will not work as there is constructor
     if (it != numbers.end()) {
         std::cout << "Found a number divisible by " << divisor << ": " << *it << std::endl;
     } else {
@@ -12134,6 +12263,9 @@ The example provided uses the input array {-2, 1, -3, 4, -1, 2, 1, -5, 4}, and t
 1  4    5    5
 Maximum subarray sum: 6
 =======================================
+set store the elements in the ascending order:
+set uses lesser memory and has high performance in search, insertion and deletion.
+
 find the duplicate of the number:
 header file
 how to define the set?
@@ -12273,205 +12405,8 @@ int main() {
 
     return 0;
 }
+================================================
 
-==========================
-RAII:
-RAII stands for "Resource Acquisition Is Initialization," which is an important concept in C++ for managing resources automatically and
- ensuring proper cleanup. It ties the lifetime of a resource to the lifetime of an object, ensuring that the resource is acquired when the object
- is constructed and released when the object is destructed.
-
-Here's an example of RAII using a file resource:
-
-fstream file
-open in in,out and append and the arguments
-exception to throw
-write the content
-catch the exception and print it
-char* exception
-exception object
-cerr ->cstring
-
-throw will generate the const char* 
-
-runtime_error will generate the exception object
-
-cpp
-
-#include <iostream>
-#include <fstream>
-
-class FileRAII {
-private:
-    std::fstream file;
-
-public:
-    FileRAII(const std::string& filename) {
-        file.open(filename, std::ios::in | std::ios::out | std::ios::app);
-        if (!file.is_open()) {
-            throw std::runtime_error("Failed to open file.");
-        }
-    }
-
-    ~FileRAII() {
-        if (file.is_open()) {
-            file.close();
-        }
-    }
-
-    void write(const std::string& data) {
-        file << data << std::endl;
-    }
-};
-
-int main() {
-    try {
-        FileRAII file("example.txt");
-        file.write("Hello, RAII!");
-    } catch (const std::exception& ex) {
-        std::cerr << "Exception: " << ex.what() << std::endl;
-    }
-
-    return 0;
-}
-In the above example, the FileRAII class manages the resource, which is a file. The constructor of FileRAII opens the file, and 
-if the file fails to open, it throws an exception. The destructor of FileRAII is responsible for closing the file, ensuring that the
- file resource is always released, even in the presence of exceptions.
-
-The main function demonstrates how RAII is utilized. An instance of FileRAII named file is created, which automatically acquires the file 
-resource upon construction. The write method of file is then called to write data to the file. Once main scope is exited, the file object 
-goes out of scope, invoking its destructor, which ensures that the file is properly closed.
-==============================
-fstream to read the data from the file.
-fstream open syntax?
-
-#include <iostream>
-#include <fstream>
-#include <string>
-
-int main() {
-    std::string filename = "example.txt";
-    std::fstream file;
-
-    file.open(filename, std::ios::in);
-
-    if (!file.is_open()) {
-        std::cerr << "Error opening the file: " << filename << std::endl;
-        return 1;
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        std::cout << line << std::endl;
-    }
-
-    file.close();
-
-    return 0;
-}
-==================================
-to read and write the file at the same time
-clear the errors
-to move to the begining of the file?
-
-file.seekg(0, std::ios::beg);  what is zero indicates? when this line will give error?
--> file has to be opened in in mode
--> file is opened successfully
-
-seekg syntax?
-#include <iostream>
-#include <fstream>
-#include <string>
-
-int main() {
-    std::string filename = "example.txt";
-    std::fstream file;
-
-    // Open the file in both input and output mode (read and write)
-    file.open(filename, std::ios::in | std::ios::out);
-
-    if (!file.is_open()) {
-        std::cerr << "Error opening the file: " << filename << std::endl;
-        return 1;
-    }
-
-    // Read from the file
-    std::string line;
-    while (std::getline(file, line)) {
-        std::cout << "Read: " << line << std::endl;
-    }
-
-    // Reset the file pointer to the beginning
-    file.clear(); //clear the file errors if any
-    file.seekg(0, std::ios::beg); // will work only if the file opened in the in mode?
-
-    // Write to the file
-    file << "This is a new line.\n";
-
-    // Close the file
-    file.close();
-
-    return 0;
-}
-
-========================================================
-arguments of file operation
-
-std::ios::in (or simply "in") for opening the file for reading.
-std::ios::out (or "out") for opening the file for writing.
-std::ios::app (or "app") for opening the file in append mode.
-std::ios::binary (or "binary") for opening the file in binary mode.
-===============================
-header file for ifstream
-default argument for ofstream
-file not opened
-read the content from the file
-
-#include <iostream>
-#include <fstream>
-#include <string>
-
-int main() {
-    std::ifstream inputFile("example.txt", std::ios::in); // Open the file for reading
-	//or std::ifstream inputFile("example.txt")
-
-    if (!inputFile) {
-        std::cerr << "Failed to open file." << std::endl;
-        return 1;
-    }
-
-    std::string line;
-    while (std::getline(inputFile, line)) {
-        std::cout << line << std::endl; // Process the line
-    }
-
-    inputFile.close(); // Close the file
-
-    return 0;
-}
-========================================
-header file for ofstream
-default argument for ofstream
-file not opened
-write the content to the file
-
-#include <iostream>
-#include <fstream>
-
-int main() {
-    std::ofstream outputFile("example.txt", std::ios::out); // Open the file for writing
-    //or std::ofstream outputFile("example.txt")
-    if (!outputFile) {
-        std::cerr << "Failed to open file." << std::endl;
-        return 1;
-    }
-
-    outputFile << "Hello, world!" << std::endl; // Write data to the file
-
-    outputFile.close(); // Close the file
-
-    return 0;
-}
-==============================================
 sleep command
 
 The sleep function in C/C++ will pause the execution of the current thread, not the entire process. It suspends the execution of the thread for a
@@ -12663,7 +12598,7 @@ int main() {
     AtomicCounter counter;
 
     std::thread t1([&counter](){
-        for (int i = 0; i < 100000; ++i) {
+        for (int i = 0; i < 100000; ++i) { //note no counter ->
             counter.increment();
         }
     });
@@ -12677,7 +12612,7 @@ int main() {
     t1.join();
     t2.join();
 
-    std::cout << "Final counter value: " << counter.getValue() << std::endl;
+    std::cout << "Final counter value: " << counter.getValue() << std::endl; //0
 
     return 0;
 }
@@ -12693,38 +12628,63 @@ capture all the element by reference global, scope, local
 #include <iostream>
 int globalVar1 = 10;
 int main() {
-    int globalVar2 = 10;
+    int globalVar2 = 11;
 {
-    int globalVar3 = 10;
+    int globalVar3 = 12;
     auto lambda = [&]() {
-        std::cout << "Inside lambda: globalVar = " << globalVar1 << std::endl;
-         std::cout << "Inside lambda: globalVar = " << globalVar2 << std::endl;
-          std::cout << "Inside lambda: globalVar = " << globalVar3 << std::endl;
+        std::cout << "Inside lambda: globalVar = " << globalVar1 << std::endl; //20
+         std::cout << "Inside lambda: globalVar = " << globalVar2 << std::endl; //22
+          std::cout << "Inside lambda: globalVar = " << globalVar3 << std::endl;//24
     };
 
+    globalVar1 +=globalVar1;
+    globalVar2 +=globalVar2;
+    globalVar3 += globalVar3;
     lambda();
 
-}
-    return 0;
 }
 ================================
 capture all the element by value global, scope, local
 #include <iostream>
 int globalVar1 = 10;
 int main() {
-    int globalVar2 = 10;
+    int globalVar2 = 11;
 {
-    int globalVar3 = 10;
+    int globalVar3 = 12;
     auto lambda = [=]() {
-        std::cout << "Inside lambda: globalVar = " << globalVar1 << std::endl;
-         std::cout << "Inside lambda: globalVar = " << globalVar2 << std::endl;
-          std::cout << "Inside lambda: globalVar = " << globalVar3 << std::endl;
+        std::cout << "Inside lambda: globalVar = " << globalVar1 << std::endl; //20 ////if you change the global variable it will imapact the other places also
+         std::cout << "Inside lambda: globalVar = " << globalVar2 << std::endl; //11
+          std::cout << "Inside lambda: globalVar = " << globalVar3 << std::endl;//12
     };
 
+    globalVar1 +=globalVar1;
+    globalVar2 +=globalVar2;
+    globalVar3 += globalVar3;
     lambda();
 
 }
-    return 0;
+return 0;
+}
+=======================================
+#include <iostream>
+int globalVar1 = 10;
+int main() {
+    int globalVar2 = 11;
+{
+    int globalVar3 = 12;
+    auto lambda = []() {
+        std::cout << "Inside lambda: globalVar = " << globalVar1 << std::endl; //20
+         //std::cout << "Inside lambda: globalVar = " << globalVar2 << std::endl; //error
+         // std::cout << "Inside lambda: globalVar = " << globalVar3 << std::endl;//error
+    };
+
+    globalVar1 +=globalVar1;
+    globalVar2 +=globalVar2;
+    globalVar3 += globalVar3;
+    lambda();
+
+}
+return 0;
 }
 ==================================
 it is not necessary to pass the counter object inside the lamda capture list
@@ -12962,7 +12922,7 @@ void exampleFunction() {
 
     // Lambda with an empty capture list can access both globalVar and localVar
     auto lambda = []() {
-        std::cout << "Inside the lambda: globalVar = " << globalVar  ";
+        std::cout << "Inside the lambda: globalVar = " << globalVar  "; //if you change the global variable it will imapact the other places also
 		// std::cout <<localVar = " << localVar << std::endl; //error cannot access the local variable
     };
 
@@ -12975,6 +12935,107 @@ int main() {
     return 0;
 }
 ============================================================
+amiguity in the class member variable :
+void setValue(int value) {
+        // Ambiguity: 'value' could refer to the parameter or the class variable
+        // Use 'this' to explicitly refer to the class variable
+        this->value = value;
+    }
+================================================================
+ambiguit in the class methods:
+#include <iostream>
+
+class Base {
+public:
+    int value = 5;
+    void display() {
+        std::cout << "Base class display()" << std::endl;
+    }
+};
+
+class Derived : public Base {
+public:
+    int value = 10;
+    void display() {
+        std::cout << "Derived class display()" << std::endl;
+    }
+};
+
+int main() {
+    Derived obj;
+    
+    // Accessing the variable 'value' from the Base class
+    std::cout << "Base class value: " << obj.Base::value << std::endl;
+
+    // Calling the function 'display()' from the Derived class
+    obj.display();  // Outputs "Derived class display()"
+
+    // Calling the function 'display()' from the Base class
+    obj.Base::display();  // Outputs "Base class display()"
+
+    return 0;
+}
+===========================
+ambiguity in global method?
+#include <iostream>
+
+namespace First {
+    int value = 5;
+    void display() {
+        std::cout << "First namespace display()" << std::endl;
+    }
+}
+
+namespace Second {
+    int value = 10;
+    void display() {
+        std::cout << "Second namespace display()" << std::endl;
+    }
+}
+
+int main() {
+    // Accessing the variable 'value' from the First namespace
+    std::cout << "First namespace value: " << First::value << std::endl;
+
+    // Calling the function 'display()' from the Second namespace
+    Second::display();  // Outputs "Second namespace display()"
+
+    return 0;
+}
+========================================
+if you want to capture all the elements then put 
+ auto lambda = [&]() //reference
+ 
+#include <iostream>
+#include <iostream>
+
+int main() {
+    int x = 42;
+    int y = 77;
+
+    // Capture all variables by reference
+    auto lambda = [&x, y]() { //here x is reference and y is pass by value
+        std::cout << "Captured x by reference: " << x << std::endl;
+        std::cout << "Captured y by reference: " << y << std::endl;
+    };
+
+    lambda();
+
+    // Modify the original variables
+    x = 99;
+    y = 88;
+
+    // Call the lambda again
+    lambda();
+
+    return 0;
+}
+Captured x by reference: 42
+Captured y by reference: 77
+Captured x by reference: 99
+Captured y by reference: 77
+=============================================
+================================================================
 message queue header files.
 if you are using the conditional variable when you will unlock it?
 thread sleep
@@ -12985,6 +13046,7 @@ cv.wait will have the return ?
 you need the unlock after cv.wait
 thread creation for producer and consumer
 conditin wait will work on the which lock?
+consumer thread also has to unlock?
 
 #include <iostream>
 #include <queue>
@@ -13046,6 +13108,7 @@ consumer thread no waiting
 condition wait access the global vraible?
 different ways to initilize the atomic variable?
 thread  join
+does the consumer thread needs to unlock?
 
 std::atomic<bool> producerDone(false); 
 std::atomic<bool> producerDone=(false); 
@@ -13078,7 +13141,8 @@ void producer() {
     producerDone = true;
     cv.notify_all(); // Notify consumer thread to exit the loop
 }
-
+//lamda can access the global variable outside the main and modify it
+//but cannot access the the local vraible when []
 void consumer() {
     while (true) {
         std::unique_lock<std::mutex> lock(mtx);
@@ -13174,7 +13238,7 @@ int main() {
     return 0;
 }
 ===================================================
-replace unique_guard with lock_guard
+replace unique_lock with lock_guard
 what happens if we notify without releasing the lock?
 
 //it is not recommended to notify before releasing the lock. When you notify without releasing the lock, the consumer thread might wake
@@ -13183,7 +13247,6 @@ void producer() {
     for (int i = 0; i < 10; ++i) {
         std::lock_guard<std::mutex> lock(mtx); // Acquires the lock
         messageQueue.push(i);
-		lock.unlock()
         cv.notify_all();
         // lock automatically released when it goes out of scope
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -13198,6 +13261,7 @@ fill the element with consequitive increasing order?
 header files required
 std::iota is a standard C++ algorithm available in the <numeric> header that is used to fill a range of elements with consecutive values.
 
+The std::iota function is typically used to fill a range with incrementing values. 
 #include <iostream>
 #include <algorithm>
 #include <numeric> // for std::iota and accumulate
@@ -13229,16 +13293,32 @@ std::vector<int> myVector(5); // Create a vector of size 5
     int initialValue = 10;
     std::iota(myVector.begin(), myVector.end(), initialValue);
 ====================================================
-a number to string (float, integer)
+iota cannot incrment the value interms of 2 . what we will do in that case?
+
 #include <iostream>
-#include <string>
+#include <numeric>
+#include <vector>
 
 int main() {
-    int num = 42;
-    std::string str = std::to_string(num); //num can be number or float
-    std::cout << "Integer converted to string: " << str << std::endl;
+    std::vector<int> numbers(5);  // Create a vector with 5 elements
+
+    int startValue = 1;
+    int step = 2;
+
+    std::iota(numbers.begin(), numbers.end(), startValue);
+    
+    // Manually increment by 2
+    for (auto& number : numbers) {
+        number *= step;
+    }
+
+    for (const auto& number : numbers) {
+        std::cout << number << " ";
+    }
+
     return 0;
 }
+
 =============================
 create the array with decreasing order of values?
 
@@ -13268,9 +13348,19 @@ int main() {
 output:
 9876543210
 =====================================
-using make_shared?
-	shared_ptr<lx_nw_mgr_config> pnwmgrstate = std::make_shared<lx_nw_mgr_config>();;
-========================================
+============================================
+a number to string (float, integer)
+#include <iostream>
+#include <string>
+
+int main() {
+    int num = 42;
+    std::string str = std::to_string(num); //num can be number or float
+    std::cout << "Integer converted to string: " << str << std::endl;
+    return 0;
+}
+==============================================
+
 can you provide me a c++ function template takes 2 integer argument and 2 float argument?
 
 
@@ -13297,350 +13387,6 @@ int main() {
 }
 
 ============================================
-Upcasting:
-Upcasting refers to the process of converting a pointer or reference of a derived class to a pointer or reference of its base class. 
-derived class syntax
-baseptr to derived class and calling base class function
-
-class Base {
-public:
-    void baseFunction() {
-        std::cout << "Base class function." << std::endl;
-    }
-};
-
-class Derived : public Base {
-public:
-    void derivedFunction() {
-        std::cout << "Derived class function." << std::endl;
-    }
-};
-
-int main() {
-    Derived derivedObj;
-    Base* basePtr = &derivedObj; // Upcasting: Derived object treated as Base object
-
-    basePtr->baseFunction(); // Accessing Base class function
-    // basePtr->derivedFunction(); // Error: Base pointer cannot access derived class function
-
-    return 0;
-}
-=================================
-downcasting using casting?
-
-Downcasting:
-Downcasting is the opposite of upcasting. It refers to the process of converting a pointer or reference 
-of a base class to a pointer or reference of its derived class. Downcasting is not always safe and requires explicit type casting
-class Base {
-public:
-    virtual ~Base() {} // Virtual destructor is required for proper deletion of derived objects.
-};
-
-class Derived : public Base {
-public:
-    void derivedFunction() {
-        std::cout << "Derived class function." << std::endl;
-    }
-};
-
-int main() {
-    Base* basePtr = new Derived; // Upcasting: Derived object treated as Base object
-
-    // Downcasting: Converting Base pointer to Derived pointer
-    Derived* derivedPtr = dynamic_cast<Derived*>(basePtr);
-
-    if (derivedPtr) {
-        derivedPtr->derivedFunction(); // Accessing Derived class function
-    } else {
-        std::cout << "Downcasting failed." << std::endl;
-    }
-
-    delete basePtr;
-    return 0;
-}
-=====================================
-dynamic cast exception:
-
-n C++, dynamic_cast with references does not return nullptr in case of a failed cast. 
-Instead, it throws a std::bad_cast exception. Therefore, a null check is not applicable in this context. 
-#include <iostream>
-#include <exception>
-
-class Base {
-public:
-    virtual void someFunction() {}
-};
-
-class Derived : public Base {};
-
-int main() {
-    Base baseObj;
-    Derived derivedObj;
-
-    Base& baseRef = baseObj;
-    Base& derivedRef = derivedObj;
-
-    try {
-        Derived& derivedRef2 = dynamic_cast<Derived&>(baseRef);
-        std::cout << "Dynamic cast from Base& to Derived& succeeded." << std::endl;
-    } catch (std::bad_cast& e) {
-        std::cout << "Dynamic cast from Base& to Derived& failed: " << e.what() << std::endl;
-    }
-
-    try {
-        Derived& derivedRef3 = dynamic_cast<Derived&>(derivedRef);
-        std::cout << "Dynamic cast from Derived& to Derived& succeeded." << std::endl;
-    } catch (std::bad_cast& e) {
-        std::cout << "Dynamic cast from Derived& to Derived& failed: " << e.what() << std::endl;
-    }
-
-    return 0;
-}
-==============================================
-least safe casting: reinteroret_cast
-===============================================
-derived class to base class object
-
-we cannot do the reverse ie baseclass to the derivered class
-cppbuzz_base baseObj;
-derived obj = derived(baseObj);
-Error: not matching func to call ‘derived::derived(cppbuzz_base&)’
-
-=====
-#include<iostream>
-using namespace std;
-
-class cppbuzz_base{
-    public: 
-    
-    void hello(){
-        cout<<"Hello Base ";
-    }
-};
-
-class derived: public cppbuzz_base{
-    public:
-    
-    void hello(){
-        cout<<"Hello Derived ";
-    }
-    
-};
-
-int main()
-{
-derived obj;
-cppbuzz_base baseObj = cppbuzz_base(obj);
-baseObj.hello();
-return 0;
-}
--=======
-"Hello Base "
-================================================
-When dynamic_cast cannot cast a pointer because it is not a complete object of the required class it returns
-=============================================
-static_cast
-It is important to note that static_cast performs compile-time type checking and should be used only when the conversion is known to be safe.
-
-No, static_cast should be used only for safe and well-defined conversions.
-
-static_cast dont have null check as it is compile time check.
-
-static_cast can perform conversions between pointers to related classes not only from the derived class to its base,
-but also from a base class to its derived
-
-#include <iostream>
-
-int main() {
-    // Example 1: Numeric Conversion
-    int intValue = 42;
-    double doubleValue = static_cast<double>(intValue); // Convert int to double
-    std::cout << "intValue: " << intValue << ", doubleValue: " << doubleValue << std::endl;
-
-    // Example 2: Pointer Conversion
-    int* ptrToInt = &intValue;
-    void* ptrToVoid = static_cast<void*>(ptrToInt); // Convert int* to void*
-    std::cout << "ptrToInt: " << ptrToInt << ", ptrToVoid: " << ptrToVoid << std::endl;
-
-    // Example 3: Base to Derived Conversion
-    class Base {
-    public:
-        virtual void print() {
-            std::cout << "Base class" << std::endl;
-        }
-    };
-
-    class Derived : public Base {
-    public:
-        void print() override {
-            std::cout << "Derived class" << std::endl;
-        }
-    };
-
-    Base baseObj;
-    Derived derivedObj;
-
-    Base* ptrToBase = &baseObj;
-    Derived* ptrToDerived = static_cast<Derived*>(ptrToBase); // Convert Base* to Derived* (safe if the object is actually of the derived type)
-    ptrToDerived->print();
-
-    return 0;
-}
-//base class
-===============
-    Base* ptrToBase = &derivedObj;
-    Derived* ptrToDerived = static_cast<Derived*>(ptrToBase); // Convert Base* to Derived* (safe if the object is actually of the derived type)
-    ptrToDerived->print();
-	
-"Derived class"
-=============================
-derived class function
-static_cast for coverting the basepointer to base pointer
-
-#include <iostream>
-
-class Base {
-public:
-    virtual void someFunction() {}
-};
-
-class Derived : public Base {
-public:
-    void someFunction() override {}
-};
-
-int main() {
-    Base* basePtr = new Derived;
-
-    // Performing upcast: Derived* to Base*
-    Base* castedPtr = static_cast<Base*>(basePtr); // No error; static_cast is safe for upcasting
-
-    delete basePtr;
-    return 0;
-}
-
-==========================================
-=========================================
-use of const object
-const object can access__function?
-
-#include <iostream>
-
-class Example {
-public:
-    Example(int x) : data(x) {}
-
-    // Non-const member function that modifies the data member
-    void increment() {
-        data++;
-    }
-
-    // Const member function that cannot modify non-const member variables
-    int getValue() const {
-        // data++; // Error: Cannot modify non-const member variables in a const member function
-        return data;
-    }
-
-private:
-    int data;
-};
-
-int main() {
-    Example obj(42);
-    std::cout << "Original value: " << obj.getValue() << std::endl; // Output: Original value: 42
-
-    obj.increment(); // Modifying the data member in a non-const member function
-    std::cout << "Modified value: " << obj.getValue() << std::endl; // Output: Modified value: 43
-
-    // In a const member function, you cannot modify non-const member variables
-    const Example constObj(100);
-    std::cout << "Const object value: " << constObj.getValue() << std::endl; // Output: Const object value: 100
-    // constObj.increment(); // Error: Cannot call non-const member function on a const object
-
-    return 0;
-}
-
-======================================
-declaring the mutuable integer variable?
-const object creation?
-
-use of mutable in the constant object:
-#include <iostream>
-
-class Example {
-public:
-    Example(int x) : mutableData(x) {}
-
-    // Non-const member function that modifies the data member
-    void increment() {
-        mutableData++;
-    }
-
-    // Const member function that cannot modify non-const member variables
-    int getValue() const {
-        // data++; // Error: Cannot modify non-const member variables in a const member function
-        return mutableData;
-    }
-
-    // Mutable member variable that can be modified in const member functions
-    mutable int mutableData = 0;
-};
-
-int main() {
-    Example obj(42);
-    std::cout << "Original value: " << obj.getValue() << std::endl; // Output: Original value: 42
-
-    obj.increment(); // Modifying the data member in a non-const member function
-    std::cout << "Modified value: " << obj.getValue() << std::endl; // Output: Modified value: 43
-
-    // In a const member function, you cannot modify non-const member variables
-    const Example constObj(100);
-    std::cout << "Const object value: " << constObj.getValue() << std::endl; // Output: Const object value: 100
-    //constObj.increment(); //error
-    // However, you can modify the mutable member variable in a const member function
-    constObj.mutableData = 999;
-    std::cout << "Modified mutableData value: " << constObj.mutableData << std::endl; // Output: Modified mutableData value: 999
-
-    return 0;
-}
-
-=======================================================
-overridding with the default argument
-what happen if the derived class dont have the default argument?
-how to derive the class?
-how to overrdide the constant function with override keyword.
-
-#include <iostream>
-
-class Base {
-public:
-    virtual void print(int value = 10) const {
-        std::cout << "Base: " << value << std::endl;
-    }
-};
-
-class Derived : public Base {
-public:
-    // Override the print function with a default argument
-    void print(int value = 20) const override {
-        std::cout << "Derived: " << value << std::endl;
-    }
-};
-
-int main() {
-    Base baseObj;
-    Derived derivedObj;
-
-    baseObj.print(); // Output: Base: 10
-    derivedObj.print(); // Output: Derived: 20  // if there is no default argument in the derived class it will compilation error
-
-    // Calling the overridden function using the base class pointer
-    Base* ptr = &derivedObj;
-    ptr->print(); // Output: Derived: 20
-
-    return 0;
-}
-========================================================
 How to launch a thread using function objects and function pointer?
 a. create the thread with functor taking the int argument
 b. what happen if we are not joining the thread .
@@ -13694,82 +13440,7 @@ if (thread_obj.joinable())
    thread_obj.join()
 }
 =======================================
-header file
-registeration
-callbak function
-segmentation fault signal number
-control+c sinal number
-generate your siggnal
 
-// CPP Program to demonstrate the raise() function
-#include <csignal>
-#include <iostream>
-  
-using namespace std;
-  
-void signal_handler(int signal_num)
-{
-    cout << "Interrupt signal is (" << signal_num << ").\n";
-  
-    // It terminates program
-    //exit(signal_num);
-}
-  
-int main()
-{
-    int count = 0;
-    signal(SIGSEGV, signal_handler);
-    // register signal SIGSEGV and signal handler
-  
-    while (++count) {
-        cout << "Hello GeeksforGeeks..." << endl;
-        if (count == 5)
-        {
-            raise(SIGSEGV);
-            break;
-        }
-            
-    }
-    raise(SIGSEGV);
-    return 0;
-}
-====
-Hello GeeksforGeeks...
-Hello GeeksforGeeks...
-Hello GeeksforGeeks...
-Hello GeeksforGeeks...
-Hello GeeksforGeeks...
-Interrupt signal is (11).
-Interrupt signal is (11).
-====================================
-abort signal name?
-what we should do after receiving the signal?
-how to call your signal?
-
-#include <csignal>
-#include <iostream>
-using namespace std;
-  
-void signal_handler(int signal_num)
-{
-    cout << "The interrupt signal is (" << signal_num
-         << "). \n";
-  
-    // It terminates the  program
-    exit(signal_num);
-}
-  
-int main()
-{
-    // register signal SIGABRT and signal handler
-    signal(SIGABRT, signal_handler); //control c
-  
-    while (true)
-        cout << "Hello GeeksforGeeks..." << endl;
-    return 0;
-}
-
-The interrupt signal is (22). (control+c)
 ==============================
 c+14 feature?
 a. binary literal
@@ -13927,225 +13598,18 @@ Rvalue Reference: The getRvalue function returns an rvalue reference to an integ
 int&&, allowing us to obtain and print the value from the rvalue reference.
 =====================================================
 =======================================
-static variable declaration
-assigning the static variable value to the local member variable
-object in array
-throw an int error at the creation of the 4th object
-show the destruction order calling
-
-catch block is reached after the destruction
-
-// C++ program to show how many times
-// Constructors and destructors are called
-#include <iostream>
-using namespace std;
-
-class Test {
-	static int count; // Used static to initialise the scope
-					// Of 'count' till lifetime
-	int id;
-
-public:
-// Constructor
-	Test()
-	{
-		count++;
-		id = count;
-		cout << "Constructing object number " << id << endl;
-		if (id == 4)
-			throw 4;
-	}
-// Destructor
-	~Test()
-	{
-		cout << "Destructing object number " << id << endl;
-	}
-};
-
-int Test::count = 0;
-
-// Source code
-int main()
-{
-	try {
-		Test array[5];
-	}
-	catch (int i) {
-		cout << "Caught " << i << endl;
-	}
-}
-
-Constructing object number 1
-Constructing object number 2
-Constructing object number 3
-Constructing object number 4
-Destructing object number 3
-Destructing object number 2
-Destructing object number 1
-Caught 4
 ===========================
-where we should be careful while working with files?
-open the file in fopen
-close the file
-move to the end of the file
-return the size of the file
-return type?
 
-size of the file calculation:
-/ A Function to get the file size
-unsigned long long int fileSize(const char *filename)
-{
-    // Open the file
-    FILE *fh = fopen(filename, "rb");
-    fseek(fh, 0, SEEK_END);
-    unsigned long long int size = ftell(fh);
-    fclose(fh);
- 
-    return size;
-}
 ===============================
-reference to the int pointer
- int* ptr = &num1; // Pointer to num1
- int*& ptrRef = ptr; // Reference to pointer to int
- 
- here ptr and ptrRef point to the same variable
- ============
- storage location?
- pointer to string const?
- 
- const char* str = "hello"
- 
- hello is stored in read only memory ie code segment
- str is stored instack
+
+
  ========================
- standard bool alpha manipulator:
- bool alpha in printing the output
- enabling and disabling bool
- 
- int main() {
-    bool v{true} , i {false};
-    cout<<boolalpha;
-    std::cout << v <<"   "<< i << endl; //true false
-    cout<<noboolalpha;
-    std::cout << v <<"   "<< i; //1 0
-    return 0;
-}
-====
-bool alpha in taking the input
-bool initialization
-bool v{true} or  bool v = true;
-int main() {
-    bool v{true} , i {false};
-    cin>> boolalpha >> v >> noboolalpha  >> i; //true 0
-    cout << v << "  " <<i <<endl; // 1 0
-    return 0;
-}
-if you give the input as true true output will 1 0
-second argument expected to be 0 or 1 and not false or true
-===================
-bool argumnet?
-bool values 
-taking input from the user bool  and integer
 
-bool can take only small true and small false letter.
-int main() {
-
-bool v = true;
-bool t;
-int q ;
-std::cin>>boolalpha>>v>>t >> q; //true true 100 output will be 1 1 100
-cout << v << t << q;
-    return 0;
-}
-=====================
-redirect the cout to a file?
-ofstream generate the file if it doesn't exit
-redirect the cout to the output file
-
-stream buffer
-#include <iostream>
-#include <fstream>
-
-int main() {
-    // Redirect std::cout to a file that does not exist (invalid file)
-    std::ofstream outputFile("non_existent_file.txt");
-	//std::rdbuf() is a member function of std::basic_ios class in C++ that is used to get or set the underlying stream buffer associated with 
-	//an input or output stream. It allows you to redirect the stream to use a different stream buffer.
-    std::cout.rdbuf(outputFile.rdbuf()); // Redirect std::cout to the file stream
-
-    // Now, try to use std::cout for output
-    std::cout << "This message will not be displayed." << std::endl;
-
-    // Check if std::cout is in a valid state
-    if (std::cout) { //will be valid if the output file exits
-        std::cout << "std::cout is in a valid state." << std::endl;
-    } else {
-        std::cout << "std::cout is NOT in a valid state." << std::endl;
-    }
-
-    return 0;
-}
-====
-when to use make_pair
-temporary values
-function returnin map
-
-Using Temporary Values
-std::pair<int, int> resultPair = std::make_pair(getValue1(), getValue2());
-Creating Pairs
-Returning Pairs from Functions:
-====================================
-function returning pair;
-
-std::pair<int, double> calculateValues() {
-    // ... some calculations ...
-    return std::make_pair(result1, result2);
-}
 =======================================
-pair header file
-assigning the pair with values in declaration and in seperate line;
-inserting the pair into the map
-map inserting the pairs object and print the first elent of map.
 
-int main() {
-
-std::map<std::string, int> myMap;
-std::pair<std::string,int> st = std::make_pair("apple", 42);
-myMap.insert(st);
-
-std::cout << myMap["apple"];
-    return 0;
-}
 =====================================
-pair header file
-assigning the pair with values in declaration and in seperate line;
-pair to print the values?
 
-#include <iostream>
-#include <utility> // For std::make_pair and forward
 
-int main() {
-    // Using std::make_pair to create a pair of integers
-    std::pair<int, int> myPair = std::make_pair(42, 87);
-
-    std::pair<int, int> p;
-
-    p.first = 1;
-    p.second = 12;
-	
-    std::cout << "First element: " << myPair.first << std::endl;
-    std::cout << "Second element: " << myPair.second << std::endl;
-
-    return 0;
-}
-===================
-if condition comparision for string
-if condition for the ""
-
-if("") ==>true
-if('\0') ==>flase
-if (0.0) ==>false
-if (stringobjb) ==>error
 =============================
 enum
 unscoped
@@ -14337,6 +13801,19 @@ int main() {
     return 0;
 }
 ===================================================
+#include <iostream>
+
+int main() {
+    int a[] = {1, 2, 3, 4}; // Removed the extra comma
+
+    for (auto i : a) {
+        std::cout << i << " ";
+    }
+
+    return 0;
+}
+1 2 3 4
+====================================
 to declare the array for the enum?
 
 #include <iostream>
@@ -14772,16 +14249,16 @@ header file required?
 
 int main()
 {  
- std::vector<int> data{};
+ std::vector<int> data{};//{}
  // Read integers from the standard input, and append them to the end of data.
  data.insert(data.end(), std::istream_iterator<int>(std::cin), std::istream_iterator<int>());
  // Reverse the order of the contents of data.
  std::reverse(data.begin(), data.end());
  // Print data, one number per line.
- std::copy(data.begin(), data.end(), std::ostream_iterator<int>(std::cout, "\n"));
+ std::copy(data.begin(), data.end(), std::ostream_iterator<int>(std::cout, "h"));
 }
 1 2 3 4 5 6 q
-6 5 4 3 2 1
+6 h5 h4h 3h 2h 1h
 ==========================================
 read the element from the screen and keep inserting into the vector of class object?
 function has to friend
@@ -15039,7 +14516,7 @@ int main() {
     double num2;
     std::string str;
 
-    iss >> num1 >> num2 >> str;
+    (iss >> num1 >> num2 >> str); // if success return true
 
     // Output the extracted values
     std::cout << "num1: " << num1 << std::endl;
@@ -15059,7 +14536,7 @@ raed the numbers from the string and multiply the number and store it in the str
 int main() {
     std::string data = "1 2 3 4 5";
     std::istringstream iss(data);
-    std::ostringstream oss;
+    std::ostringstream oss; // or  std::stringstream oss;
 
     int num;
     while (iss >> num) {
@@ -15108,44 +14585,12 @@ writing my own logic to add the elements from the istream_iterator into the vect
         ++iter;
     }
 ===============
-#include <cstdio>
-
-int main() {
-    const char* input = "Age: 25, Height: 180";
-    int age = 0;
-    int height = 0;
-
-    // Using sscanf to extract values from the input string
-    int numScanned = sscanf(input, "Age: %d, Height: %d", &age, &height);
-
-    if (numScanned == 2) {
-        printf("Extracted values: Age = %d, Height = %d\n", age, height);
-    } else {
-        printf("Failed to extract values.\n");
-    }
-
-    return 0;
-}
-
-========================================================
-#include <cstdio>
-#include <iostream>
-
-int main() {
-    char buffer[100]; // Character array to store the formatted string
-    int age = 25;
-    double height = 180.5;
-
-    // Using sprintf to format data and write it into the buffer
-    sprintf(buffer, "Age: %d, Height: %.1f", age, height);
-
-    std::cout << "Formatted string: " << buffer << std::endl;
-
-    return 0;
-}
 =======================================================================
+double result = 0.0 / 0.0; //NAN
+double result = std::sqrt(-1.0); //NAN
 #include <iostream>
 #include <cmath>
+#include <limits>
 
 int main() {
     double nanValue = std::numeric_limits<double>::quiet_NaN();
@@ -15166,6 +14611,7 @@ int main() {
     return 0;
 }
 ======================================================
+========================================================
 isstream passing to the accumulate	
 
 #include <iostream>
@@ -15192,6 +14638,8 @@ writing my own accumulate logic for isstring_stream to use accumulate?
 a += b; //see where is the + sign
 which header file accumulate is present?
 
+move to the next element in cin and read?
+
 #include <iostream>
 #include <iterator>
 #include <algorithm>
@@ -15207,7 +14655,7 @@ int main() {
     // Use a loop to read and accumulate integers until end-of-stream is encountered
     while (inputBegin != inputEnd) {
         sum += *inputBegin;
-        ++inputBegin; // Move to the next element in the input stream
+        ++inputBegin; // Move to the next element in the input stream and read the character
     }
 
     // Output the sum of the input values
@@ -15215,6 +14663,9 @@ int main() {
 
     return 0;
 }
+
+Enter a sequence of integers (Ctrl+Z or Ctrl+D to end input): 1 2 3dc 5
+Sum of the input values: 6
 
 ================================ 
 what std::ostream_iterator do?
@@ -15240,359 +14691,63 @@ int main() {
 
     return 0;
 }
-=================================================
-there are five iterators
-InputIterator, OutputIterator, ForwardIterator, BidirectionalIterator, and RandomAccessIterator
-
-nputIterator:
-An InputIterator allows reading values from a container in a forward-only manner.
-cpp
-Copy code
-#include <iostream>
-#include <vector>
-
+=====
 int main() {
-    std::vector<int> vec = {1, 2, 3, 4};
-
-    // Using InputIterator to read values from the vector
-    for (std::vector<int>::const_iterator it = vec.begin(); it != vec.end(); ++it) {
-        std::cout << *it << " ";
+    //std::vector<char> numbers = {1, 2, 3, 4, 5};
+    std::string numbers = "viswa";
+    // Write data to standard output (console)
+    std::cout << "Numbers in the vector: ";
+    std::ostream_iterator<int> output(std::cout, " "); //108 115 ...
+    for (const auto& num : numbers) {
+        *output++ = num;
     }
+    std::cout << std::endl;
 
     return 0;
 }
-//////////////////////////////////////
-header file required?
-OutputIterator:
-An OutputIterator allows writing values to a container in a forward-only manner.
-cpp
-Copy code
-#include <iostream>
-#include <vector>
-#include <iterator>
-
-int main() {
-    std::vector<int> vec;
-
-    // Using OutputIterator to add elements to the vector
-    for (int i = 1; i <= 5; ++i) {
-        std::back_insert_iterator<std::vector<int>> it(vec);
-        *it = i;
-    }
-
-    // Print the elements of the vector
-    for (const auto& value : vec) {
-        std::cout << value << " ";
-    }
-
-    return 0;
-}
-ForwardIterator:
-A ForwardIterator allows both reading and writing values from/to a container in a forward-only manner.
-cpp
-Copy code
-#include <iostream>
-#include <forward_list>
-
-int main() {
-    std::forward_list<int> forwardList = {1, 2, 3, 4};
-
-    // Using ForwardIterator to modify values in the forward list
-    for (std::forward_list<int>::iterator it = forwardList.begin(); it != forwardList.end(); ++it) {
-        *it *= 2;
-    }
-
-    // Print the modified values in the forward list
-    for (const auto& value : forwardList) {
-        std::cout << value << " ";
-    }
-
-    return 0;
-}
-==========================================
-BidirectionalIterator:
-A BidirectionalIterator allows reading and writing values from/to a container in both forward and backward directions.
-cpp
-Copy code
-#include <iostream>
-#include <list>
-
-int main() {
-    std::list<int> myList = {1, 2, 3, 4};
-
-    // Using BidirectionalIterator to reverse the elements in the list
-    for (std::list<int>::reverse_iterator it = myList.rbegin(); it != myList.rend(); ++it) {
-        std::cout << *it << " ";
-    }
-
-    return 0;
-}
-========
-int main() {
-    std::list<int> myList = {1, 2, 3, 4, 5};
-
-    // Using bidirectional iterator to traverse the list in reverse order
-    std::cout << "Reverse order: ";
-    for (std::list<int>::iterator rit = myList.end(); rit != myList.begin(); --rit) {
-        std::cout << *rit << " ";
-    }
-
-    return 0;
-}
-
-=======================
-RandomAccessIterator:
-A RandomAccessIterator allows reading and writing values from/to a container with random access, meaning you can jump to any element in constant time.
-cpp
-Copy code
-#include <iostream>
-#include <vector>
-
-int main() {
-    std::vector<int> vec = {1, 2, 3, 4};
-
-    // Using RandomAccessIterator to modify the third element in the vector
-    std::vector<int>::iterator it = vec.begin() + 2; // Jump to the third element (index 2)
-    *it = 10;
-
-    // Print the modified vector
-    for (const auto& value : vec) {
-        std::cout << value << " ";
-    }
-
-    return 0;
-}
-
-===============================================
-output iterator examples:
-back_insert_iterator
-front_insert_iterator
-bidirectional
-random acess iterator
-
-some more examples:
-#include <iostream>
-#include <list>
-#include <iterator>
-
-int main() {
-    std::list<int> myList;
-
-    // Using std::front_inserter to add elements to the list (prepend)
-    for (int i = 1; i <= 5; ++i) {
-        std::front_insert_iterator<std::list<int>> it(myList);
-        *it = i; // Equivalent to myList.push_front(i);
-    }
-
-    // Print the elements of the list
-    for (const auto& value : myList) {
-        std::cout << value << " ";
-    }
-
-    return 0;
-}
-==================================================================
-inserting the individuals elements in map?
-
-#include <iostream>
-#include <map>
-#include <iterator>
-
-int main() {
-    std::map<int, std::string> myMap = {{1, "one"}, {2, "two"}};
-
-    // Using std::inserter to add elements to the map
-    std::inserter(myMap, myMap.end()) = std::make_pair(3, "three"); //no begin here
-
-    // Print the elements of the map
-    for (const auto& pair : myMap) {
-        std::cout << pair.first << ": " << pair.second << std::endl;
-    }
-
-    return 0;
-}
-=================
-#include <iostream>
-#include <set>
-#include <iterator>
-
-int main() {
-    std::set<int> mySet = {2, 4, 6, 8};
-
-    // Using std::inserter to add elements to the set
-    for (int i = 1; i <= 5; ++i) {
-        std::inserter(mySet, mySet.end()) = i; // Equivalent to mySet.insert(i); // no ,begin()
-    }
-
-    // Print the elements of the set
-    for (const auto& value : mySet) {
-        std::cout << value << " ";
-    }
-
-    return 0;
-}
-=======================
-what is forward_list and list?
-header file required?
-
-std::forward_list only allows forward traversal, meaning you can only move forward from one element to the next.
-std::list, which is a doubly-linked list,
- #include <iostream>
-#include <forward_list>
-
-int main() {
-    // Create a std::forward_list of integers
-    std::forward_list<int> forwardList = {1, 2, 3, 4, 5};
-
-    // Using ForwardIterator to print the elements in the forward list
-    std::cout << "Forward list elements: ";
-    for (std::forward_list<int>::const_iterator it = forwardList.begin(); it != forwardList.end(); ++it) {
-        std::cout << *it << " ";
-    }
-
-    // Using ForwardIterator to modify elements in the forward list
-    std::cout << "\nDoubling all elements in the forward list: ";
-    for (std::forward_list<int>::iterator it = forwardList.begin(); it != forwardList.end(); ++it) {
-        *it *= 2;
-        std::cout << *it << " ";
-    }
-
-    // Using ForwardIterator to insert an element after a specific value
-    int targetValue = 6;
-    for (std::forward_list<int>::iterator it = forwardList.begin(); it != forwardList.end(); ++it) {
-        if (*it == targetValue) {
-            forwardList.insert_after(it, 7);
-            break; // Stop after inserting once
+====================================================
+creating the class member vaiable as reference:
+Thread Termination: When the std::thread object threadObj goes out of scope without being joined or detached, it will terminate the 
+program by calling std::terminate(). In your code, you have commented out the threadObj.detach() line, which means the thread is 
+not detached. However, you haven't explicitly joined the thread either.
+It's important to manage threads appropriately based on your application's requirements. Detaching a thread is useful when you 
+don't need to synchronize or wait for its completion. 
+Joining a thread is helpful when you want to synchronize and obtain the result of a thread's execution
+class ThreadRAII
+{
+    std::thread & m_thread;
+    public:
+        ThreadRAII(std::thread  & threadObj) : m_thread(threadObj)
+        {
+            
         }
-    }
-
-    // Print the modified forward list after inserting
-    std::cout << "\nForward list after inserting 7: ";
-    for (const auto& value : forwardList) {
-        std::cout << value << " ";
-    }
-
-    return 0;
+        ~ThreadRAII()
+        {
+            // Check if thread is joinable then detach the thread
+            if(m_thread.joinable())
+            {
+                m_thread.detach();
+            }
+        }
+};
+void thread_function()
+{
+    for(int i = 0; i < 10000; i++);
+        std::cout<<"thread_function Executing"<<std::endl;
 }
-=============================================
-An iterator in C++ is an object that allows you to traverse the elements of a container (e.g., std::vector, std::list, std::map, etc.) 
-in a sequential manner. Iterators provide a way to access elements without exposing the underlying data structure of the container. 
-
-Lambda Function in C++:
-A lambda function, also known as an anonymous function or a closure, is a compact way to define small, inline functions in C++. Lambda 
-functions allow you to create function objects on-the-fly without the need for explicitly defining a separate function name. They are often
-used as arguments to functions that accept callable objects (e.g., algorithms, sort functions, etc.).
-
-int main() {
-    auto add = [](int a, int b) {
-        return a + b;
-    };
-
-    int result = add(3, 5);
-    return 0;
-}
- we use a lambda function, which does not have a separate function definition or a name. Instead, the lambda function is 
-defined directly inside the code where it is needed and is assigned to the variable add. The lambda function itself does not have a name; it is 
-just referred to through the variable add.
-
-The ability to define and use functions inline through lambda expressions provides greater flexibility and conciseness in the code, especially 
-when you need a small function for a specific purpose and don't want to create a separate named function for it
-============================================
-header file required?
-
-set the output width:
- It is used to set the width of the output when printing data to the console using streams, such as std::cout
-#include <iostream>
-#include <iomanip>
-
-int main() {
-    int num1 = 123;
-    int num2 = 45678;
-    int num3 = 9;
-
-    // Print integers with setw to set the width of the output
-    std::cout << "Formatted Output:\n";
-    std::cout << std::setw(10) << num1 << '\n';   // Output width set to 10
-    std::cout << std::setw(10) << num2 << '\n';   // Output width set to 10
-    std::cout << std::setw(10) << num3 << '\n';   // Output width set to 10
-
-    return 0;
-}
-Formatted Output:
-       123
-     45678
-         9
-====================
-hedaer file required?
-
-setw for the output file:
-
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-
-int main() {
-    std::ofstream outputFile("output.txt");
-
-    if (outputFile.is_open()) {
-        int num1 = 123;
-        int num2 = 45678;
-        int num3 = 9;
-
-        // Write integers to the file with setw to set the width of the output
-        outputFile << "Formatted Output:\n";
-        outputFile << std::setw(10) << num1 << '\n';
-        outputFile << std::setw(10) << num2 << '\n';
-        outputFile << std::setw(10) << num3 << '\n';
-
-        outputFile.close();
-        std::cout << "Data written to the file successfully.\n";
-    } else {
-        std::cerr << "Error opening the file.\n";
-    }
-
-    return 0;
-}
-==============
-const and reference is must?
- const std::type_info& typeInfo = typeid(*basePtr);
  
-#include <iostream>
-#include <typeinfo>
-
-class Base {
-public:
-    virtual void print() {
-        std::cout << "Base class" << std::endl;
-    }
-};
-
-class Derived : public Base {
-public:
-    void print() override {
-        std::cout << "Derived class" << std::endl;
-    }
-};
-
-int main() {
-    Base* basePtr = new Derived();
-
-    // Using typeid to get type information
-    const std::type_info& typeInfo = typeid(*basePtr);
-
-    std::cout << "Type information: " << typeInfo.name() << std::endl;
-
-    // Comparing type information
-    if (typeInfo == typeid(Base)) {
-        std::cout << "Pointer is of type Base" << std::endl;
-    } else if (typeInfo == typeid(Derived)) {
-        std::cout << "Pointer is of type Derived" << std::endl;
-    }
-
-    delete basePtr;
+int main()  
+{
+    std::thread threadObj(thread_function);
+    //threadObj.detach();
+    // If we comment this Line, then program will crash
+    //ThreadRAII wrapperObj(threadObj);
+    std::cout << "viswa" <<std::endl;
     return 0;
 }
-================
+
+====================================
+assigning the lamda function to a lamda function which is return by another lamda function:
 #include<functional>
 #include<iostream>
 std::function<float(float, float)> returnLambda()
@@ -15626,100 +14781,8 @@ int main() {
 
     return 0;
 }
-====================================
- // Overloading dereferencing operator
-    T& operator*() { return *ptr; }
- 
-    // Overloading arrow operator so that
-    // members of T can be accessed
-    // like a pointer (useful if T represents
-    // a class or struct or union type)
-    T* operator->() { return this; }
-=============================
-std::shared_ptr<int> ptr = std::make_shared<int>(42);
-std::shared_ptr<int> ptr(new int(42));
-
-std::shared_ptr<int> originalPtr = std::make_shared<int>(42);
-std::shared_ptr<int> sharedPtr2 = originalPtr;
-
-std::unique_ptr<int> uniquePtr(new int(42));
-std::shared_ptr<int> sharedPtr = std::move(uniquePtr);
-
-auto ptr2 = std::make_shared<int>(42);
 
 ===
-#include <iostream>
-#include <memory>
-
-struct CustomDeleter {
-    void operator()(int* ptr) {
-        std::cout << "Custom deleter called." << std::endl;
-        delete ptr;  // Perform your custom cleanup here
-    }
-};
-
-int main() {
-    // Creating a shared_ptr with a custom deleter
-    std::shared_ptr<int> ptr(new int(42), CustomDeleter());
-
-    // The shared_ptr will invoke the custom deleter when it's no longer needed
-    ptr.reset();  // Calling reset to release ownership
-
-    return 0;
-}
-===================================
-#include <iostream>
-#include <memory>
-
-void customDeleter(int* ptr) {
-    std::cout << "Custom deleter is called." << std::endl;
-    delete ptr;
-}
-
-int main() {
-    // Using a custom function as the deleter
-    std::shared_ptr<int> ptr1(new int(42), customDeleter);
-
-    // Using a lambda function as the deleter
-    auto lambdaDeleter = [](int* ptr) {
-        std::cout << "Lambda deleter is called." << std::endl;
-        delete ptr;
-    };
-    std::shared_ptr<int> ptr2(new int(23), lambdaDeleter);
-
-    // Using a function object as the deleter
-    struct Deleter {
-        void operator()(int* ptr) const {
-            std::cout << "Function object deleter is called." << std::endl;
-            delete ptr;
-        }
-    };
-    std::shared_ptr<int> ptr3(new int(17), Deleter());
-    std::shared_ptr<int> ptr4 = ptr3; //here the function will be called only when the 2 pointers are resetted ; 
-	//memory free will happen from the ptr4;ptr3;ptr2;ptr1
-
-    return 0;
-}
-=============================================
-std::unique_ptr<MyData> uniquePtr(new MyData(42));
-int main() {
-    // Creating a unique_ptr to manage a dynamically allocated object
-    std::unique_ptr<MyObject> ptr1(new MyObject(42));
-
-    // Transferring ownership to another unique_ptr
-    std::unique_ptr<MyObject> ptr2 = std::move(ptr1);
-
-    // Accessing the managed object's member function
-    ptr2->printValue();
-
-    // ptr1 no longer owns the object and is nullptr
-    if (!ptr1) {
-        std::cout << "ptr1 is nullptr." << std::endl;
-    }
-
-    return 0;
-}
-====================================
 MovableClass&& operator=(MovableClass&&); 
 ==============================
 weak_ptr;
@@ -15798,7 +14861,7 @@ private:
 Car::Car(const std::string& make) : make(make) {}
 
 void Car::showDriver() {
-    if (auto driver = assignedDriver.lock()) {
+    if (auto driver = assignedDriver.lock()) { //careful it return the shared pointer
         std::cout << "This " << make << " is driven by " << driver->getName() << "." << std::endl;
     } else {
         std::cout << "This " << make << " doesn't have a driver." << std::endl;
@@ -15907,8 +14970,16 @@ int main() {
 
     return 0;
 }
+Reader: Shared Resource Value: 0
+Writer: Shared Resource Value Updated
+Reader: Shared Resource Value: 10
+Reader: Shared Resource Value: 10
 ========================
+
 char16_t and char32_t, long long new data type in c++
+wchar_t wideChar = L'a';
+
+    wcout << "Wide character: " << wideChar << endl;
 ========================
 #include <iostream>
 #include <thread>
@@ -15946,6 +15017,15 @@ Thread 2 has thread-specific value: 2
 Thread 3 has thread-specific value: 3
 Thread 4 has thread-specific value: 4
 =============================================================
+the operator that cannot be overloaded are 
+. Member selection operator
+.* Member selection through pointer to member operator
+?:
+::
+=================
+when the class is derived it inherrit
+constructor , destructor, assignment, copy constructor, overloading and all public member function
+============================
 When you assign a std::shared_ptr to a std::weak_ptr, it doesn't increment the reference count of the managed object. 
 A std::weak_ptr is designed to provide a non-owning observer of the object, and it does not contribute to the ownership of the object. 
 Therefore, the assignment itself doesn't affect the reference count of the underlying object.
@@ -15986,6 +15066,42 @@ int main() {
     return 0;
 }
 ==================================================
+inderived class if the use the below line then ther is no use of the using Base::Base;
+//derived class constructor will call the empty base class
+    using Base::Base; // Inherit constructor from Base class
+    Derived(int x)  {
+        cout << "Base constructor called with value: " << endl;
+    }
+=========================
+class Base {
+public:
+    Base() {
+        std::cout << "Base constructor called with message1: " << std::endl;
+    }
+    Base(const std::string& message) {
+        std::cout << "Base constructor called with message2: " << message << std::endl;
+    }
+};
+
+class DerivedUsingUsing : public Base {
+public:
+    using Base::Base; // Inherit the constructor from Base
+    DerivedUsingUsing(const std::string& message) {
+        std::cout << "derived constructor called with message: " << std::endl;
+    }
+};
+
+int main() {
+    // Creating an object of DerivedUsingUsing class
+    DerivedUsingUsing derivedObject("nj");
+
+    return 0;
+}
+Base constructor called with message1: 
+derived constructor called with message: 
+==================================
+
+
 trailing return Type: Trailing return types in C++ allow you to specify the return type of a function after its parameter list.
 This is particularly useful when the return type is dependent on the function's parameters or involves complex type calculations.
 
@@ -16055,7 +15171,10 @@ int main() {
         std::cout << "Exception: " << e.what() << std::endl;
 
 =============================================
-f members of a union are classes with user-defined constructors and destructors, to switch the active member, explicit destructor and
+union can have the constructor and destructir and it will be called when the object is created?
+=============
+f members of a union are classes with user-defined constructors and destructors, 
+to switch the active member, explicit destructor and
  placement new are generally needed:
 
 Run this code
@@ -16076,7 +15195,7 @@ int main()
     // at this point, reading from s.vec is undefined behavior
     std::cout << "s.str = " << s.str << '\n';
     s.str.~basic_string();
-    new (&s.vec) std::vector<int>;
+    new (&s.vec) std::vector<int>; //or new (&s.vec) std::vector<int>();
     // now, s.vec is the active member of the union
     s.vec.push_back(10);
     std::cout << s.vec.size() << '\n';
@@ -16087,47 +15206,6 @@ Output:
 s.str = Hello, world
 1
 =====================================================
-#include <stdio.h>
-#include <stdint.h>
-
-typedef struct {
-    char name[50];
-    int age;
-    float height;
-} Person;
-
-void serialize_person(const Person *p, uint8_t *buffer) {
-    // Copy each field to the buffer
-    memcpy(buffer, p->name, sizeof(p->name));
-    buffer += sizeof(p->name);
-    memcpy(buffer, &p->age, sizeof(p->age));
-    buffer += sizeof(p->age);
-    memcpy(buffer, &p->height, sizeof(p->height));
-}
-
-void deserialize_person(const uint8_t *buffer, Person *p) {
-    // Copy data from the buffer to the structure
-    memcpy(p->name, buffer, sizeof(p->name));
-    buffer += sizeof(p->name);
-    memcpy(&p->age, buffer, sizeof(p->age));
-    buffer += sizeof(p->age);
-    memcpy(&p->height, buffer, sizeof(p->height));
-}
-
-int main() {
-    Person person = {"John Doe", 30, 5.9};
-    uint8_t serialized_data[sizeof(Person)];
-    serialize_person(&person, serialized_data);
-
-    Person deserialized_person;
-    deserialize_person(serialized_data, &deserialized_person);
-
-    printf("Name: %s\n", deserialized_person.name);
-    printf("Age: %d\n", deserialized_person.age);
-    printf("Height: %.2f\n", deserialized_person.height);
-
-    return 0;
-}
 ================================================
 
 #include <iostream>
@@ -16150,34 +15228,8 @@ int main() {
     return 0;
 }
 ===========================
-to represent the minum value init:
-#include <iostream>
-#include <climits>
 
-int main() {
-    int minValue = INT_MIN;
-
-    std::cout << "Minimum Integer Value: " << minValue << std::endl;
-
-    return 0;
-}
 =====================================
-difference between the static const and static constexpr
-static const rational zero; //class member variable
-const rational <classname>::zeros{};
-#include <iostream>
-
-class MyClass {
-public:
-    static constexpr int myConstant = 42;
-};
-
-int main() {
-    // Access the static constexpr constant without creating an instance
-    std::cout << "My Constant: " << MyClass::myConstant << std::endl;
-
-    return 0;
-}
 ==============================
 to check whether the user is string is email id or not?
 how to check if the word is present or not?
@@ -16248,4 +15300,301 @@ int main() {
 
     return 0;
 }
+=================================
+
+regex_replace : 
+<> : will replace only <>
+<?>: will remove the <> and >
+<.*>: all match character from < to the end. so here starting from < and till the end of the line >
+
+#include <iostream>
+#include <regex>
+
+std::string removeXmlTags(const std::string &xmlString) {
+    // Regular expression to match XML tags
+    std::regex tagsRegex("<.?>");
+
+    // Use regex_replace to remove tags
+    return std::regex_replace(xmlString, tagsRegex, "");
+}
+
+int main() {
+    // Example XML string with tags
+    std::string xmlString = "<><root><element1>Value 1</element1><element2>Value 2</element2></root>";
+
+    // Remove XML tags
+    std::string result = removeXmlTags(xmlString);
+
+    // Display the result
+    std::cout << "Original XML:\n" << xmlString << "\n\n";
+    std::cout << "After removing tags:\n" << result << "\n";
+
+    return 0;
+}
+
 ===============================
+weak_ptr on lock
+int array , variable and vector for {}
+stream_iterator?
+header file for iota and accumulate?
+header file for pair?
+header file for Nan?
+continously get the data for user in vector?
+calling the base constructor using
+variant
+header file required for function<>?
+incrment the array by one element
+incrment the array by entire array element
+function pointer assignement and calling in different ways
+bind taking the argument value ?
+difference between the set and unorder_set:
+file ioperation.
+capture list taking the function argument:
+when nonconst object will use mutuable?
+random
+find_if return type?
+throw the runtime error
+RAII
+fill header?
+.begin() and .end() header?
+assignement operator return type
+capture list: for global variable
+capture list to copy all reference
+capture list to take one variable reference and once variable by value
+ambiguit in the class member variable, class method and global method
+detachable thread and thread using lamda
+[=]: which function is called?
+back_inserter and back_insert_iterator
+vector initialization using the individual element
+static_assert
+copy by value in the capture list
+move the tuple in the capture lists
+get the individaul element in the tupele
+
+apply the tuple variable to the function argument
+alias for the function pointer
+global variable as the value and local variable as agrument in the captur list:
+copy the string to character array in different ways:
+back_inserter examples:
+capturelist[x] and [x=100] difference
+copy_in for string vector
+regex search
+regex replace
+regex iterator
+regext match
+R" and ("\\
+////////////
+map insertion is success or not?
+multiple insert in map after the declaration
+find and replace in string?
+file opened success or not?
+read the line from file and convert isstring stream?
+set with user defined function
+map with user defined function
+
+map<int,string>::iterator UOIT
+pair<UOIT,bool> result = mymap.insert({1,"hi"})
+result.second = true only when the insertion is completed
+===
+mymap.insert({{1,"hi"},{2,""west}});
+=================
+    size_t pos = line.find(findWord);
+    while (pos != std::string::npos) {
+        line.replace(pos, findWord.length(), replaceWord);
+        pos = line.find(findWord, pos + replaceWord.length());
+    }
+===============
+    if (!outputFile) { //outputFile.is_open()
+        cout << "Failed to open the file." << endl;
+        return 1;
+    }
+================
+getline(inputFile,linestring)
+    while (inputFile >> num) {
+        cout << num << " ";
+    }
+================
+    std::string line;
+    while (std::getline(inputFile, line))
+    {
+        std::istringstream iss(line);
+        std::string word;
+        while (iss >> word)
+=============
+map with fuctor function and class object:
+ std::unordered_set<Person, PersonHash> people; //person is the class name and PersonHash is the functor;
+ people.insert(Person("Alice", 25));
+===============================
+    std::unordered_set<std::string> setOfStrs;
+    // Insert strings to the set
+    setOfStrs.insert("First");
+==================
+  // Declaring a set of tuples
+  set<tuple<int, int, 
+            int>, cmp> setOfTuples;
+			
+for_each
+find_if
+count_if
+sort
+unique
+copy_if
+remove_copy_if
+transform(
+======================================
+regex:
+std::regex word_pattern("\\b\\w+\\b"); 
+sregex_ierator iterator(s.begin(),s.end(), pattern)
+iterator->str()
+string xmlString
+tagsRegex :regex pattern
+""to replace"
+std::regex_replace(xmlString, tagsRegex, "");
+std::regex pattern("\\b(\\w+fox)\\b"); //std::regex pattern(R"(\b(\w+fox)\b)");
+
+// std::smatch to store matched results
+std::smatch matchResults;
+
+// Use std::regex_search with std::smatch to find the first match and capture groups
+if (std::regex_search(text, matchResults, pattern)) {
+// Access the entire match
+std::cout << "Full match: " << matchResults[0] << std::endl;
+
+std::regex pattern("<.*?>");
+
+// std::smatch to store matched results
+std::smatch matchResults;
+
+// Use std::regex_search with std::smatch to find all matches
+while (std::regex_search(text, matchResults, pattern)) // to print only between the <*> 
+==========================================
+
+weak_ptr => we use lock which return the shared_ptr and this pointer is used to access the other class function.
+int a {}; int a[]{}; vector <int> v{}
+iota and accumulate : numeric header
+nan : cmath and limits
+pair : utility
+istream need the <int>
+istream_iterator can use istringstream write data to  vector
+istream_iterator can use inputfile write data to  vector
+ostream_iterator can use output file to write the data to the file
+contiously push the data into the vector
+while(cin>>a) {
+v.push_back(a)
+}
+
+using Base::Base
+holds_alternative
+
+functional header file for function. functional<int> f() { return [](int) { return a }}
+incrment the array by one element
+int *p=(&array[0]+1)
+int *p=(array+1)
+incrment the array by entire array element
+int *p=(&array+1)
+
+funtionpointer = &functionname
+funtionpointer = functionname
+funtionpointer()
+(*funtionpointer)()
+
+auto binding = std::bing(&class::publicfunc, &object, value)
+then no need to call binding(23); //23 has no use 
+set will store theelement in the ascending order and the performance will be higher in search, deletion, insertion
+when the file is opened is it needs to closed
+
+lamda=[this, newvalue]() //no need to specify the type of the variable here.
+non const object accessing the const function needs the mutuable variable to modify it in the const function.
+random rd;
+mt19937 gen(rd())
+g=uniform_int_distribution di(1.3)
+int y=g(gen)
+
+find_if return the iterator
+runtime_error("fdshgfjshdg")
+
+Resources acquastition is initialization
+fill require ->algorithm
+.begin(),.end() requires: iterator
+
+sample& operator=(sample&obj) { return *this) }
+
+if the global varaible is modified in the capture list it will imapact in other places also (empty, reference and pass by value cases)
+capture list to copy all variable by reference
+auto l=[&]()
+capture list to take one variable reference and once variable by value
+auto l=[&x, y]()
+
+ambiguity in the class member variable, class method and global method
+this->value=value
+obj.classname::functionanme()
+namespace namespacename {
+functionname()
+}
+
+detachable thread and thread using lamda:
+threadf(globalfunction).detach()
+thread([](){})
+
+[=]: which function is called?
+affect the global variabledoesn't affect the global or local object since the objects are copied by calling the copy constructor.
+
+back_insert_iterator:
+    // Using OutputIterator to add elements to the vector
+    for (int i = 1; i <= 5; ++i) {
+        std::back_insert_iterator<std::vector<int>> it(vec);
+        *it = i;
+    }
+	
+back_inserter:	
+    // Read data from the user using istream_iterator
+    std::copy(
+        std::istream_iterator<myclass>(std::cin),
+        std::istream_iterator<myclass>(),
+        std::back_inserter(data)
+    );
+	
+inserter:
+    // Using std::inserter to add elements to the map
+    std::inserter(myMap, myMap.end()) = std::make_pair(3, "three"); //no begin here
+	
+we cannot initialize the vector using the (1,2,3,4)	
+ std::vector<int> v = std::vector<int>{1, 2, 3, 4, 5};
+  std::vector<int> v (5,0) //fill the vector with 5 element with 0
+  
+  
+static_assert(is_arithmetic_v<T>,"not matched");
+move and cpy in the caputre list:
+auto p=[obj=object]{} //hre the global and the local objects are different
+auto p = [obj=move(object)](){} //onership is removed after the move
+
+apply(functionname, tuplevariable) //this function will extract and apply the tuple to each invidual argument
+get<0>(tuplevariable) ;// get the first element of tuple
+
+alias:
+using T = void(*)(int)
+T fun = myfunction
+T &fun = myfunction
+const T &func =&myfunction
+==================
+int main() {
+           auto boundFunction = [x=100](){ //no error
+            std::cout << x <<"  ";
+        };
+        boundFunction();
+
+
+    return 0;
+}
+
+int main() {
+           auto boundFunction = [x](){ //x is not declared
+            std::cout << x <<"  ";
+        };
+        boundFunction();
+
+
+    return 0;
+}
+=============
+numeric header file is required for iota , transform and accumulate?
