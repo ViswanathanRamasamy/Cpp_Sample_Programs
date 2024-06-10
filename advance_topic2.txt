@@ -1,0 +1,861 @@
+/*
+	Below is the sample program for the Adavnce topics -2.
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
+	Author Name: Viswanathan Ramasamy
+	Email id: rviswawt@gmail.com
+*/
+
+auto main() -> int
+{
+
+return 10;
+}
+
+calling the static const function will always have the overhead of the mutex.
+static const will have the thread safe initialization since there is gurad vairiable to prodect the 
+initialization
+static string const function()
+{
+   static const string v = "bob"
+}
+when we call the above the above function each time the number of instruction in the program is going
+to increased so
+
+const string &s = function();
+static string const &function1()
+{
+   return s
+}
+now here wvwn if you call the function1 multiple times the reference will not increase.
+
+-std=C++14 -Wall -O3
+
+To see the number of instruction the program is going to execute
+
+valgring --tool=callgrind ./a.out
+
+class static function can be called by
+classname::function name()
+classobject.staticfunctionname()
+
+
+Final keyword in the class name and function name
+class  A final // since this class is marked as final we cannot derive the any other class from class A
+{
+};
+class B:public A //error since the Class A is marked final we cannot derive B
+{
+};
+auto main() ->int
+{
+return 0;
+}
+
+if we have override function in the derived class it is not necessary to mark the virtual keyword in the
+derived class. if you mark the virtual function final we cannot override in the the derived class.
+class  A  // since this class is marked as final we cannot derive the any other class from class A
+{
+    public:
+     virtual void func() final
+     {
+         
+     }
+     virtual void func1() 
+     {
+         
+     }
+};
+class B:public A
+{
+    void func() //error we cannot override the function in the derive class.
+    {
+         
+    }
+    
+    void func1() override 
+    {
+         
+    }
+};
+auto main() ->int
+{
+return 0;
+}
+==================================
+if we are not going to using the function argument variable then mark that function as
+
+void function (int a) //compiler may say unused variable a
+{
+}
+
+void function (int ) // no error
+{
+}
+========================
+virtual ~destructor() {}
+virtual ~destructor() = default;
+=================
+Template class:
+template <typename T>
+class sample
+{
+   public:
+   void function (T &a)
+   {
+   }
+}
+
+sample <int> obj;
+obj.function()
+
+template class function
+class sample
+{
+   public:
+   template <typename T>
+   void function (T &a)
+   {
+   }
+}
+
+sample obj;
+obj.function<int> (100); //explicitly specifying the data typename
+obj.function(100); //implicitly specifying the data typename as int
+===========
+you can have both
+template class and template function inside the template class?
+template <typename T>
+class Sample {
+public:
+    template <typename U>
+    void function(U &a) {
+        // Your function implementation here
+    }
+};
+
+int main() {
+    Sample<int> obj;  // Instantiate the template class with type int
+    int value = 42;
+    obj.function<int>(value);  // Explicitly specify the template argument
+    obj.function(value);  // The template argument is implicitly deduced as int
+
+    return 0;
+}
+===========================================
+/ Base class with a virtual function
+class Base {
+public:
+    // Virtual function
+    virtual void display() {
+        std::cout << "Base class display()" << std::endl;
+    }
+
+    // Virtual destructor (to ensure proper destruction of derived objects)
+    virtual ~Base() {}
+};
+
+// Template derived class
+template <typename T>
+class Derived : public Base {
+public:
+    // Template function overriding the virtual function in the base class
+    void display() override {
+        std::cout << "Derived class display() with value: " << value << std::endl;
+    }
+
+    // Setter function for the template value
+    void setValue(const T& val) {
+        value = val;
+    }
+
+private:
+    T value;
+};
+
+int main() {
+    // Create an instance of the template derived class with int type
+    Derived<int> intDerived;
+    intDerived.setValue(42);
+    intDerived.display();  // Calls the overridden display() in Derived
+    intDerived.Base::display(); 
+
+    
+    return 0;
+}
+Derived class display() with value: 42
+Base class display()
+==================================
+template base class and template derived class:
+#include <iostream>
+
+// Template base class
+template <typename T>
+class Base {
+public:
+    // Virtual function
+    virtual void display() {
+        std::cout << "Base class display()" << std::endl;
+    }
+
+    // Pure virtual function (making the class abstract)
+    virtual void process(const T& value) = 0;
+
+    // Virtual destructor (to ensure proper destruction of derived objects)
+    virtual ~Base() {}
+};
+
+// Template derived class
+template <typename U>
+class Derived : public Base<U> {
+public:
+    // Implementation of the pure virtual function
+    void process(const U& value) override {
+        std::cout << "Derived class process() with value: " << value << std::endl;
+    }
+};
+
+int main() {
+    // Create an instance of the template derived class with int type
+    Derived<int> intDerived;
+    intDerived.display();  // Calls the virtual function in the base class
+    intDerived.process(42);  // Calls the overridden pure virtual function in Derived
+
+    // Create an instance of the template derived class with double type
+    Derived<double> doubleDerived;
+    doubleDerived.display();  // Calls the virtual function in the base class
+    doubleDerived.process(3.14);  // Calls the overridden pure virtual function in Derived
+
+    // Create an instance of the template derived class with string type
+    Derived<std::string> stringDerived;
+    stringDerived.display();  // Calls the virtual function in the base class
+    stringDerived.process("Hello, Template!");  // Calls the overridden pure virtual function in Derived
+
+    return 0;
+}
+Base class display()
+Derived class process() with value: Hello, Template!
+===================================
+#include <iostream>
+
+// Base case for recursion
+void printValues() {
+    std::cout << "hi" << std::endl;
+}
+
+// Recursive template function to print values
+template <typename T, typename... Args>
+void printValues(const T& first, const Args&... args) {
+    std::cout << first << " ";
+    printValues(args...);
+}
+
+int main() {
+    // Using the variadic template to print different types of values
+    printValues(1, 2.5, "Hello", 'c');
+
+    return 0;
+}
+//1 2.5 Hello c hi
+=======================
+// Base case for recursion
+template <typename T>
+void printValues( T a) {
+    std::cout << "hi " << a << std::endl;
+}
+
+// Recursive template function to print values
+template <typename T, typename... Args>
+void printValues(const T& first, const Args&... args) {
+    std::cout << first << " ";
+    printValues(args...);
+}
+
+int main() {
+    // Using the variadic template to print different types of values
+    printValues(1, 2.5, "Hello", 'c');
+
+    return 0;
+}
+
+//1 2.5 Hello hi c
+=======================
+Template meta programing.
+Here we are using array since we cannot pass the value from the local function as the scope will be deleted.
+
+// Base case: empty initializer list
+template <typename T, std::size_t N>
+constexpr auto make_initializer_list(std::array<T, N> arr) {
+    return arr;
+}
+
+// Recursive case: prepend an element to the initializer list
+template <typename T, std::size_t N, typename... Ts>
+constexpr auto make_initializer_list(std::array<T, N> arr, T head, Ts... tail) {
+    arr[N - sizeof...(tail) - 1] = head;
+    return make_initializer_list(arr, tail...);
+}
+
+// Function to print the elements in the array
+template <typename T, std::size_t N>
+void print_initializer_list(const std::array<T, N>& arr) {
+    for (const auto& element : arr) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Example usage with integers
+    constexpr auto result = make_initializer_list(std::array<int, 5>{}, 1, 2, 3, 4, 5);
+
+    // Output: 1 2 3 4 5
+    print_initializer_list(result);
+
+    return 0;
+}
+=============================================
+sizeof...(tail) : return the number of elements in the tail
+
+#include <array>
+#include <iostream>
+
+// Base case: empty initializer list
+template <typename T, std::size_t N>
+constexpr std::array<T, N> make_initializer_list(std::array<T, N> arr) {
+    return {arr};
+}
+
+// Recursive case: prepend an element to the initializer list
+template <typename T, std::size_t N, typename... Ts>
+constexpr std::array<T, N> make_initializer_list(std::array<T, N> arr, T head, Ts... tail) {
+    arr[N - sizeof...(tail) - 1] = head;
+    return make_initializer_list(arr, tail...);
+}
+
+// Function to print the elements in the array
+template <typename T, std::size_t N>
+void print_initializer_list(const std::array<T, N>& arr) {
+    for (const auto& element : arr) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Example usage with integers
+    constexpr auto result = make_initializer_list(std::array<int, 5>{}, 1, 2, 3, 4, 5);
+
+    // Output: 1 2 3 4 5
+    print_initializer_list(result);
+
+    return 0;
+}
+1 2 3 4 5
+===================================================
+Here array was created as the instance for the wrapper
+#include <array>
+#include <iostream>
+
+// Struct to hold an array
+template <typename T, std::size_t N>
+struct InitializerListWrapper {
+    std::array<T, N> arr;
+};
+
+// Base case: empty initializer list
+template <typename T, std::size_t N>
+constexpr InitializerListWrapper<T, N> make_initializer_list(std::array<T, N> arr) {
+    return {arr};
+}
+
+// Recursive case: prepend an element to the initializer list
+template <typename T, std::size_t N, typename... Ts>
+constexpr InitializerListWrapper<T, N> make_initializer_list(std::array<T, N> arr, T head, Ts... tail) {
+    arr[N - sizeof...(tail) - 1] = head;
+    return make_initializer_list(arr, tail...);
+}
+
+// Function to print the elements in the array
+template <typename T, std::size_t N>
+void print_initializer_list(const InitializerListWrapper<T, N>& wrapper) {
+    for (const auto& element : wrapper.arr) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Example usage with integers
+    constexpr auto result = make_initializer_list(std::array<int, 5>{}, 1, 2, 3, 4, 5);
+
+    // Output: 1 2 3 4 5
+    print_initializer_list(result);
+
+    return 0;
+}
+
+1 2 3 4 5
+===========================================================
+folded expansion:
+Answer: A fold expression is a feature introduced in C++17 that allows applying a binary operator to the
+ elements of a parameter pack.
+#include <iostream>
+
+template <typename... Args>
+void print_values(const Args&... values) {
+    ((std::cout << values),...); //or (std::cout <<...<< values); //((std::cout << values << ' '), ...)
+}
+
+int main() {
+    print_values(1, 2, 3, 4, 5);
+
+    return 0;
+}
+
+1 2 3 4 5
+
+--------------------------
+folded expression with logical &&
+template <typename... Values>
+bool all_satisfy_condition(const Values&... values) {
+    return (values > 0 && ...);
+}
+
+int main() {
+    // Example usage with integers
+    bool result = all_satisfy_condition(1, 2, 3, 4, 5);
+	return 0;
+}
+===================================
+template <typename... Values>
+auto sum_values(const Values&... values) {
+    return (values + ...);
+}
+
+int main() {
+    // Example usage with integers
+    int result = sum_values(1, 2, 3, 4, 5);
+}
+========================================
+A binary fold expression operates on pairs of elements in the parameter pack, while a unary fold expression operates on single elements.
+// Unary fold expression to check if all values are even
+template <typename... Values>
+bool all_even(const Values&... values) {
+    return (... && (values % 2 == 0));
+}
+
+int main() {
+    // Example usage with integers
+    bool result = all_even(2, 4, 6, 8, 10);
+}
+======================================
+// Binary fold expression to calculate the product of elements
+template <typename... Values>
+auto product_values(const Values&... values) {
+    return (values * ...);
+}
+
+int main() {
+    // Example usage with integers
+    int result = product_values(1, 2, 3, 4, 5);
+}
+===============
+int getResult() {
+    return 42;
+}
+
+int main() {
+    (void)getResult();  // Explicitly discard the result.
+    return 0;
+}
+==========================
+return value should not be ignored.
+[[nodiscard]] int getResult() {
+    return 42;
+}
+
+int main() {
+    getResult();  // Warning: Ignoring return value of function declared with [[nodiscard]]
+    return 0;
+}
+===================================
+how to ignore the return value:
+std::ignore = dontIgnoreMe();
+========================
+insert in the stl will return the pair iterator hence it cannot be used directly 
+std::set<std::string> set_of_str;
+    std::string variable1;
+    bool inserted = false;
+
+    auto result = set_of_str.insert("Test");
+    std::tie(variable1, inserted) = std::make_tuple(*result.first, result.second);
+
+=================================
+std::set<std::string> set_of_str;
+    std::string variable1;
+    bool inserted = false;
+
+    std::tie(std::ignore, inserted) = set_of_str.insert("Test");
+
+==============================
+command to extract the file:
+tar -xvf .tar.gz file
+================================
+#include <iostream>
+
+int main() {
+    // Raw string literal
+    const char* rawString = R"(This is a raw string literal.
+It preserves \ backslashes and doesn't interpret escape sequences.)";
+
+    std::cout << "Raw String Literal:\n" << rawString << "\n\n";
+
+    // Normal string literal
+    const char* normalString = "This is a normal string literal.\nIt interprets escape sequences.";
+
+    std::cout << "Normal String Literal:\n" << normalString << std::endl;
+
+    return 0;
+}
+
+Raw String Literal:
+This is a raw string literal.
+It preserves \ \nbackslashes and doesn't interpret escape sequences.
+
+Normal String Literal:
+This is a normal string literal.
+It interprets escape sequences.
+=============================
+ const char* rawString = u8R"(这是一个包含中文字符的原始字符串。)";
+ 
+ #include <iostream>
+
+int main() {
+    // Raw string literal with Chinese characters
+    const char8_t* rawString = u8R"(这是一个包含中文字符的原始字符串。)";
+
+    std::cout << "Raw String Literal with Chinese Characters:\n" << reinterpret_cast<const char*>(rawString) << std::endl;
+
+    return 0;
+}
+
+std::u8string rawString = u8R"(这是一个包含中文字符的原始字符串。)";
+
+    std::cout << "Raw String Literal with Chinese Characters:\n";
+    for (char8_t c : rawString) {
+        std::cout << reinterpret_cast<const char*>(&c);
+    }
+=====================
+c++ cannot cout the utf8 or utf16 or utf32 character or u8string or u16 sring or u32 string.
+
+#include <iostream>
+
+int main() {
+    char16_t u16str[] = u"你好, 世界";  // Chinese characters in UTF-16
+
+    for (char16_t c : u16str) {
+        std::wcout << static_cast<wchar_t>(c);
+    }
+
+    std::wcout << std::endl;
+
+    return 0;
+}
+=====================
+#include <iostream>
+
+int main() {
+    char32_t u32str[] = U"你好, 世界";  // Chinese characters in UTF-32
+
+    for (char32_t c : u32str) {
+        std::wcout << static_cast<wchar_t>(c);
+    }
+
+    std::wcout << std::endl;
+
+    return 0;
+}
+====================================
+std::u8string rawString = u8R"(这是一个包含中文字符的原始字符串。)";
+   const char16_t* u16str = u"你好, 世界";  // Chinese characters in UTF-16
+    std::u16string u16stringExample =  u"你好, 世界";
+	or
+	std::u16string u16stringExample(u16str)
+
+    // UTF-32 string
+    const char32_t* u32str = U"你好, 世界";  // Chinese characters in UTF-32
+    std::u32string u32stringExample = U"你好, 世界";;
+=================================
+-ldl option in GCC is used to link against the libdl library, which provides functions for dynamically loading shared libraries at runtime. 
+-pthread
+-I /include/path
+==================
+template <typename T>
+void printfunction(const T&a)
+{
+   cout << a <<endl;    
+}
+
+int main()
+{
+    
+    printfunction(10);
+    printfunction(10.12);
+    printfunction("viswa");
+    
+    printfunction<int>(10);
+    printfunction<string>("viswa");
+    printfunction<char*>("viswa");
+    return 0;
+}
+10
+10.12
+viswa
+10
+viswa
+viswa
+============================
+template <typename T>
+void printfunction( const T &a) //will expand to void printfunction(const char* const &a)
+{
+   cout << a <<endl;    
+}
+
+int main()
+{
+    printfunction<const char*>("viswa");
+    return 0;
+}
+=======================
+template <typename T>
+void printfunction( const T &a)//void printfunction(const int &a)
+{
+   cout << a <<endl;    
+}
+
+int main()
+{
+    printfunction<int >(10);
+    return 0;
+}
+==============================
+to know the compilation time
+/usr/bin/time g++ viswa.c
+
+
+#include <iostream>
+#include <sstream>
+#include <vector>
+
+using namespace std;
+
+template <typename T>
+string to_string_impl(const T& p1)
+{
+   stringstream ss;
+   ss << p1;
+   return ss.str();
+}
+vector <string> to_string()
+{
+   return {};
+}
+
+template <typename p1, typename ....param>
+vector <string> to_string(const p1 &first,const param&... tail)
+{
+   vector<string> s;
+   s.puch_back(to_string_impl(first));
+   
+   auto remianing = to_string(tail...);
+   s.insert(remianing.begin().remianing.end())
+   return(s)
+} 
+
+int main()
+{
+   cosnt auto s = to_string(1,2,3,"hi",77,8,9);
+   for (auto element:s)
+   {
+      cout << element << '\n';
+   }
+}
+==============================
+string s="viswa"
+s += s[0];//ViswaV
+
+if you want to preserve the order of insertion in map
+
+map[key] =100;
+vector.push_back(key)
+
+stack.push(100);
+stack.top()
+stack.pop()
+
+map<list<string>,string> v = {{{"M"},"one"}, {{"M1"},"two"}}
+
+stringmessage.compare("viswa") < 0
+
+string(3,'h") //hhh
+
+start=str.find_first_not_of(' '); //find the first non match space character
+end=str.find_last_not_of(' '); //find the last non match space character
+str.substr(start,end=start+1);
+
+reverse the iterator?
+auto it = mymap.rbegin();it !=mymap.end();it++
+
+vector<int> number;
+vector <vector<int>> v = {{number}}
+
+unordered_map
+map<int,int>
+
+<map>
+multimap<int,int>
+
+==========================
+#include <iostream>
+
+template <typename T>
+T findMin(T value) {
+    return value;
+}
+
+template <typename T, typename... Args>
+T findMin(T first, Args... args) {
+    return std::min(first, findMin(args...));
+}
+
+int main() {
+    int a = 5, b = 3, c = 8, d = 2;
+
+    int result = findMin(a, b, c, d);
+
+    std::cout << "Minimum value: " << result << std::endl;
+
+    return 0;
+}
+
+
+=========================
+#include <iostream>
+#include <list>
+#include <string>
+#include <algorithm>
+
+int main() {
+    std::list<int> v = {1, 102, 3};
+    std::string s1;
+
+    // Convert the list of integers to a list of strings
+    std::list<std::string> strList;
+    std::transform(v.begin(), v.end(), std::back_inserter(strList),
+                   [](int num) { return std::to_string(num); });
+
+    // Sort the strings in descending order based on their concatenation
+    strList.sort([](const std::string& a, const std::string& b) {
+        return (a + b) > (b + a);
+    });
+
+    // Concatenate the sorted strings to form the maximum number
+    for (const auto& str : strList) {
+        s1 += str;
+    }
+
+    std::cout << s1 << std::endl;
+    return 0;
+}
+=============================================
+
+we cannot use 
+
+it != v.end()-1 =>fail
+it-1 !=v.end() => fail
+or 
+it +=1 => fail
+only it++ will work
+it != std::prev(v.end()); => pass
+=====================
+#include <iostream>
+#include <map>
+
+int main() {
+    std::multimap<int, int> p;
+
+    p.insert({100, 101});
+    p.insert({100, 102});
+    p.insert({100, 103});
+
+    // Erase the element with value 102
+    auto it = p.find(100); // Find the key
+    if (it != p.end()) {
+        auto range = p.equal_range(it->first);
+        for (auto entry = range.first; entry != range.second; ++entry) {
+            if (entry->second == 102) {
+                p.erase(entry);
+                break; // Stop once the first occurrence is erased
+            }
+        }
+    }
+
+    // Print the modified multimap
+    for (const auto& pair : p) {
+        std::cout << pair.first << " -> " << pair.second << std::endl;
+    }
+
+    return 0;
+}
+====================================
+struct node
+{
+   int number;
+   int freq;
+   node(int a, int b)
+   {
+       number = a;
+	   freq=b
+   }
+ }
+
+ struct compare 
+ {
+	   bool operator()(const node &a, const node & b) {
+		return a.freq<b.freq; //arrange in descending order
+	   }
+   }
+}
+//building max heap
+priority_queue<node,vector<node>,compare) p;
+
+p.push(node (mmap.first,mymap.second))
+==================================
+struct node {
+    int number;
+    int freq;
+
+    node(int a, int b) : number(a), freq(b) {}
+
+    bool operator<(const node& other) const {
+        return freq < other.freq; // Arrange in descending order
+    }
+};
+
+// Building max heap
+std::priority_queue<node> p;  // Corrected line
+  maxHeap.push(node(1, 5));
+=============================
+// Custom comparison function for vectors of integers
+struct CompareVectors {
+    bool operator()(const std::vector<int>& a, const std::vector<int>& b) const {
+        return a < b; // Use the default comparison for vectors of integers
+    }
+};
+
+std::set<std::vector<int>, CompareVectors> mySet;
+
+    // Inserting vectors into the set
+    mySet.insert({1, 2, 3});
+    mySet.insert({4, 5, 6});
+    mySet.insert({1, 2, 3});  // Won't be inserted, as it's a duplicate

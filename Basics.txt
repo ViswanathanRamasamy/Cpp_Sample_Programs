@@ -1,0 +1,187 @@
+/*
+	Below is the sample program for the C++ features.
+	Source Code Location: https://github.com/ViswanathanRamasamy/Cpp_Sample_Programs
+	Author Name: Viswanathan Ramasamy
+	Email id: rviswawt@gmail.com
+*/
+c++
+- powerful and efficient code.
+- extension of c programming language with additional feature such as oop, template, stl and exception.
+
+class:
+It is a blueprint or template that defines the structure and behavior of objects. A class encapsulates data (known as member variables
+ or attributes) and the functions (known as member functions or methods) that operate on that data.
+
+Object:
+instance of the class
+Combination of data (known as properties or properties) and the function(knows as meths) that operate on that data.
+- same class can have multiple objects
+- object can belong to one class.
+-Each object has its own set of member variables, and changes to one object do not affect the others.
+
+example:
+class MyClass { //MyClass class name
+private: //default access specifier
+    int data; // member variable
+    
+public:
+    void setData(int value) {
+        data = value;
+    }
+    
+    int getData() {
+        return data;
+    }
+};
+
+int main() {
+    MyClass myObject; // create an instance of the class
+    
+    myObject.setData(42); // call member functions
+    int value = myObject.getData();
+    
+    return 0;
+}
+The member functions of a class are shared among all instances (objects) of that class.
+Each object contains its own set of data members (attributes), but the functions are shared among all objects of the same class.
+=======================================
+Private: Only members of the same class have access to private members.
+
+Public: You can access the public members from within, as well as from outside of the class.
+
+Protected: You can access the protected members from the same class members 
+and members of the derived class.
+
+==========================================
+how to find the content of the object:
+#include <iostream> //cin,cout,clog,cerr
+#include <string>
+
+class Person {
+private:
+    int employeeid;
+    int age;
+    int height;
+
+public:
+    // Constructor to initialize the object
+    Person(const int& employeeid, int a, double h) : employeeid(employeeid), age(a), height(h) {}
+
+    // Member function to display information about the person
+    void displayInfo() const {
+        std::cout << "Name: " << employeeid << ", Age: " << age << ", Height: " << height << " inches" << std::endl;
+    }
+
+    // Member function to have a birthday
+    void celebrateBirthday() {
+        age++;
+        std::cout << employeeid << " is now " << age << " years old. Happy birthday!\n";
+    }
+};
+
+int main() {
+    // Creating an object of the Person class
+    Person person1(775, 66, 106);
+
+    // Displaying the memory layout of the object
+    std::cout << "Memory layout of Person 1 object:\n";
+
+    // Using reinterpret_cast to treat the object as an array of bytes
+    const int* objectMemory = reinterpret_cast<const int*>(&person1);
+
+    // Displaying the content of each 4 bytes
+    for (std::size_t i = 0; i < sizeof(Person) / sizeof(int); ++i) {
+        std::cout << "Int " << i << ": " << objectMemory[i] << std::endl;
+    }
+
+    // Displaying information about the person
+    std::cout << "\nInformation about Person 1:\n";
+    person1.displayInfo();
+
+    return 0;
+}
+========================
+Memory layout of Person 1 object:
+Int 0: 775
+Int 1: 66
+Int 2: 106
+
+Information about Person 1:
+Name: 775, Age: 66, Height: 106 inches
+
+========================
+access specifier:
+Access specifiers (public, private, protected) in C++ classes control the visibility of class members. 
+public members are accessible from outside the class, private members are only accessible within the class, and protected members
+ are accessible within the class and its derived classes.
+
+==========================================================
+How to define the function outside the class? 
+
+best for for incremental compilation and larger project reduce the compilation time:
+class Student {
+public:
+   int a; // member variable
+
+   void function(int); // member function declaration
+};
+
+// member function definition
+void Student::function(int value) {
+   // implementation of the function
+}
+====================
+inline function:
+functions defined inside a class are implicitly considered inline functions in C++. Defining functions as inline allows the compiler 
+to replace the function call with the actual function code, which can potentially lead to faster code execution and reduced stack usage.
+Compile-time Overhead:
+Code Bloat: 
+Optimization Decisions:
+
+#include <iostream>
+
+class Calculator {
+public:
+    // Inline function to add two numbers
+    inline int add(int a, int b) {
+        return a + b;
+    }
+
+    // Inline function to multiply two numbers
+    int multiply(int a, int b);
+};
+
+// Definition of the multiply function as an inline function
+inline int Calculator::multiply(int a, int b) {
+    return a * b;
+}
+
+int main() {
+    Calculator calculator;
+
+    // Using inline functions
+    int result_add = calculator.add(5, 3);
+    return 0;
+}
+==================
+Base Class:
+A base class is a class that serves as a foundation for other classes. It contains common attributes and behaviors that are shared by its derived classes
+#include <iostream>
+
+#include <iostream>
+
+class Shape {
+public:
+    double area() const {
+        std::cout << "Calculating area of the base shape." << std::endl;
+        return 0.0;
+    }
+};
+
+int main() {
+    Shape shape;
+    shape.area();  // Calls the base class method
+    return 0;
+}
+
+=====================================
