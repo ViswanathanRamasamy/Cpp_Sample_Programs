@@ -5478,3 +5478,1072 @@ int main() {
     return 0;
 }
 ========================================
+why deleter function is required:
+you have legacy code from the raw pointer to the shared pointer. the problem in the below code is
+when the shared pointer goes out of scope it will call delete function and not the free for 
+malloc pointer so the behaviour is undefined.
+
+int main() {
+    // Allocate memory using malloc
+    std::shared_ptr <int> p {(int*) malloc(4)};
+
+    // Usage example
+    *p = 42;
+    std::cout << "Value pointed by p: " << *p << std::endl;
+
+    return 0;
+}
+==============================
+shared_ptr with memory allocated by malloc is generally not recommended because malloc 
+allocates raw memory and doesn't call constructors or destructors.
+int main() {
+    // Allocate memory using malloc
+    int* rawPtr = (int*)malloc(sizeof(int));
+
+    // Define a custom deleter to free the memory using free() function
+    auto deleter = [](int* ptr) {
+        std::cout << "Custom deleter called\n"; // Just for demonstration
+        free(ptr);
+    };
+
+    // Create a shared_ptr with custom deleter
+    std::shared_ptr<int> p(rawPtr, deleter);
+
+    // Usage example
+    *p = 42;
+    std::cout << "Value pointed by p: " << *p << std::endl;
+
+    return 0;
+}
+=======================
+if there is user deleter function in the shared_ptr or unique_ptr , the default deleter function will
+be called which inturn call the delete function.
+
+function object: 
+In C++, a function object, also known as a functor, is an object that can be called as 
+if it were a function. It achieves this by overloading the function call operator operator().
+
+Function objects offer a more flexible and powerful alternative to regular functions or 
+\function pointers in many scenarios. They can have state, and their behavior can be 
+customized through member variables.
+
+In the context of a function object, "state" refers to the internal data that the 
+object holds, which can influence its behavior when it is called.
+
+#include <iostream>
+
+// Define a function object class
+class Adder {
+public:
+    Adder(int value) : value_(value) {}
+
+    // Overload the function call operator
+    int operator()(int x) const {
+        return x + value_;
+    }
+
+private:
+    int value_;
+};
+
+int main() {
+    // Create instances of the function object
+    Adder add5(5);
+    Adder add10(10);
+
+    // Call the function object as if it were a function
+    std::cout << "add5(3) = " << add5(3) << std::endl; // Outputs: 8
+    std::cout << "add10(3) = " << add10(3) << std::endl; // Outputs: 13
+
+    return 0;
+}
+===============
+//using function object as attributes when the dont have attributes
+function object created by overloading function call object
+//structure name cannot be free
+//custom delete
+
+struct freess
+{
+   void operator()(int *p)
+   {
+      free(p);
+	  std::cout << "pointer is freed" ;
+   }
+};
+
+
+void Malloc(int *p)
+{
+  free(p);
+  std::cout << "pointer is freed" ;
+}
+   
+/frees is called deleter and frees{} is the temporary object of the deleter
+int main()
+{
+	//std::unique_ptr<int,freess> p {(int *) malloc(4),freess{}};
+	//or function pointer and address of the function
+	//std::unique_ptr<int,void(*)(int*)> p {(int *) malloc(4), Malloc};
+	std::unique_ptr<int,void(*)(int*)> p {(int *) malloc(4), &Malloc};
+	*p=100;
+	return 0;
+}
+============================
+deleter function implementation is different for the shared and unique
+
+struct freess
+{
+   void operator()(int *p)
+   {
+      free(p);
+	  std::cout << "pointer is freed" ;
+   }
+};
+
+
+void Malloc(int *p)
+{
+  free(p);
+  std::cout << "pointer is freed" ;
+}
+   
+/frees is called deleter and frees{} is the temporary object of the deleter
+int main()
+{
+	//std::unique_ptr<int> p {(int *) malloc(4),freess{}};
+	//or function pointer and address of the function
+	//std::unique_ptr<int> p {(int *) malloc(4), Malloc};
+	std::unique_ptr<int> p {(int *) malloc(4), &Malloc};
+	*p=100;
+	return 0;
+}
+================================
+Limitation of the shared and unique pointer?
+std::unique_ptr <int> p{new int[5] {1,2,3,4,5}};
+the above line will call delete and not delete []
+//p[2] =12;//not supported by unique pointer
+p.get()[2] =12; //allowed;
+you may suggest to use the delted function to call the delete array[]
+yes. but p.[2] will not work 
+To avoid this in c++c14 came up
+
+std::unique_ptr <int[]> p{new int[5] {1,2,3,4,5}};
+call delete[]
+p[3]=12; //works
+
+c++17
+std::shared_ptr <int[]> p{new int[5] {1,2,3,4,5}};
+call delete[]
+p[3]=12; //works
+
+========================
+make_function? //function template
+to avoid the usage of new and delete operator in our code
+make_unique is variadic template function takes variable aruguments
+
+std::unique_ptr<int> p(new int(5));
+auto p = std::make_unique<int>(5);
+auto pA = std::make_unique<int[]>(5);
+
+class point
+{
+  public:
+     point(int ,int)
+	 {
+	 }
+}
+
+int main()
+{
+    //here we have inovoked the paramet constructor
+    auto pt = std::make_unique<Point>(1,2)
+	return 0;
+}
+=====
+make function:
+
+you cannot initialize the dynamic array using the make_unique or make_shared.
+make_function dont have custom delete function.
+make_shared is better than the normal shared only. it will reduce the call in
+creating the new for int and new for control block and deleting the control and raw memory
+make_shared will have one new and one delete in allocating control block and raw pointer
+
+// Create a unique_ptr with an array of 5 integers
+auto pA = std::make_unique<int[]>(5);//00000
+pA[0] =12;
+
+for (int i = 0; i < 5; ++i) {
+	std::cout << pA[i] << " ";
+}
+
+make_shared[]added in c++20:
+auto pA = std::make_shared<int[]>(5);//00000
+============
+#include <iostream>
+#include <memory>
+
+// Custom deleter function
+void CustomDeleter(int* ptr) {
+    std::cout << "Custom deleter called\n";
+    delete[] ptr;
+}
+
+int main() {
+    // Create a shared_ptr with a custom deleter
+    auto p = std::shared_ptr<int>(new int[5], CustomDeleter);
+
+    // Alternatively, use make_shared with a lambda deleter
+    auto q = std::shared_ptr<int>(new int[5], [](int* ptr) {
+        std::cout << "Lambda deleter called\n";
+        delete[] ptr;
+    });
+
+    // Use make_shared to create a shared_ptr with no custom deleter
+    auto s = std::make_shared<int>(42);
+
+    return 0;
+}
+Lambda deleter called
+Custom deleter called
+======================================
+#include <iostream>
+#include <memory>
+
+// Custom deleter function
+void CustomDeleter(int* ptr) {
+    std::cout << "Custom deleter called\n";
+    delete ptr;
+}
+
+int main() {
+    // Create a shared_ptr<int> with custom deleter using make_shared and a lambda
+    auto customSharedPtr = [](int* ptr) {
+        return std::shared_ptr<int>(ptr, CustomDeleter);
+    };
+    auto p = customSharedPtr(new int(42));
+
+    // Use the shared pointer
+    std::cout << "Value: " << *p << std::endl;
+
+    return 0;
+}
+Value: 42
+Custom deleter called
+======================================
+enumerator types:
+const int GREEN = 0;
+#define RED 1
+
+void fillcolor(int color)
+{
+}
+int main()
+{
+   fillcolor(RED);
+   fillcolor(GREEN);
+   fillcolor(14); //allowed may lead to error
+   return 0;
+}
+==========
+to avoid this we go for enumerated type
+a. craete with word enum
+b. created with restricted range of values called symbolic constants
+or enumerators.
+c. enumeration are internally represented as integerral types
+d. can implicity convert to integer but not other way
+e. default value starts from 0 but user can assign any value
+subsequntal values are incremented by 1
+f. enumeration are visible in the scope in which they are defined
+
+//here the color is global scope
+enum color {Red, Green,Blue}
+Color c=Red; //0
+c =1;//compiler error , use static_cast to convert
+//when use static cast make sure it is in the range of color 
+int x =Green; //1 allowed
+
+//color is global scope
+enum Color { RED, BLUE, GREEN};
+void fillcolor(Color color)
+{
+   if (color ==RED)
+   {
+   }
+}
+//not allowed to use predefined enumeration
+//RED and GREEN is already defined //error conflict with previous declaration
+//enum Traffic light { RED, YELLOW, GREEN};
+
+int main()
+{
+	Color c =RED;//0
+   fillcolor(c);
+   fillcolor(GREEN);
+   //fillcolor(1); /error
+   fillcolor(static_cast<Color> (2)); //range has to match with the enumeration range
+   //else the behaviour is undefined.
+   return 0;
+}
+
+
+=========
+scoped enum
+//color is scopee enum
+enum class Color { RED, BLUE, GREEN};
+void fillcolor(Color color)
+{
+   if (color ==Color::RED)
+   {
+   }
+}
+//not allowed to use predefined enumeration
+//RED and GREEN is already defined
+// allwed enum Trafficlight { RED, YELLOW, GREEN};
+//alway use class scoped enum
+enum class Trafficlight { RED, YELLOW, GREEN};
+int main()
+{
+	Color c =Color::RED;//0
+   fillcolor(c);
+   fillcolor(Color::GREEN);
+   //fillcolor(1); /error
+   fillcolor(static_cast<Color> (2)); //range has to match with the enumeration range.
+   //undefined behaviour 
+   //else the behaviour is undefined.
+   return 0;
+}
+
+scoped enum has advantage it cannot be converted to integer implicity like globla scope enum
+
+int x = Color::RED; //error
+int X = static_cast<int>(Color::RED);
+
+if you want to change the underlying ctype of the enum yo
+use
+enum class Trafficlight:char{RED,GREEN,YELLOW};
+//or enum Trafficlight:char{RED,GREEN,YELLOW};
+
+enum class Color:long { RED, BLUE, GREEN};
+
+to change the values
+enum class Color { RED=100, BLUE, GREEN};
+//BLUE 101
+//GREEN 102
+
+enum class Trafficlight:char{RED = 'c',GREEN,YELLOW};
+//GREEN == 'd' //99
+//YELLOW =='e'
+//it store the ascii value and not the character
+=================================
+c style string?
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include <string.h>
+
+#include <iostream>
+#include <cstring>
+
+const char *Combine(const char *first, const char *last)
+{
+    int len_first = strlen(first);
+    int len_last = strlen(last);
+    char *result = new char[len_first + len_last + 1]; // +1 for null terminator
+    // or char *result = new char[strlen(first) + strlen(last) + 1];
+	strcpy(result, first);
+    strcat(result, last);
+    return result; // Return type changed to const char *
+}
+
+int main()
+{
+    const char *fullname = nullptr; // Declare as const char *
+    char firstname[10], lastname[10];
+
+    std::cout << "Enter first name (up to 9 characters): ";
+    std::cin.getline(firstname, 10); // Read first name
+    std::cout << "Enter last name (up to 9 characters): ";
+    std::cin.getline(lastname, 10); // Read last name
+
+    fullname = Combine(firstname, lastname); // Assign new value to fullname
+
+    std::cout << "Full Name: " << fullname << std::endl;
+
+    delete[] fullname; // Free dynamically allocated memory
+
+    return 0;
+}
+==========
+Viswa nathan => viswanathan (space is consider as the next input)
+Enter first name (up to 9 characters): viswa nath 
+Enter last name (up to 9 characters): Full Name: viswa nat
+
+Enter first name (up to 9 characters): viswa
+Enter last name (up to 9 characters): nathan
+Full Name: viswanathan
+=================================
+if you trying to return the address of the local variable from the function
+then it has to marked as static or declared that local variable as global scope
+since the scope of the local variable is limited to the function.
+
+char *strcat(char *dest, const char *src);
+char *result =char *strcat(char *dest, const char *src);
+resuly and destination will have the same address
+strcat will copy the nullcharacter to the end of the destination
+strlen will not add the null character into count.
+================================
+<string>
+//string assign and initialize
+std::string s ="viswa"
+std::string s ;
+s ="viswa"
+========
+int main() {
+    std::string s;
+    std::cout << "Enter a line of text: ";
+    std::getline(std::cin, s,'\n');
+    //or std::getline(std::cin, s);
+    std::cout << "You entered: " << s << std::endl;
+    return 0;
+}
+Enter a line of text: viswa nathan o
+You entered: viswa nathan o
+==
+int main() {
+    std::string s;
+    std::cout << "Enter a line of text: ";
+    std::getline(std::cin, s,'b');
+
+    std::cout << "You entered: " << s << std::endl;
+    return 0;
+}
+Enter a line of text: vbiswa
+You entered: v
+==============
+acess //overload operator
+s[0]='a';
+cha c  = s[0];
+std::cout <<s <<std::endl;
+std::cin >> s; //stop reading when the space is encounter in the character
+std::cout<<s <<std::endl;
+
+std::getline(std::cin,s);//it takes with space
+
+========
+s.length();
+std::string s1("hello"),s2("world");
+s =s1+s2;
+s +=s1;
+==========
+int main() {
+   
+    std::string s = "Hello!vISWA";
+s.insert(5, 3, '-'); // Insert 3 '-' characters starting at position 5
+
+
+    std::cout << s << std::endl; // Output: "Hello, beautiful world!"
+
+    return 0;
+}
+==================
+Hello---!vISWA
+===============================
+std::string s1 = "Hello!";
+std::string s2 = " beautiful";
+s1.insert(6, s2); // Insert contents of s2 starting at position 6 in s1
+HELLO! BEATIFUL
+=============================
+std::string s = "Hello!";
+std::string substr = "world, HOW ARE YOU ";
+s.insert(6, substr, 1, 6); // Insert the second 6 characters of substr starting at position 6 in s
+Hello!orld,
+==========================
+std::string s = "Hello!how are you";
+std::string to_insert = " wonderful ";
+s.insert(s.begin() + 6, to_insert.begin(), to_insert.end()); // Insert contents of to_insert starting at position 6 in s
+==
+Hello! woderful how are you
+=============
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string s = "Hello, world!";
+    s.insert(6, " beautiful"); // Insert " beautiful" starting at position 6
+
+    std::cout << s << std::endl; // Output: "Hello, beautiful world!"
+
+    return 0;
+}
+Hello, beautiful world!
+========
+string comparision:
+if(s1==s2) 
+if(s1 !=s2)
+if(s1<s2)
+======
+to clear the entire string content
+s.erase();
+//or s.clear()
+//erase first 5 character
+s.erase(0,5);
+===
+different ways to erase the last 5 character of the string?
+s.erase(s.size() - 5); // Erase the last 5 characters
+
+if (s.size() >= 5) {
+	s.erase(s.end() - 5, s.end()); // Erase the last 5 characters
+} else {
+	s.clear(); // If size is less than 5, clear the string
+}
+
+  
+if (s.size() >= 5) {
+	s.assign(s.substr(0, s.size() - 5)); // Assign substring excluding last 5 characters
+} else {
+	s.clear(); // If size is less than 5, clear the string
+}
+
+if (s.size() >= 5) {
+	s.resize(s.size() - 5); // Resize string to exclude the last 5 characters
+} else {
+	s.clear(); // If size is less than 5, clear the string
+}
+==============================
+auto pos = s.find(string to be find,search from what position)
+auto pos =s1.find("hello",0);
+if pos is -1 ; no search string found;
+
+  std::string s = "Hello, world! world!";
+
+    // Basic usage of find
+    size_t pos = s.find("world"); // Search for the substring "world" in s
+
+    if (pos != std::string::npos) { //7
+        std::cout << "Substring found at position: " << pos << std::endl;
+    } else {
+        std::cout << "Substring not found" << std::endl;
+    }
+==
+size_t pos = s.find("world", 7); // Start searching from index 7
+===
+std::string s = "Hello, six world!";
+
+    // Find "world" in the first 5 characters of s
+    size_t pos = s.find("sixworld", 5, 3);
+    if (pos != std::string::npos) { //7
+        std::cout << "Substring 'world' found at position: " << pos << std::endl;
+    } else {
+        std::cout << "Substring 'world' not found" << std::endl;
+    }
+=======
+return the last matching character position index ie 13 
+and not the start position 11
+int main() {
+    std::string s = "Hello, six six world!";
+
+    
+    size_t pos = s.find_last_of("six");
+
+    if (pos != std::string::npos) {
+        std::cout << "Substring 'world' found at position: " << pos << std::endl;
+    } else {
+        std::cout << "Substring 'world' not found" << std::endl;
+    }
+
+    return 0;
+	======
+	first matching character
+	std::string s = "Hello, six six world!";
+
+    // 7
+    size_t pos = s.find_first_of("six");
+	===========
+std::string s = "Hello, world!";
+size_t pos = s.find("world");
+// pos will be 7 (position of "world" in "Hello, world!")
+=====
+std::string s = "Hello, six six world!";
+size_t pos = s.find_first_of("esix"); //1
+================
+case insestive search 12
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <cctype>       // for std::toupper
+#include <functional>   // for std::bind
+
+int main() {
+    std::string mainString = "hello world ViSwa program";
+    std::string searchString = "Viswa";
+    
+    size_t start_pos = 0;  // Start searching from position 0
+    size_t count = mainString.size(); // Search entire string
+
+    // Adjust iterators to start from start_pos and limit to count characters
+    auto start = mainString.begin() + start_pos;
+    auto end = start + count;
+
+    // Perform the search using std::search and std::toupper
+    auto it = std::search(start, end, searchString.begin(), searchString.end(), 
+                          [](char c1, char c2) {
+                              return std::toupper(c1) == std::toupper(c2);
+                          });
+
+    if (it != mainString.end()) {
+        std::cout << "Substring '" << searchString << "' found starting at position: " << std::distance(mainString.begin(), it) << std::endl;
+    } else {
+        std::cout << "Substring '" << searchString << "' not found" << std::endl;
+    }
+
+    return 0;
+}
+==========
+
+
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <cctype>   // for std::toupper
+#include <functional>  // for std::mem_fn
+
+int main() {
+    std::string s = "Hello, World!";
+    size_t start_pos = 7;  // Start searching from position 7
+    size_t count = 4;      // Search up to 4 characters
+
+    // Adjust iterators to start from start_pos and limit to count characters
+    auto start = s.begin() + start_pos;
+    auto end = start + count;
+
+    // Perform the search using std::search and std::toupper
+    auto it = std::search(start, end, s.begin(), s.end(), 
+                          std::bind(std::equal_to<int>(), 
+                                    std::bind(std::toupper<char>, std::placeholders::_1), 
+                                    std::bind(std::toupper<char>, std::placeholders::_2)));
+
+    if (it != s.end()) {
+        std::cout << "Substring 'World' found starting at position: " << std::distance(s.begin(), it) << std::endl;
+    } else {
+        std::cout << "Substring 'World' not found" << std::endl;
+    }
+
+    return 0;
+}
+===================
+std::string first; //empty default string
+=================
+//string object return by value
+std::string combine(const std::string &first, const std::string &second)
+{
+   std::string s = first+last;
+   return s;
+}   
+===============
+printf("%s",s.c_str());//return the c style string //terminated by NULL;
+===
+no difference in below initialization
+std::string first1 = "umar";
+std::string first1 {"umar"};
+std::string first1("umar");
+==
+unsigned int v=100u; u is literal
+==
+string literal;
+==============
+using namespace std::string_literals;
+std::string n2="viswa"s;
+The s suffix (from using namespace std::string_literals;) converts
+ the string literal "viswa" into an std::string object directly. 
+ This is a feature introduced in C++14, where the s suffix is used 
+to create std::string objects from string literals more conveniently.
+
+auto p = "viswa";, the type deduced for p is const char*.
+=======================
+s[i] = > will work only if the memory is allocated and something is writtenen
+std::string s(15);//error
+std::string s(20,'a'); //putting 20 a
+
+std::string ToUpper(const std::string &src)
+{
+    std::string s(src.length(),0);
+   
+    for (size_t i = 0; i < src.length(); ++i)
+    {
+        s[i]= std::toupper(src[i]); // Append each uppercase character to 's'
+    }
+    
+    return s;
+}
+===
+std::string ToUpper(const std::string &src)
+{
+    std::string s;
+    //s.reserve(src.length()); // Reserve space for the resulting string to avoid resizing
+    
+    for (size_t i = 0; i < src.length(); ++i)
+    {
+        s+=(std::toupper(src[i])); // Append each uppercase character to 's'
+		//or s.push_back(std::toupper(src[i]));
+		//s[i]=(std::toupper(src[i])); //no output 
+//The issue with s[i] = std::toupper(src[i]); in your original function 
+//ToUpper is that std::string s; creates an empty string s, which doesn't 
+//have any elements yet. Therefore, attempting to access s[i] and assign a 
+//value to it (s[i] = std::toupper(src[i]);) results in undefined
+//behavior because s doesn't have any valid indices initialized.
+    
+    return s;
+}
+=====================
+string stream are similar to iostream instead reading and wring from the 
+keyboard and console we perform the operation on the string buffer;
+
+how to print the string in the console?
+
+int a{8}, b{10}
+std::cout << "sum of a " << a << "&" << b << "is" << a+b <<std::endl;
+
+//std::string s = "sum of a " << a << "&" << b << "is" << a+b <<std::endl; //error
+
+#include <sstream>
+std::stringstream ss; //read and write
+std::istringstream ss; //extraction //read
+std::ostringstream ss; //insertion //write
+
+std::stringstream ss;
+ss <<"sum of a " << a << "&" << b << "is" << a+b <<std::endl;
+std::cout << ss.str(); //print the content in the console
+std::string ty = ss.str();
+sout <<ty; //string can printed like this in console
+ss.str("");
+
+==================
+#include <iostream>
+#include <sstream> // for std::stringstream
+#include <string>  // for std::string
+#include <cstdlib> // for std::atoi
+
+int main() {
+    std::stringstream ss;
+     ss << 100;
+    ss << 111;
+
+    // Get the string representation of the stringstream
+    std::string str = ss.str();
+
+    // Convert the string to an integer
+    int y = std::atoi(str.c_str());
+
+    std::cout << "y = " << y << std::endl;
+
+    return 0;
+}
+y = 100111
+========================
+ ss << 100;
+ss.str(""); //to clear the old content
+ss << 111;
+
+y =111;
+==================
+#include <iostream>
+#include <string>
+
+int main() {
+    int num = 100;
+    std::string str = std::to_string(num);
+
+    std::cout << "String representation of num: " << str << std::endl;
+
+    return 0;
+}
+====================
+std::stol("1234"); //string to long
+ std::stod("12.34") //string to decimal
+ 
+std::string str = "assda12.12assf";
+
+try {
+	double d = std::stod(str);
+	std::cout << "Converted to double: " << d << std::endl;
+} catch (const std::invalid_argument& e) {
+	std::cerr << "Invalid argument: " << e.what() << std::endl;
+} catch (const std::out_of_range& e) {
+	std::cerr << "Out of range: " << e.what() << std::endl;
+}
+
+====
+std::string str = "12.12assf";
+//output 12.12
+std::string str = "assda12.12assf";
+//invalid argument
+====
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    float f = 3.14f;
+    std::stringstream ss;
+    ss << f; // Insert float into stringstream
+
+    std::string str = ss.str(); // Extract string from stringstream
+
+    std::cout << "String representation of float: " << str << std::endl;
+
+    return 0;
+}
+==============
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    std::string str = "3.14";
+    std::stringstream ss(str);
+    float f = 0.0f;
+
+    ss >> f; // Extract float from stringstream
+
+    std::cout << "Float value: " << f << std::endl;
+
+    return 0;
+}
+====================
+int main() {
+    // Example stringstream
+    std::stringstream ss;
+
+    // Append strings with desired formatting
+    ss << "hi ";
+    ss << "viswa";
+
+    // Output the content of ss
+    std::cout << "Concatenated output: " << ss.str() << std::endl;
+
+    return 0;
+}
+
+hi viswa
+================
+// Open a pipe to the command using popen
+    FILE* pipe = popen(command, "r");
+    if (!pipe) {
+        lx_loge(LX_PROCESS_NETWORK_MANAGER,"Error executing command: ");
+        return;
+    }
+
+    // Create a std::stringstream to capture the command output
+    std::stringstream ss("wl status ");
+
+    // Read the command output from the pipe into the stringstream
+    char buffer[128];
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        ss << buffer;
+    }
+
+    // Close the pipe
+    pclose(pipe);
+
+    lx_logd(LX_PROCESS_NETWORK_MANAGER,"%s ",(ss.str()).c_str());
+	
+	here the new line is inserted at the end of buffer
+	so the output line1
+	line2
+=========================
+ char buffer[128];
+while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+	// Remove newline character from buffer (if any)
+	size_t len = strlen(buffer);
+	if (len > 0 && buffer[len - 1] == '\n') {
+		buffer[len - 1] = '\0'; // Remove newline
+	}
+	ss << buffer; // Append buffer content to ss
+}
+
+output will be line1 lin2 line3
+===============================
+a. move constructor and move assignement operator cannot have constant
+b. move constructor we needn't delete the old data as the pointer will be null since the object
+creation is about to start.
+c. rvalue reference cannot be constant.
+d. not valid std::string & const str = str1;
+
+#include <iostream>
+#include <algorithm>
+
+class Resource {
+private:
+    int* data;
+    size_t size;
+
+public:
+    // Constructor
+    Resource(size_t size) : size(size) {
+        data = new int[size];
+        std::cout << "Resource allocated with size " << size << std::endl;
+    }
+
+    // Move constructor
+    Resource(Resource&& other) noexcept : data(other.data), size(other.size) {
+        other.data = nullptr;
+        other.size = 0;
+        std::cout << "Resource moved with size " << size << std::endl;
+    }
+
+    // Move assignment operator
+    Resource& operator=(Resource&& other) noexcept {
+        if (this != &other) {
+            delete[] data;  // Release current resources
+
+            data = other.data;
+            size = other.size;
+
+            other.data = nullptr;
+            other.size = 0;
+            std::cout << "Resource moved (operator=) with size " << size << std::endl;
+        }
+        return *this;
+    }
+
+    // Destructor
+    ~Resource() {
+        delete[] data;
+        std::cout << "Resource destroyed" << std::endl;
+    }
+};
+
+int main() {
+    Resource res1(10);  // Create Resource object with size 10
+    Resource res2 = std::move(res1);  // Move constructor
+    Resource res3(5);   // Create another Resource object with size 5
+    res3 = std::move(res2);  // Move assignment operator
+    return 0;
+}
+===================================
+int main() {
+    try {
+        throw 10;
+    }
+    
+    catch(int a) {
+        std::cout << "first2\n";
+    }
+	
+	catch(...) { //this should be always the last handler
+        std::cout << "first1\n";
+    }
+
+    return 0;
+}
+====================
+if no vitual keyword call only the base class destructor
+#include <iostream>
+
+class Base {
+public:
+    Base() {
+        std::cout << "Base constructor\n";
+    }
+    ~Base() {
+        std::cout << "Base destructor\n";
+    }
+};
+
+class Derived : public Base {
+public:
+    Derived() {
+        std::cout << "Derived constructor\n";
+    }
+    ~Derived()  {
+        std::cout << "Derived destructor\n";
+    }
+};
+
+int main() {
+    Base* ptr = new Derived();
+    delete ptr; // Calls Derived destructor and then Base destructor
+    return 0;
+}
+Base constructor
+Derived constructor
+Base destructor
+======================
+#include <iostream>
+
+class Base {
+public:
+    Base() {
+        std::cout << "Base constructor\n";
+    }
+     virtual ~Base() {
+        std::cout << "Base destructor\n";
+    }
+};
+
+class Derived : public Base {
+public:
+    Derived() {
+        std::cout << "Derived constructor\n";
+    }
+    ~Derived() override { //or ~Derived()  {
+        std::cout << "Derived destructor\n";
+    }
+};
+
+int main() {
+    Base* ptr = new Derived();
+    delete ptr; // Calls Derived destructor and then Base destructor
+    return 0;
+}
+Base constructor
+Derived constructor
+Derived destructor
+Base destructor
+=====
+#include <iostream>
+
+int main() {
+    // Allocate an array of 4 pointers to int
+    int **ptr = new int*[4] {NULL};
+
+    // Allocate an array of 12 ints and assign it to ptr[0]
+    *ptr = new int[12];
+    (*ptr)[4] =12; //ptr[0][4] ==12;
+    //here(*ptr) gives the first index and the point to the 4th index
+    //*ptr[4] ==> here we move to the ptr to index 4 and the pointing its content 
+    //index 4 is out of bound
+    // Print the addresses before deletion
+    std::cout << "Address of ptr: " << ptr << std::endl;
+    std::cout << "Address of *ptr: " << *ptr << std::endl;
+    std::cout << "Address of *ptr: " << ptr[0][4] << std::endl;
+
+
+    // Delete the dynamically allocated array of ints pointed to by ptr[0]
+    delete[] *ptr; // or delete[] ptr[0];
+
+    // Delete the dynamically allocated array of pointers to int
+    delete[] ptr;
+
+    // After deletion, print the addresses again
+    std::cout << "After deletion:" << std::endl;
+    std::cout << "Address of ptr: " << ptr << std::endl;
+    std::cout << "Address of *ptr: " << *ptr << std::endl;
+
+    return 0;
+}
+
+Address of ptr: 0x55e220af92b0
+Address of *ptr: 0x55e220af92e0
+Address of *ptr: 12
+After deletion:
+Address of ptr: 0x55e220af92b0
+Address of *ptr: 0x55e220af9
+=========================================
