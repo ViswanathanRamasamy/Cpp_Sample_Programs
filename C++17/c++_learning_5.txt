@@ -1,0 +1,5371 @@
+std::optional
+a new library type that can be used when a function may or maynot return a value;
+if it doesnot return a value a common way is it to compare with a predefined value such as 0, nullptr, true/false etc
+often called as nullable type
+
+no value is represented by std::nullopt
+std::optional is a value type so it can be copied through deep copy
+doesnot need to allocate any memory on heap
+you cannot store reference inside std::optional
+provide several overload operators and function to access the vaue inside safely
+may throw std::bad_optional_access
+
+optional is standard way to check whether the function return the value or not
+error number to error message:
+
+#include <optional>
+const char * GetErrorString(int errorNo) {
+   switch (errorno) {
+      case 0:
+	     return "inavlid input";
+	   case 1:
+	     return "connection not established yet"
+	   default:
+		return"";
+	}
+}
+
+int main() {
+   auto message = getErrorString(1);
+   if(strlen(message) != 0)
+   {
+	 std::cout message <<std::endl;
+   }
+   else
+   {
+      std::cout << " unknow error number " ;
+   }
+   
+   std::optional <int> value;
+   if(value.has_value) //value variable contain the value or not
+   {
+		//if it has the value
+		cout <<value.value(); //safe of reading the value
+		//or cout <<*value;
+   }
+   
+   //value variable contain the value or not
+   if(value)
+   {
+   }
+   
+   //if the value dont have anyvalue and if you use
+   //value.value() to get the value it will through the exception bad_optional access but in the 
+   //case of *value to get the value which is not initialized, the program will crash
+}
+
+we can reuse the optional variable by resetting or assign new content
+ie
+value =1;
+value.reset();
+
+//initialization
+
+std::optional <int> value{5};
+std::optional value{5}; //compiletime argument dedection
+auto value = make_optional(8);
+=============
+
+#include <optional>
+std::optional <const char *> GetErrorString(int errorNo) {
+   switch (errorno) {
+      case 0:
+	     return "inavlid input";
+	   case 1:
+	     return "connection not established yet"
+	   default:
+		return std::nullopt;
+	}
+}
+int main() {
+   auto message = getErrorString(1);
+   if(message.has_value())
+   {
+      cout <<message.value();
+   }
+   else
+   {
+		cout <<"unknow error";
+   }
+   
+   auto message = getErrorString(11);
+   if(message)
+   {
+      cout <<message.value(); //or
+	  cout << *message; 
+   }
+   else
+   {
+		cout <<"unknow error";
+		//if the message dont have any value then the below value will be added the 
+		//message and it will be printed. if it has the value then the original value will printed
+		
+		//cout << message.value_or("default no value added"); //output will be no value added
+		// this line generall has to be in top ie after auto message = getErrorString(11);
+   }
+   
+   //value_or type has to match with the message type
+   //optional variable can be reused
+   
+}
+============
+#include <optional>
+#include <iostream>
+
+void print_value(const std::optional<int>& opt) {
+   // if (opt == std::nullopt) { // Incorrect comparison
+   //if (!opt) //correct way
+        std::cout << "No value" << std::endl;
+    } else {
+        std::cout << "Value: " << *opt << std::endl;
+    }
+}
+
+int main() {
+    std::optional<int> opt = 42;
+    print_value(opt); // This will work fine
+    opt = std::nullopt;
+    print_value(opt); // This will not work correctly
+    return 0;
+}
+========================
+#include <iostream>
+#include <optional>
+
+int main() {
+    // Create an optional with a value
+    std::optional<int> opt = 42;
+
+    // Check and print the value
+    if (opt) {
+        std::cout << "Value before nullopt: " << *opt << std::endl;
+    }
+
+   opt = 100; //setting back to 100
+    // Set the optional to empty
+   // opt = std::nullopt; or
+   opt.reset();
+    // Check if the optional is empty
+    if (!opt) {
+        std::cout << "Optional is empty after setting to nullopt." << std::endl;
+    }
+
+    return 0;
+}
+==============================
+optional can be the class member variable aslo
+//optional is called nullable type
+//empty string is not the nullableonj
+class ContactName
+{
+   std::string first;
+   std::optional<std::string> middle;
+   std::string last;
+
+public:
+    ContactName(const std::string &f,  const std::string &m, const std::string &l)
+	: first{f}, middle{m}, last{l} {
+	}
+	
+	void print() {
+	  std::cout << first << ' ';
+	  std::cout <<middle.value_or("") <<' ';
+	  std::cout <<last << endl;
+	}
+};
+
+int main() {
+   ContactName n1{"Viswanathan","","ramasamasmy"};
+   //note we should npt pass the empty string. empty string is not equal to nullopt
+   ContactName n1{"Viswanathan",std::nullopt,"ramasamasmy"};
+   ContactName n2{"Viswa","Mani","ramasamy"};
+   
+   n1.print()
+   n2.print();
+}
+=============\
+std::cout <<" " is equal to std::cout <<' ';
+" " space\0
+' ' only one character 
+================
+std::variant
+std::variant is type safe replacement for union type
+just like union it uses the storage of the largest member
+the first meber is always default inialized if variant is 
+default constructed
+
+Alternatively you can initialize any memebr of the variant during the construction
+
+members are destroyed properly
+throws bad_variant_access on invalid access
+========================================
+#include <variant>
+//using default initialization the forst member is initialized
+//second number is not initialized.
+std::variant <std::string,int> v;
+
+//here the second member is initialized
+std::variant <std::string,int> v{5};
+
+auto val = std:get<int>(v); //get the value of int
+val = std::get<1>(v); //get the valie of int
+
+auto activeIndex = v.index(); //get the index of the active member //1
+=================
+when we use the non initialized data type
+#include <variant>
+try
+{
+std::variant <std::string,int> v{5};
+auto val = std:get<std::string>(v);
+
+}
+catch (std::exception &e)
+{
+   cout <<e.what(); //bad variant access
+}
+=================
+below program will not compile when we use the non available data type
+#include <variant>
+try
+{
+std::variant <std::string,int> v{5};
+auto val = std:get<float>(v); //flaot is the not the type of the variant
+
+}
+catch (std::exception &e)
+{
+   cout <<e.what(); 
+}
+===========================
+invalid index access
+#include <variant>
+try
+{
+std::variant <std::string,int> v{5};
+auto val = std:get<5>(v);
+
+}
+catch (std::exception &e)
+{
+   cout <<e.what(); //bad variant access
+}
+====================
+to get the pointer 
+
+std::variant <std::string,int> v{5};
+auto p = std::get_if<int>(&v)
+cout <<*p;
+
+p = std::get_if<1>(&v)
+cout <<*p;
+============
+code will not compile if we use the wrond index or wrong type
+std::variant <std::string,int> v{5};
+auto p = std::get_if<float>(&v)
+cout <<*p;
+
+p = std::get_if<11>(&v)
+cout <<*p;
+==============================
+get_if using the wrong inactive data type retuns the nullptr
+//if we want to avoid exception in variant we can use the get_if
+//get retun the reference to the active memebr
+std::variant <std::string,int> v{5};
+auto p = std::get_if<float>(&v)
+if(p !=nullptr)
+{
+	cout <<*p;
+}
+========
+#include <iostream>
+#include <variant>
+#include <string>
+
+int main() {
+    // Initialize std::variant with an int
+    std::variant<std::string, int> v{5};
+
+    // Attempt to modify the value using std::get
+    try {
+        // Get the value as an int and modify it
+        std::get<int>(v) = 10;
+        std::cout << "Value changed using std::get: " << std::get<int>(v) << std::endl;
+    } catch (const std::bad_variant_access& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+
+    // Reset the variant to a string value
+    v = std::string{"Hello"};
+
+    // Attempt to modify the value using std::get_if
+    if (auto p = std::get_if<int>(&v)) {
+        // This block will not execute because v holds a std::string now
+        *p = 20;
+        std::cout << "Value changed using std::get_if: " << *p << std::endl;
+    } else {
+        std::cout << "The variant currently holds a different type." << std::endl;
+    }
+
+    // Check the current value
+    if (auto p = std::get_if<std::string>(&v)) {
+        std::cout << "Current value: " << *p << std::endl;
+    }
+
+    return 0;
+}
+Value changed using std::get: 10
+The variant currently holds a different type.
+Current value: Hello
+=====================================
+#include <variant>
+variant using class 
+//Here the default constructor for Number{5} is called
+//move constructor is called
+//automatically call the destrcutor for the temporary object and
+//variant destroy
+std::variant<std::string, int, Number> v{Number{5}};
+v = Number{1} 
+//if we put  v = 1; then integer will be assigned
+std::get<Number>(v) =100; // this will through an exception
+v.emplace<Number>(100);//now it will construct the number
+==================
+Note the Number is the user defined class
+#include <variant>
+we can also modify the value using the visitor function
+provide the function call operator each possible data type
+
+function call operator of the visitior needs to const. 
+they cannot change the state of the operator
+struct Visitor {
+	void operator()(const std::string &s)const {
+		cout << "string" <<s;
+	}
+
+	void operator()(const int &x)const {
+		cout << "string" <<x;
+	}
+	void operator()(const Number &n)const {
+	   cout << "string" <<n;
+	}
+}
+
+struct modifier {
+	void operator()(std::string &s)const {
+		s+ = "modified string";
+	}
+
+	void operator()(int &x)const {
+		 x+=1000;
+	}
+	void operator()(Number &n)const {
+	   n = 99;
+	}
+}
+
+std::variant<std::string, int, Number> v{7};
+std::visit(visitor{},v) //7
+v = "c++"
+std::visit(visitor{},v) //c++
+v.emplace(<Number>(100))
+std::visit(visitor{},v) //100
+
+std::variant<std::string, int, Number> v{7};
+std::visit(modifier{},v)
+std::visit(visitor{},v) //1007
+
+v = "c++"
+std::visit(modifier{},v)
+std::visit(visitor{},v) //c++ modified string
+
+v.emplace(<Number>(100))
+std::visit(modifier{},v)
+std::visit(visitor{},v) //99
+====================
+The above approach can be also achieved using the lamda
+std::variant<std::string, int, Number> v{7};
+v = "using lamda"
+
+auto visitor = [](auto &x) {
+   using T = std::decay_t<decltype(x)>;
+   if constexpr (std::is_same_v<T,int>) {
+		cout << "int" << x;
+   }
+   else if constexpr (std::is_same_v<T,std::string>) {
+		cout << "string" << x;
+   }
+   else if constexpr (std::is_same_v<T,Number>) {
+		cout << "Number" << x;
+   }
+}
+
+std::visit(visitor,v) //string using lamda
+v=555
+std::visit(visitor,v) //555 
+v = Number{5}
+std::visit(visitor,v) //Number 5
+==============================
+int main() {
+    std::variant<int, std::string, Number> v = "using lambda";
+
+    auto visitor = [](auto& x) {
+       using T = std::remove_reference_t<decltype(x)>;; // Simplify type
+
+        if constexpr (std::is_same_v<T, int>) {
+            std::cout << "int: " << x << std::endl;
+        } else if constexpr (std::is_same_v<T, std::string>) {
+            std::cout << "string: " << x << std::endl;
+        } else if constexpr (std::is_same_v<T, Number>) {
+            std::cout << "Number: " << x.getValue() << std::endl;
+        }
+    };
+
+    std::visit(visitor, v); // Output will be "string: using lambda"
+    return 0;
+}
+
+=============================
+difference between the remove_reference_t and decay_t
+ using decayed_type1 = std::decay_t<int>; // int
+    using decayed_type2 = std::decay_t<int&>; // int
+    using decayed_type3 = std::decay_t<const int*>; // int*
+
+    // remove_reference_t
+    using removed_ref_type1 = std::remove_reference_t<int>; // int
+    using removed_ref_type2 = std::remove_reference_t<int&>; // int
+    using removed_ref_type3 = std::remove_reference_t<const int*>; // const int*
+=============================================
+std::any
+c++ is a strongly typed langauge
+object are declared with a specific type that cannot be changed later
+in some case we may require an object that should hold the values ofdifferent type.
+this is difficult to acheive in c++ except through void *
+
+however such pointer have certain disadvantages:
+   Not typesafe
+   no way to know that type
+   cannot access the value in a type-safeneed to manage the object life time
+   
+any is wrapper that can hold value of any arbitrary type in a type-safe way
+contain both the value and it type
+the value is access thrugh any_cast
+may allocate memory on the heap
+throw exception of the type bad_any_cast on the wrong type access.
+====
+any is not class template
+
+#include <any>
+
+std::any v1=5l
+
+try {
+	std::cout <<any_cast<std::string(v1);
+}
+catch(std::exception &e)
+{
+   std::cout << e.what(); //badany_cast exception since the v1 hold integer we are reading it as string
+}
+v1="hello" //makeing any to point to hello.
+
+since any point to the memory in the heap. we need to reset after the usage
+v1.reset()
+//you can check if v1 has any value by
+if(v1.has_value())
+{
+   //only if v1 has the value
+   if(v1.type() == typeid(int)
+   {
+		std::cout <<std::any_cast<int>(v1) <<std::endl;
+   }
+}
+
+std::any number(Number{5});
+auto n1=make_any<Number>(5);
+n1.reset(); //not must. object is destoryed after you call the reset.
+n1="string");
+n1.reset();  //must to use if we are not going to use afterwards
+
+std::cout <<std::any_cast<int>(v1) <<std::endl; //will return the copy
+
+===========
+#include <iostream>
+#include <any>
+#include <string>
+
+class Number {
+public:
+    explicit Number(int value) : value_(value) {}
+
+    int getValue() const { return value_; }
+
+private:
+    int value_;
+};
+
+int main() {
+    std::any n1 = std::make_any<Number>(5);
+
+    // Check and print the value
+    if (n1.type() == typeid(Number)) {
+        std::cout << "n1 holds a Number with value: " << std::any_cast<Number>(n1).getValue() << std::endl;
+    }
+
+    // Assign a new value of different type (string)
+    n1 = std::string("string");
+
+    // Check and print the new value
+    if (n1.type() == typeid(std::string)) {
+        std::cout << "n1 now holds a string: " << std::any_cast<std::string>(n1) << std::endl;
+    }
+	
+	n1.reset();
+
+    return 0;
+}
+==========================================
+auto n1=  std::make_any<Number>(5);
+n1 =5;
+
+auto n2= std::any_cast<int>(n1);
+n2=100;
+
+cout << std::any_cast<int>(n1); //5
+
+auto &n2= std::any_cast<int&>(n1); //will return the rvalue
+n2=100;
+
+cout << std::any_cast<int>(n1); //200
+
+n1 =5;
+auto n2= std::any_cast<int>(&n1); //will return the rvalue
+*n2 =100;
+cout << std::any_cast<int*>(n2); //5
+=========================
+string view:
+non owning view of sequence of character. the owner will be different object
+//may not be null terminated character 
+// may contain multiple null terminated character
+// we should not return the string view to the function expecting the string
+// original string is deleted then the string view become dangling
+// do not return string view to string from a function
+// don not assign temporary string to string views
+//avoid string view as the class member unless the source of the string will have life time
+//string view is not the replacement of string
+allows us to deal with character sequence without allocating memory
+can be considered as a kind of reference to a character sequence
+can be used where ever a non-modifiable string is required
+simply stores a pointer to the character array along with its length
+it is fast and cheap to copy
+it should used carefully as it can lead to bugs
+
+string_view :
+  length 
+  data : it is pointer to the array of character
+
+underlysing sequence is read only
+it can be accessed through data() method
+    may return the nullptr
+
+you can only assign a new value, swap values and shrink it to a subset of character sequence
+charcter sequence is not guaranteed to be null-terminated
+consequently , may not work with c string function
+
+#nclude <string_view>
+
+using namespace std::string_view_literals;
+
+std::string_view v1 = "hello world"
+std::string str1{"hello"}
+std::string_view str2 = str1;
+
+auto sv3= "using\0literals"sv; can have multiple null terminated character
+
+sv3.length(); //14 
+cout<<sv3; //using literals
+cout<<sv3.data(); //can return nullptr if string view is not initialized
+//sv3.data() =>using print only upto the first null terminating character
+ie why we should avoid string view with c function
+cout << sv3[0]; //no bound checking //subscript notation
+cout << sv3.at(0); //bound check . in the case of out_range exception
+
+//index of the first occurance place of literals
+auto f = sv3.find("literals") //6
+if( f1! =string::npos)
+{
+    cout << f;
+}
+
+string_view 2 more function. this feature is not available in the original string
+s3.remove_prefix(3); //remove the first 3 character from the string
+//it cannot modify the original string. it can only point to the 3rd position
+//ing literals
+
+s3.remove_suffix(2)
+ing litera
+
+//oth position to 5 characters
+auto sv4 =sv3.substr(0,5)
+cout <<str4 //ing l
+
+string_view s6="hello world"
+auto sv4 =sv6.substr(0,5)
+cout <<str4 //hello
+cout<<sv4.data(); //hello world //print the nulll terminated character;
+===================
+where to use string view:
+
+void prettyprint(const std::string &message, char ch)
+{
+   for(int i =0; i<message.length();++i)
+   {
+      cout << ch
+   }
+   cout <<endl;
+   cout <<message <<'\n';
+}
+prettyprint("hello world",'#');
+
+output:
+###########
+hello world
+=====================================
+void prettyprint(string_view message, char ch)
+{
+   for(int i =0; i<message.length();++i)
+   {
+      cout << ch
+   }
+   cout <<endl;
+   cout <<message <<'\n';
+}
+prettyprint("hello world",'#');
+
+output:
+###########
+hello world
+============================
+int main() {
+    std::string_view sv1 = "Hello, world!";
+    std::string_view sv2 = "using\0literals"; // This will only include "using"
+
+    std::cout << sv1 << std::endl;//hellow world
+    std::cout << sv2 << std::endl; //using
+    std::cout << sv2.data() << std::endl; //using
+
+    return 0;
+}
+===================
+#include <string_view>
+using namespace std::string_view_literals;
+
+int main() {
+    std::string_view sv1 = "Hello, world!";
+    std::string_view sv2 = "using\0literals"sv; // This will only include "using"
+
+    std::cout << sv1 << std::endl;//hellow world
+    std::cout << sv2 << std::endl; //using lierals
+    std::cout << sv2.data() << std::endl; //using
+
+    return 0;
+}
+=============================
+enum class Title {Mr, Mrs, Ms};
+std::string &CombineName(std::string &name,
+		const std::string &last, 
+		Title s)
+{
+	switch(s) {
+		case title::Mr:
+			 name.isert(0,"Mr.");
+			 break;
+		case Title::Mrs:
+			name.isert(0,"Mr.");
+			 break;
+		case Title::Ms:
+			name.isert(0,"Ms.");
+			 break;
+	}
+	
+	retun name += last;
+}
+
+std::string &CombineName(std::string &name,
+		std::string_view last, 
+		Title s)
+{
+	switch(s) {
+		case title::Mr:
+			 name.isert(0,"Mr.");
+			 break;
+		case Title::Mrs:
+			name.isert(0,"Mr.");
+			 break;
+		case Title::Ms:
+			name.isert(0,"Ms.");
+			 break;
+	}
+	
+	retun name += last;
+}
+
+const string & can be replaced by string view;
+
+==========================
+#include <iostream>
+#include <string>
+
+class Person
+{
+private:
+    std::string m_name;
+
+public:
+    // Constructor with correct capitalization
+    Person(const std::string& name) : m_name{name} {}
+
+    // Member function to print the name
+    void Print() const {
+        std::cout << m_name << std::endl;
+    }
+};
+
+void WithClass() {
+    // Create a Person object with a string literal
+    std::string n{};
+    Person p{std::string{"hi work"}};
+  
+    // Print the name using the Print method
+    p.Print();
+}
+
+int main()
+{
+    WithClass(); // Call the corrected function
+    return 0;
+}
+
+//hi work
+=======================
+we cannot expect the hi work since the temporary destructor will detroyed
+#include <iostream>
+#include <string>
+#include <string_view> // Include for std::string_view
+
+using namespace std::string_literals; // Enable user-defined literals for std::string
+
+class Person
+{
+private:
+    std::string_view m_name;
+
+public:
+    // Constructor that accepts std::string_view
+    Person(std::string_view name) : m_name{name} {}
+
+    // Member function to print the name
+    void Print() const {
+        std::cout << m_name << std::endl;
+    }
+};
+
+void WithClass() {
+    // Create a Person object using the "s" suffix to create a std::string
+    Person p{"hi work"s};
+  
+    // Print the name using the Print method
+    p.Print();
+}
+
+int main()
+{
+    WithClass(); // Call the function
+    return 0;
+}
+
+====================================
+// Create a std::string using implicit conversion
+    std::string myString = "Hello, World!";
+he string literal "Hello, World!" is of type const char[14].
+When you initialize myString with this literal, the
+ compiler implicitly creates a std::string object from the const char array. 
+ 
+ std::string myString = "Hello, World!"s;
+
+The "s" suffix is part of the user-defined literals provided by the
+ std::string_literals namespace. It converts the string literal into a std::string object directly.
+=================================================================================
+class Person
+{
+   std::string_view m_name;
+ public:
+  person(std::string_view  name):m_name{name} {
+  }
+  
+  void Print() const {
+     std::cout << m_name <<std::endl;
+  }
+};
+
+Person CreatePerson(std::string_view name){
+  std::string n{name}; //n is deleted after the function call 
+  //so the print will not gie the expected result
+  Person p{n};
+  return p; //pass by value
+}
+
+void WithClass() {
+  using namespace std::string_literals;
+  person p{CreatePerson("hi work")}; //copy of the object is created
+  
+  p.print(); //original string is deleted
+}
+
+int main()
+{
+    withClass();
+}
+=============================================
+class Person
+{
+   std::string m_name;
+ public:
+  person(std::string name):m_name{std::move(name)} {
+  }
+  
+  void Print() const {
+     std::cout << m_name <<std::endl;
+  }
+};
+
+void WithClass() {
+  using namespace std::string_literals;
+  person p{"hi work"}; 
+ 
+  p.print(); 
+}
+
+int main()
+{
+    withClass();
+}
+==========================================
+Filesystem:
+manipulation of filesystem path
+create, move, rename delete directories
+list the content of a given directories
+get the information about path , file permission etc
+
+#include <filesystem>
+
+std::filesystem namespace;
+
+path: allow the manipulation of paths that represen existing files or directories
+directory_entry: represent with additional information such as file size, file systems, etc
+directory_iterator-an iterator that iterates over the content of a directory_entry
+function for working with directories
+
+many function will throw std::filesystem_error exception on failure
+and other return error code
+
+#include <filesystem>
+mespace fs = std::filesystem; //alias for the namespace
+
+void UsingPath() {
+  fs::path selectpath{R"(E:\Data\Material\c++\Assignment.txt)"};
+  //the above one is raw string literal to avoid backslash 
+  cout <<selectpath; //E:\\Data\\Material\\c++\\Assignment.txt
+  cout <<selectpath.string();//E:\Data\Material\c++\Assignment.txt
+  if (selectpath.has_root_name())
+       cout<<selectpath.root_name().string() \\ E:
+
+  if (selectpath.has_root_path())
+       cout<<selectpath.root_path().string() \\E:\
+
+  if (selectpath.has_root_directory())
+       cout<<selectpath.root_directory().string(); // \
+
+  if (selectpath.has_parent_path())
+       cout<<selectpath.parent_path().string(); // E:\Data\Material\c++\
+	   
+if (selectpath.has_relative_path())
+   cout<<selectpath.relative_path().string(); //Data\Material\c++\
+
+if (selectpath.has_filename())
+   cout<<selectpath.filename().string(); //Assignment.txt
+
+if (selectpath.has_stem())
+   cout<<selectpath.stem().string(); Assignment
+
+if (selectpath.has_extension())
+   cout<<selectpath.extension().string(); .txt
+
+selectpath.remove_filename(); //filename will be removed from the path
+selectpath /="newfile" // this will be consider as the file name
+//here newfile is name of the file
+
+}
+
+int main()
+{
+  UsingPath()
+}
+===============================================
+#include <iostream>
+#include <filesystem>
+
+int main() {
+    // Original file path
+    std::filesystem::path fspath = "e:/data/personal/viswa.txt";
+    
+    // Print the original path
+    std::cout << "Original path: " << fspath << std::endl;
+
+    // Remove "personal" directory from the path
+    std::filesystem::path new_path = fspath;
+    
+    std::cout <<new_path.parent_path() <<std::endl;
+    
+    std::cout <<new_path.parent_path().parent_path() <<std::endl;
+    // Find the "personal" directory and remove it
+    if (new_path.parent_path().filename() == "personal") {
+        new_path = new_path.parent_path().parent_path() /"viswa"/"viswa.txt";
+    }
+
+    // Print the modified path
+    std::cout << "Modified path: " << new_path << std::endl;
+
+    // Print the filename and extension separately
+    std::cout << "Filename: " << new_path.stem() << std::endl;  // Without extension
+    std::cout << "Extension: " << new_path.extension() << std::endl; // Extension with dot
+
+    return 0;
+}
+Original path: "e:/data/personal/viswa.txt"
+"e:/data/personal"
+"e:/data"
+Modified path: "e:/data/viswa/viswa.txt"
+Filename: "viswa"
+Extension: ".txt"
+======================================================
+directory_entry:
+list the content fo the directory?
+
+#include <filesystem>
+namespace fs = std::filesystem; //alias for the namespace
+void TraversingDirectory(std::string_view file)
+{
+  fs::path currentpath{file}
+  fs::directory_iterator begin{currentpath}
+  fs::directory_iterator end{}
+  while(begin != end)
+  {
+      auto de = *begin++;
+	  std::cout <<de.path().filename() <<std::endl; // give the filenames in the current directory
+  }
+  
+  //how to avoid the while loop
+  
+  for(const auto & dir_entry:fs::directory_iterator{currentpath}{
+		//std::cout <<dir_entry.path() <<std::endl; //print the filename with path
+		
+		switch(const auto &p = dir_entry.path();dir_entry.status().type())
+		{
+			case fs::file_type::directory:
+				  std::cout <<"[DIR]\t" <<p.string() <<std::endl;
+				  break;
+			case fs::file_type::regular:
+				  std::cout <<"\t" <<p.string()<<'\t' <<dir_entry.file_size() <<std::endl;
+				  break;
+		}
+  }
+}
+
+int main() {
+  TraversingDirectory(R"(E:\Data\)");
+}
+
+the for loop and switch statement will print the file name ,it size and directory name in the random order
+
+=============================
+#include <filesystem>
+namespace fs = std::filesystem; //alias for the namespace
+void TraversingDirectory(std::string_view file)
+{
+	fs::path currentpath{file}
+	std::vector<fs::directory_entry> dir_entries{}
+	for(const auto & dir_entry:fs::directory_iterator{currentpath}{
+	   dir_entries.push_back(dir_entry);
+	   
+	}
+	
+	std::partition(dir_entries.begin(),dir_entries.end(),[](const fs::director_entry &de)
+	{
+		return de.is_directory(); //if this condition is true the directory 
+		//will be moved to the begining of the vector;
+	});
+  
+	//instead of dir_entry.status().type() we can also use the global function
+	//fs::status(p).type()
+    for(const auto &dir_entry:dir_entries) {
+		switch(const auto &p = dir_entry.path();dir_entry.status().type())
+		{
+			case fs::file_type::directory:
+				  std::cout <<"[DIR]\t" <<p.string() <<std::endl;
+				  break;
+			case fs::file_type::regular:
+				  std::cout <<"\t" <<p.string()<<'\t' <<dir_entry.file_size() <<std::endl;
+				  break;
+		}
+	}
+===========================	
+ // Loop through the directory entries
+    for (const fs::directory_entry& dir_entry : fs::directory_iterator{currentpath}) {
+        std::cout << "Path: " << dir_entry.path() << std::endl;
+    }
+======================
+#include <iostream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
+void printDirectoryContents(const fs::path& path, int depth = 0) {
+    try {
+        if (fs::is_directory(path)) {
+            // Indentation for readability based on depth
+            std::cout << std::string(depth * 2, ' ') << "Directory: " << path.filename() << std::endl;
+
+            // Iterate over each entry in the directory
+            for (const auto& entry : fs::directory_iterator(path)) {
+                // Check if the entry is a directory or file
+                if (fs::is_directory(entry.status())) {
+                    // Print directory name and recurse into it
+                    printDirectoryContents(entry.path(), depth + 1);
+                } else if (fs::is_regular_file(entry.status())) {
+                    // Print file name
+                    std::cout << std::string((depth + 1) * 2, ' ') << "File: " << entry.path().filename() << std::endl;
+                }
+            }
+        } else {
+            std::cerr << path << " is not a directory." << std::endl;
+        }
+    } catch (const fs::filesystem_error& e) {
+        std::cerr << "Filesystem error: " << e.what() << std::endl;
+    }
+}
+
+int main() {
+    // Specify the root directory path to be scanned
+    fs::path root_directory = "."; // Change to your desired directory
+
+    // Print the contents of the root directory
+    printDirectoryContents(root_directory);
+
+    return 0;
+}
+============================================
+manipulating directories:
+void directorOperation(std::string_view file)
+{
+	fs::path currentpath(file)
+	if(!fs::exists(currentpath))
+	{
+	   cout <<currentpath.string();
+	}
+	currentpath /="NewDir";
+	if(!fs::create_directory(currentpath))
+	{
+	    cout <<"directory creation failed"
+	}
+	else
+	{
+	    cout <<"success";
+	}
+	if(!fs::remove_directory(currentpath))
+	{
+	   /* not success */
+	}
+	
+	cout << fs::current_path(); //print the current path
+	fs::current_path(currentpath); //cnage the current path;
+	cout <<fs::current_path();
+	
+	//if yu change the current path to the path which doest not exits 
+	//then we will get the exception
+	try {
+	fs::current_path(currentpath);
+	}
+	catch(std::exception &e)
+	{
+	   e.what(); //system cannot find the file specified;
+	}
+	===
+the otherway to handle the error
+std::error_code ec{}
+fs::current_path(currentpath,ec)
+if(ec)
+{
+   cout << ec.message(); //if the current path is incorrect
+   //then we will get the error message system cannot find the file specified;
+}
+
+	
+	
+}
+ 
+TraversingDirectory(R"(E:\Data)");
+
+=================
+How to set and get the file permission:
+#include <filesystem>
+
+namespace fs = std::filesystem;
+//file system libarary uses posix style file permission.
+//RWE , owner, group or all others 
+//not all the platform has the same 
+//in windows all the file has the executable bit set we cannot change it
+
+auto perm = fs::status(file_to_modify).permission();
+perm & fs::perms::owner_read != fs::perms::none ? "r","-"
+fs::perms::owner_write "w"
+fs::perms::owner_exec "x"
+
+group_read , write, exec
+other_read , write, exec
+
+//write permission is added to the removed file 
+fs::permission(file_to_modify,fs::perms::owner_write,
+	fs::perm_options::add)
+
+filesystem support is added to gcc from 8 onwards
+======================
+Parallel algorthim:
+parallel STL:
+may stl algorithms by default execute serially
+c++17 provides overload to these algorithms that can now execute parallely
+
+algorithms that can be parallelized accept a new template parameter called execution policy
+
+this can be used to inform the algorithn if it should execute serially or parllely
+the internal implementation details are hidden to the user
+
+syntax:
+parallel version of STL algorith have a simple interface
+they are provided as overloaded function with the first parameter signifying
+the execution policy
+execution policy defines how the algorithm should execute
+
+example:
+std::algorithm(execution_policy,/*begin, end, other argument */);
+
+all execution policies existing in <execution> header and in std::execution namespace;
+
+sequence_policy -sequence
+  algorithm execution will not be parallized and will perform the operation sequentially element by elemnt
+
+parallel_policy -par  
+  indicates the algorith should be execute parallely
+  might use thread from thread pool for execution along with the calling thread
+
+parallel_unsequential_policy = par_unseq
+  indicates the execution may be parallized vectorized or migrated across thread
+================
+#include <iostream>
+#include <chrono>
+#include <string_view>
+#include <execution>
+
+class Timer {
+    std::chrono::steady_clock::time_point m_start;
+
+public:
+    Timer() : m_start{std::chrono::steady_clock::now()} {}
+
+    void showResult(std::string_view message = "") {
+        auto end = std::chrono::steady_clock::now();
+        auto difference = end - m_start;
+
+        std::cout << message
+                  << ": "
+                  << std::chrono::duration_cast<std::chrono::microseconds>(difference).count()
+                  << " microseconds\n";
+    }
+};
+//chrono::microseconds or chrono::milliseconds or chrono::nanoseconds
+constexpr unsigned VEC_SIZE(1000000)
+std::vector<long> CreateVector() {
+   std::vector<long> vec;
+   vec.reserve(VEC_SIZE);
+   
+   std::default_random_engine engine{std::random_device{}()};
+   std::uniform_int_distribution<long> dist{0, VEC_SIZE};
+   for (unsigned i= 0;i< VEC_SIZE;++i)
+   {
+		vec.push_back(dist(engine));
+   }
+   return vect
+}
+
+int main()
+{
+   auto dataset =CreateVector()
+   Timer T;
+   std::sort(dataset.begin(),data.end());
+   //seq will not use all the core
+   //or std::sort(std::execution::seq,dataset.begin(),data.end());
+   t.ShowResult("sorting time"); //took 116 milliseconds
+   
+   Timer T;
+   // will use all the core
+   std::sort(std::execution::par, dataset.begin(),data.end());
+   t.ShowResult("sorting time"); //took 29 milliseconds
+   //seq: accumulate perform left fold adding in left hand side
+   // auto result = std::accumulate(dataset.begin(),dataset.end(),0L)
+   //parallel: reduce is parallized. sum of 2 elements
+   auto result = std::reduce(dataset.begin(),dataset.end(),0L)
+   
+   return 0;
+}
+============================================
+par: 
+has overhead of starting thread is high.
+go for par if the data set is large
+ 
+exception handling:
+if an element access function throws an exception which is not handled all  parallel algorithms called std::terminated
+
+backward compartibility
+shuffle , binary search , max
+synchronization is expensive
+
+When an exception occurs within a parallel algorithm using std::execution::par, the behavior is generally to terminate the entire program.
+Avoid Exceptions:
+
+Design your parallel algorithms to minimize the possibility of exceptions.
+Use error codes or return values to indicate abnormal conditions.
+Check for Errors Before Parallel Execution:
+
+Validate input data and preconditions before starting the 
+parallel algorithm.
+Use assertions or other checks to detect potential issues
+ early.
+ 
+// Perform parallel accumulation using std::transform_reduce
+	long long result = std::transform_reduce(
+		std::execution::par,            // Parallel execution policy
+		dataset.begin(),                // Start of range
+		dataset.end(),                  // End of range
+		0L,                             // Initial value
+		std::plus<>(),                   // Binary operation to combine results
+		[](int value) { return static_cast<long long>(value); } // Unary operation to transform elements
+	);
+	
+std::execution_unseq: simd (single instruction, multiple data)
+
+int a[size] = {1, 2, 3, 4, 5, 6, 7, 8};
+    int b[size] = {8, 7, 6, 5, 4, 3, 2, 1};
+    int c[size];
+
+    for (int i = 0; i < size; ++i) {
+        c[i] = a[i] + b[i]; // Add elements one by one
+    }
+	
+-=====
+int a[size] = {1, 2, 3, 4, 5, 6, 7, 8};
+    int b[size] = {8, 7, 6, 5, 4, 3, 2, 1};
+    int c[size];
+
+    // Load data into SIMD registers
+    __m256i va = _mm256_loadu_si256(reinterpret_cast<__m256i*>(a));
+    __m256i vb = _mm256_loadu_si256(reinterpret_cast<__m256i*>(b));
+
+    // Perform addition on the SIMD registers
+    __m256i vc = _mm256_add_epi32(va, vb);
+
+Parallel and Vectorized Execution: std::execution::par_unseq combines
+ both parallel execution and vectorization. This policy allows algorithms 
+ to be executed in parallel while also making use of vectorization (SIMD) to 
+ process multiple elements in a single CPU instruction.
+ =============================================================
+ C++ concurrency:
+  where the multiple operation can be concurrently or simultaneously.
+  large application have multiple components
+  some component may have to execute concurrently
+  this allow efficient usage of the cpu
+  this can be achieved by creating multiple threads
+  c++1 add the support for concurrency
+  include untilities for starting and managing thread.
+  
+std::list<int> g_data;
+const int SIZE=100
+void download()
+{
+	cout <<"download started"
+	for (int i=0;i<SIZE;i++)
+	{
+		g_data.push_back(i);
+	}
+	cout <<"download completed"
+}
+
+int main()
+{
+//every application is given one thread main or primary thread
+//this thread is responsible for performing all your operation in the application
+//and also responsible for input
+// if the primary thread is busy then you r applicabtion will not able to get the user input
+//
+   std:: cout << "user started the operation";
+   download(); //main function is blocked until download is completed
+   std:: cout << "user started another operation";
+}
+//if the operation is going to take thelong time then make it as the seperate thread.
+=========================
+Thread creation:
+Threading library provides a class called as thread that is defined in the standard namespace
+This calass has a constructor that accepts a callable. A callbale is any kind of callback
+sunch as function pointer , function object or even a lamda function. the callable is then executed
+callbale is executed in a seperate thread
+The constructor doesnot wait for the thread to start, it return immediatly
+need to include the header file <thread>
+
+//Here we have 2 thread. one main thread and other child thread
+//main thread after the execution of all line the program will teminated
+//by the time child dont have sufficient time to complete its task
+//child thread is for downloading the files
+//main thread creates the child thread
+//since only the child or joinable thread is busy , the main thread can be used for other task
+#include<thread>
+
+std::list<int> g_data;
+const int SIZE=100
+void download()
+{
+	cout <<"download started"
+	for (int i=0;i<SIZE;i++)
+	{
+		g_data.push_back(i);
+	}
+	cout <<"download completed"
+}
+   
+int main()
+{
+   std:: cout << "user started the operation";
+   //thDoenlaod is the thread object
+   std::thread thDoenlaod(download); //passing the function
+   std:: cout << "user started another operation";
+   thDoenlaod.join(); // this line indicates the child thread is the joinable thread
+   //main thread will be blocked.join on the child thread makes the 
+   //main thread to wait till the child thread to completes it operation
+   //so that main thread will not exit the opertaion
+   return 0;
+}  
+  
+by default every thread created is joinable thread. this mean you have to call the join on the thread object
+======================================
+insome cases we want the thread to be executed in the background, in that case we create the 
+thread as detached thread. by default thread are joinable so after creating the thread object
+make it as detached
+std::thread thDoenlaod(download); 
+thDoenlaod.detach();
+detach thread cannot be joined again
+
+to check whether the thread can be joined are not we can use joinble.
+if(thDoenlaod.joinable())
+{
+   thDoenlaod.join(); only if the thread is joinable you have to join
+}
+// in the main program the program closes after the main thread completed as the 
+child thread is detach()
+
+system("pause"); => will block the main thread till the user input so that the 
+child can complete its work.
+
+detach thread automatically release it resource when teh threadobject is detroyed
+
+=================
+When the main thread (or any other thread) in a C++ program
+ ends, the entire process terminates. This includes all threads that are part of the process, whether they are detached or joined.
+#include <iostream>
+#include <thread>
+#include <chrono>
+
+void backgroundTask() {
+    std::cout << "Background task started." << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(5)); // Simulate work
+    std::cout << "Background task completed." << std::endl;
+}
+
+int main() {
+    std::thread t(backgroundTask);
+    t.detach(); // Detach the thread to run independently
+
+    std::cout << "Main thread ending." << std::endl;
+    // Main thread exits immediately
+    return 0;
+}
+========================================
+passing argument to a function by pass vy value:
+constructor of the hread function is variadic function ie it can acceot any number of arguments
+first argument always needs to be callable and then you can specify the argument to the thread function
+as the argument to the thread constructor.
+
+#include<thread>
+#include<string>
+
+void downloadfn(std::string filename)
+{
+}
+
+int main()
+{
+	std::string file {"cpptest.txt"}
+   std::thread thdownload(downloadfn,file)
+   //or std::thread thdownload{downloadfn, file};
+}
+===============
+Pass by reference:
+argument passed to the thread are r value
+if there is no cref in the thread argument then a new copy is made in the thread function
+//in the below program there iwll be 2 strings object maintained
+
+#include <iostream>
+#include <thread>
+#include <string>
+#include <utility> // for std::move
+
+class strings {
+public:
+    strings(const std::string& str) : m_str(str) {
+        std::cout << __FUNCTION__ << std::endl;
+    }
+
+    // Move constructor
+    strings(strings& other) noexcept : m_str((other.m_str)) {
+        std::cout << "&&" << __FUNCTION__ << std::endl;
+    }
+
+    // Move assignment operator
+    strings& operator=(strings&& other) noexcept {
+        if (this != &other) {
+            m_str = std::move(other.m_str);
+        }
+        std::cout << __FUNCTION__ << std::endl;
+        return *this;
+    }
+
+    // Copy constructor
+    strings(const strings& other) : m_str(other.m_str) {
+        std::cout << __FUNCTION__ << std::endl;
+    }
+
+    // Copy assignment operator
+    strings& operator=(const strings& other) {
+        if (this != &other) {
+            m_str = other.m_str;
+        }
+        std::cout << __FUNCTION__ << std::endl;
+        return *this;
+    }
+
+    ~strings() {
+        std::cout << __FUNCTION__ << std::endl;
+    }
+
+    const std::string& get() const {
+        return m_str;
+    }
+
+private:
+    std::string m_str;
+};
+
+// Function to be run in a separate thread
+void downloadfn(const strings &filename) {
+    std::cout << "Downloading file: " << filename.get() << std::endl;
+}
+
+int main() {
+    // Create a strings object
+    strings file{"cpptest.txt"};
+
+    // Create and start a thread, moving the strings object to the thread
+    std::thread thdownload(downloadfn, (file));
+
+    // Do other work in the main thread
+    std::cout << "Main thread doing other work..." << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    // Join the thread to ensure it completes before exiting
+    if (thdownload.joinable()) {
+        thdownload.join();
+    }
+
+    return 0;
+}
+//Here 2 instance of teh string is created
+strings
+&&strings
+Main thread doing other work...
+Downloading file: cpptest.txt
+~strings
+~strings
+================================================
+to make one object as the reference
+//here one instance of the string is created
+//other string is the reference 
+//changes in one string will afect the other string
+//helper function std::ref
+
+#include <iostream>
+#include <thread>
+#include <string>
+#include <utility> // for std::move
+
+class strings {
+public:
+    strings(const std::string& str) : m_str(str) {
+        std::cout << __FUNCTION__ << std::endl;
+    }
+
+    // Move constructor
+    strings(strings& other) noexcept : m_str((other.m_str)) {
+        std::cout << "&&" << __FUNCTION__ << std::endl;
+    }
+
+    // Move assignment operator
+    strings& operator=(strings&& other) noexcept {
+        if (this != &other) {
+            m_str = std::move(other.m_str);
+        }
+        std::cout << __FUNCTION__ << std::endl;
+        return *this;
+    }
+
+    // Copy constructor
+    strings(const strings& other) : m_str(other.m_str) {
+        std::cout << __FUNCTION__ << std::endl;
+    }
+
+    // Copy assignment operator
+    strings& operator=(const strings& other) {
+        if (this != &other) {
+            m_str = other.m_str;
+        }
+        std::cout << __FUNCTION__ << std::endl;
+        return *this;
+    }
+
+    ~strings() {
+        std::cout << __FUNCTION__ << std::endl;
+    }
+
+    const std::string& get() const {
+        return m_str;
+    }   
+       void set(std::string s)  {
+         m_str = s;
+    }
+
+private:
+    std::string m_str;
+};
+
+// Function to be run in a separate thread
+void downloadfn(strings &filename) {
+    std::cout << "Downloading file: " << filename.get() << std::endl;
+    filename.set("viswa");
+    std::cout << "renamed file: " << filename.get() << std::endl;
+}
+
+int main() {
+    // Create a strings object
+    strings file{"cpptest.txt"};
+
+    // Create and start a thread, moving the strings object to the thread
+    std::thread thdownload(downloadfn, std::ref(file));
+
+
+
+    // Join the thread to ensure it completes before exiting
+    if (thdownload.joinable()) {
+        thdownload.join();
+    }
+
+    // Do other work in the main thread
+    std::cout << "Main thread doing other work... file " << file.get()<<std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    return 0;
+}
+strings
+Downloading file: cpptest.txt
+renamed file: viswa
+Main thread doing other work... file viswa
+~strings
+============================================================
+// Function to be run in a separate thread
+void downloadfn(const strings &filename) {
+    std::cout << "Downloading file: " << filename.get() << std::endl;
+   
+}
+std::thread thdownload(downloadfn, std::cref(file));
+=============================================================
+// Function to be run in a separate thread
+void downloadfn(strings &filename) {
+    std::cout << "Downloading file: " << filename.get() << std::endl;
+   
+}
+std::thread thdownload(downloadfn, std::ref(file));
+================================================
+// Function to be run in a separate thread
+void downloadfn(strings &filename) {
+    std::cout << "Downloading file: " << filename.get() << std::endl;
+   
+}
+std::thread thdownload(downloadfn, std::ref(file));
+=============================================================
+int main()
+{
+	strings file {"cpptest.txt"}
+   std::thread thdownload(downloadfn,file)
+   //or std::thread thdownload{downloadfn, file};
+}
+=================================================================
+there is no way return the data directly from the thread function.
+we have to package_task to get the return value from the thread function
+int add(int x, int y)
+{
+    return x+y
+}
+
+int square(int x)
+{
+    return x*x;
+}
+
+int compute(const std::vector<int> &data)
+{
+	int sum{}
+	for (auto e:data)
+	{
+		sum +=e;
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+		std::cout<<".";
+	}
+	return sum;
+}
+//package task is wrapper to callable
+//package task is used to inovke the function asychronously
+//package thread also needs to be joined
+int main()
+{
+    auto result = add(3,5);
+    thread(add,3,4);//no return value
+	
+	//signature <int(int,int)> of add function of add function
+	//add is the target for this package task
+	//taskadd become the alias for the add function
+	std::package_task<int(int,int)> taskadd(add);
+	
+	std::future<int> ft = taskadd.get_future();
+	//invoke the add function
+	taskadd(3,4); //it doesnot return but it execute in the main thread
+	
+	////main thread block to get the result
+	auto result = ft.get(); //get the result of the add function;
+
+
+
+	std::package_task<int(const std::vector<int> &> taskcompute(compute);
+	auto fcompute = taskcompute.get_future();
+	//auto = std::future<int>
+	std::vector<int> data{1,2,3,4,5}
+	taskcompute(data);//execute the function in main thread
+	cout<<fcompute.get(); //main thread block to get the result
+	
+	
+	std::package_task<int(const std::vector<int> &> taskcompute(compute);
+	auto fcompute = taskcompute.get_future();
+	//auto = std::future<int>
+	std::vector<int> data{1,2,3,4,5}
+	//How to run the packagetask in the sepertae thread
+	std::thread threadcompute(std::move(taskcompute),data);
+	cout<<fcompute.get();//main thread block to get the result
+	threadcompute.join();
+}
+=====
+remember in package_task and asyn we will not specify the argument type in the future
+#include <iostream>
+#include <future>
+
+void process() {
+    std::cout << "Process started\n";
+    // Simulate some work
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::cout << "Process finished\n";
+}
+
+int main() {
+    std::packaged_task<void()> task(process);
+    std::future<void> future = task.get_future();
+
+    std::thread t(std::move(task)); // Move the task to the thread
+
+    std::cout << "Main thread continues\n";
+
+    t.join(); // Wait for the thread to finish
+
+    future.wait(); // Wait for the task to finish
+
+    std::cout << "Main thread continues after task completion\n";
+
+    return 0;
+}
+Main thread continues
+Process started
+Process finished
+Main thread continues after task completion
+======================================================
+Thread synchronization:
+std::mutex
+
+std::list<int> g_data;
+const int SIZE = 100;
+
+void download1()
+{
+   for (int i = 0;i<SIZE;i++)
+   {
+		g_data.push_back(i);
+   }
+}
+
+void download2()
+{
+   for (int i = 0;i<SIZE;i++)
+   {
+		g_data.push_back(i);
+   }
+}
+
+std::thread thdoenload1(download1);
+
+std::thread thdoenload2(download2)
+
+thdoenload1.join()
+thdoenload2.join();
+cout<<g_data.size(); //willnot be equal to 200
+due to race condition in updating theg_data the size may be different for each time;
+====================
+at a time only one thread will lock the other thread will be put in wait queue
+
+#include <mutex>
+
+std::mutex g_mutex;
+std::list<int> g_data;
+const int SIZE = 100;
+
+void download1()
+{
+   for (int i = 0;i<SIZE;i++)
+   {
+		g_mutex.lock()
+		g_data.push_back(i);
+		g_mutex.unlock()
+   }
+}
+
+void download2()
+{
+   for (int i = 0;i<SIZE;i++)
+   {
+		g_mutex.lock()
+		g_data.push_back(i);
+		g_mutex.unlock()
+   }
+}
+
+std::thread thdoenload1(download1);
+
+std::thread thdoenload2(download2)
+
+thdoenload1.join()
+thdoenload2.join();
+cout<<g_data.size(); //200
+=================================================
+using the mutex above is dangerous assume after the lock an exception is thrown
+or simply return so make sure the thread handles the mutex properly before it terminates
+to ensure the thread alway releases the mutuex when it terminates is done by
+by RAII resource acquasition is initialization.
+when one thread acquire the mutex the other thread will go into sleep state
+
+std::mutex g_mutex;
+std::list<int> g_data;
+const int SIZE = 100;
+
+void download1()
+{
+   for (int i = 0;i<SIZE;i++)
+   {
+		std::lock_guard<std::mutex> mtx(g_mutex)
+		g_data.push_back(i);
+   }
+}
+void download2()
+{
+   for (int i = 0;i<SIZE;i++)
+   {
+		std::lock_guard<std::mutex> mtx(g_mutex)
+		g_data.push_back(i);
+   }
+}
+=======================================
+std::thread t1(process);
+std::thread::id id = t1.get_id();
+=================
+#include <iostream>
+#include <thread>
+#include <sstream>
+#include <cstdio>
+
+int main() {
+    std::thread t;
+    std::stringstream ss;
+    ss << t.get_id();
+    std::string id_str = ss.str();
+    printf("Thread ID: %s\n", id_str.c_str());
+    return 0;
+}
+=================================
+thread function
+id is nested class of the thred class
+
+void process()
+{
+}
+
+std::thread t1(process)
+auto id = t1.get_id(); 
+//thread_id is not the string or integer
+cout <<id; //insertion operator is overloaded for this id string
+
+t1.native_handle();//return the type that represent the thread on the corresponding platform
+//for example in windows it is handle and in linux it is pthread_t
+
+t1.join()
+=====================
+to set the name of the thread in windows
+#include <Windows.h>
+std::thread t1(process);
+HANDLE handle = t1.native_handle();
+SetThreadDescription(handle,"Mythread"); //only in windlows
+t1.join();
+
+std::thread t1(process);
+HANDLE handle = t1.native_handle();
+SetThreadDescription(handle,"Mythread"); //only in windlows
+t1.join();
+
+=======
+#include <iostream>
+#include <thread>
+#include <string>
+
+void process() {
+    // Thread function
+	std::this_thread::get_id(); //id of the current running thread;
+	std::this_thread::sleep_for(std::chrono::seconds(1));//milliseconds//micorseconds also available
+	
+	
+}
+
+int main() {
+    std::thread t1(process);
+    t1.set_name_np("MyThread"); // Set the thread name
+    t1.join();
+    return 0;
+}
+================
+int core =std::thread::hardware_concurrency();//number of cores present in the cpu
+number of core = number of thread for best performance
+=====================
+async:
+high level concurrency. function that you want to execute in a seperate thread are called
+as task. that is why high level concurencyare also called as task based concurrency
+tasks are executed in seperate thread;
+async return the object which is of type future
+
+#include <future> //async
+void download(){
+	using namespace std::chrono_literals;
+	for(int i=0;i<100;i++)
+	{
+		std::this_thread::sleep_for(1s);
+		//or std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+}
+
+int main()
+{
+	//std::future<void()> ft = std::async(download)
+	std::future<void> ft = std::async(download);
+	ft.get(); //will make the main thread to wait
+	return 0;
+}
+
+====
+when the function dont take any argument
+future.wait is required
+#include <iostream>
+#include <future>
+
+void process() {
+    std::cout << "Process started\n";
+    // Simulate some work
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::cout << "Process finished\n";
+}
+
+int main() {
+    std::future<void> future = std::async(std::launch::async, process);
+
+    std::cout << "Main thread continues\n";
+
+    future.wait(); // Wait for the asynchronous task to finish
+
+    std::cout << "Main thread continues after task completion\n";
+
+    return 0;
+}
+==============
+#include <iostream>
+#include <future>
+#include <vector>
+
+int calculate_square(int x) {
+    return x * x;
+}
+
+int main() {
+    std::vector<int> numbers = {2, 3, 5, 7};
+    std::vector<std::future<int>> futures;
+
+    for (int num : numbers) {
+        futures.push_back(std::async(std::launch::async, calculate_square, num));
+    }
+
+    for (auto& f : futures) {
+        int result = f.get();
+        std::cout << result << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+4 9 25 49
+=======================================
+//in future we dont specify the argument type.
+//future will have only the function return type
+#include <iostream>
+#include <future>
+
+void process(int data) {
+    std::cout << "Processing data: " << data << std::endl;
+    // Simulate some work
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::cout << "Process finished\n";
+}
+
+int main() {
+    int data = 42;
+    std::future<void> future = std::async(std::launch::async, process, data);
+
+    // ... rest of the code
+}
+==========================================================
+int main() {
+    auto future = std::async([]() {
+        std::cout << "Hello from lambda\n";
+    });
+
+    future.wait();
+    return 0;
+}
+===================================
+class MyFunctionObject {
+public:
+    void operator()(int x) {
+        std::cout << "Hello from function object\n";
+    }
+};
+
+int main() {
+    MyFunctionObject fo;
+    auto future = std::async(fo, 10);
+    future.wait();
+    return 0;
+}
+=====================================================
+Task based concurrency:
+  package_task and async return the future object
+  need to include the <future>
+  future has only the function return type and not the argument type
+  
+  future<return_type> asyn(callable, args)
+  
+  future<return_type> async(launch policy, callable, args)
+  launch policy decides the behaviour of async
+  
+  launch policy of 2 type:
+   std:launch::deferred - the task is executed synchronously. the calbbable 
+   function will be invoked when we do the .get();
+   std::launch::async - the task is executed asynchronously
+   
+  call to std::async without a launch policy may not always create a new thread
+     - depends on the compiler
+	 - force std::astnc to execute the task asynchronously
+	 - if the new thread cannot be  reated with async launch policy , std::system_error exception is thrown
+	 
+	 - by default the arguments are passed by value
+	 - to pass by reference , use the reference wrapper , std::ref, or std::cref
+	 - cref is const reference
+
+std::future:
+   used for communication between threads
+   has shared state that can be accessed in different thread
+   created through a std::promise object
+      -  std::promise is an input channel
+	  - std:future the output channel
+	  
+	when the value is returned from the task it is set in the promise and it is available in the different
+	thread in the future 
+	promise/future pair allow safa data sharing between thread
+	
+	==================================
+launch policies
+
+//once you used the get in future the future object is enters into invalid.
+//only one time the shared state can be read
+  int calculate_square(int x) {
+    int s = x * x;
+	return s; //sh is the shared state which will be available in future
+}
+
+int main() {
+   std::future<int> result = std::aync(calculate,10);
+   
+   if(result.valid())
+   {
+		result.get();//until the shared state is ready the main thread will blocked
+   }
+}
+==========================
+result.get(); //after read the future state become invalid
+if(result.valid()) //condition is false
+   {
+		result.get();
+   }
+}
+
+std::future<int> result = std::asyn(std::launch::deferred, calculate, 10)
+cout << "viswa"
+result.get(); //here the calculate function will be executed
+  
+=========================================
+std::future<int> result = std::asyn(std::launch::async, calculate, 10)
+cout << "viswa"
+result.get(); //both the main thread and async thread run in parallel
+==============================
+wait function in future:
+result.wait(); //doesnot return. it simply wait for the shared state to be available
+before calling wait we need to check whether the future is valid or not
+
+if(result.valid())
+{
+    result.wait(); //blocking call
+	cout <<result.get() //blocking call
+}
+
+
+if(result.valid())
+{
+	using namespace std::crono_literals
+    auto status = result.wait_for(1s); 
+	switch (status) // 3 enum
+	{
+	   case std::future_status::deferred: //task is deffered since task is going to run sync
+	   break;
+	   case std::future_status::ready: //shared state is ready and availabel
+	      result.get()
+	   break;
+	   case std::future_status::timeout: //timeout in get ready
+	   break;
+	}
+}
+
+==========================
+wait_until
+
+if(result.valid()) {
+auto timepoint = std::chrono::system_clock::now()
+timepoint += 3
+auto status = result.wait_until(timepoint);
+switch (status) // 3 enum
+	{
+	   case std::future_status::deferred: //task is deffered since task is going to run sync
+	   break;
+	   case std::future_status::ready: //shared state is ready and availabel
+	      result.get()
+	   break;
+	   case std::future_status::timeout: //timeout in get ready
+	   break;
+	}
+}
+=============================
+std::promise
+provide a way to store a value or an exception
+this is called the shared state.
+this state can be accessed later from another thread through a future object
+promise and future are the 2 endpoints of the communication channel
+one operation stores the a value in promise and the other operation will retrieve it through a future async
+promise object can be used only once
+
+thread1 will set the value in the promise and thread2 will read the future object to get the set data
+
+===============================
+we can set the value in promise only once
+int operation(std::promise<int> &data)
+{
+   using namespace std::chrono_literals;
+   auto f=data.get_future();
+   auto count = f.get(); //this thread is blocked till value is set by the main thread
+
+  int sum = count*count; 
+  return sum;   
+}
+
+int main()
+{
+  std::promise<int>data;
+  std::future<int> result = std::async(std::launch::async, operation, std::ref(data));
+  
+  data.set_value(10);/
+  
+  if(result.valid())
+  {
+     cout<<result.get(); //100;
+  }
+}
+
+========================
+promise exception:
+promise can propage the exception between the thread;
+
+int operation(std::promise<int> &data)
+{
+  try {
+   using namespace std::chrono_literals;
+   auto f=data.get_future();
+   auto count = f.get(); //this thread is blocked till value is set by the main thread
+
+  int sum = count*count; 
+  return sum;  
+  }
+  catch(std::exception &e)
+  {
+      cout <<e.what();
+   }  
+}
+
+int main()
+{
+  std::promise<int>data;
+  std::future<int> result = std::async(std::launch::async, operation, std::ref(data));
+  try {
+  throw stdd::runtime_error("data not available");
+  data.set_value(10);/
+  
+  if(result.valid())
+  {
+     cout<<result.get(); //100;
+  }
+  }
+  catch(std::exception &e) {
+    cout << e.what()
+	data.set_exception(std::make_exception_ptr(ex));
+  }
+}
+================
+#include <iostream>
+#include <thread>
+#include <future>
+
+void asyncTask(std::promise<int> promise) {
+    try {
+        // Simulate some work
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        
+        // Set the value in the promise
+        promise.set_value(42);
+    } catch (...) {
+        // Set an exception if something goes wrong
+        promise.set_exception(std::current_exception());
+    }
+}
+
+int main() {
+    // Create a promise and future
+    std::promise<int> promise;
+    std::future<int> future = promise.get_future();
+
+    // Launch the async task
+    std::thread worker(asyncTask, std::move(promise));
+
+    // Do other work in the main thread
+    std::cout << "Doing other work while waiting for the result..." << std::endl;
+    
+    // Wait for the result from the async task
+    try {
+        int result = future.get();
+        std::cout << "Result from async task: " << result << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "Exception caught: " << e.what() << std::endl;
+    }
+
+    // Join the worker thread
+    worker.join();
+
+    return 0;
+}
+
+========================================================
+#include <iostream>
+#include <thread>
+#include <future>
+#include <exception>
+
+// Define a custom exception class
+class MyCustomException : public std::exception {
+public:
+    const char* what() const noexcept override {
+        return "My custom exception occurred!";
+    }
+};
+
+void asyncTask(std::promise<int> promise) {
+    try {
+        // Simulate some work
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        
+        // Uncomment to simulate setting a value
+        // promise.set_value(42);
+        
+        // Simulate an error and set a custom exception
+        throw MyCustomException();
+        
+    } catch (...) {
+        // Set the exception in the promise
+        promise.set_exception(std::current_exception());
+    }
+}
+
+int main() {
+    // Create a promise and future
+    std::promise<int> promise;
+    std::future<int> future = promise.get_future();
+
+    // Launch the async task
+    std::thread worker(asyncTask, std::move(promise));
+
+    // Do other work in the main thread
+    std::cout << "Doing other work while waiting for the result..." << std::endl;
+
+    // Wait for the result from the async task
+    try {
+        int result = future.get(); // This will throw the custom exception
+        std::cout << "Result from async task: " << result << std::endl;
+    } catch (const MyCustomException& e) {
+        std::cout << "Caught MyCustomException: " << e.what() << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "Caught standard exception: " << e.what() << std::endl;
+    }
+
+    // Join the worker thread
+    worker.join();
+
+    return 0;
+}
+
+=================================================================
+#include <iostream>
+#include <thread>
+#include <future>
+#include <stdexcept>  // For std::runtime_error
+
+void asyncTask(std::promise<int> promise) {
+    try {
+        // Simulate some work
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        
+        // Simulate an error and set a std::runtime_error
+        throw std::runtime_error("An error occurred during async operation");
+        
+        // If everything was successful, set a value
+        // promise.set_value(42); // Uncomment if you want to set a value instead
+        
+    } catch (...) {
+        // Set the exception in the promise
+        promise.set_exception(std::current_exception());
+    }
+}
+
+int main() {
+    // Create a promise and future
+    std::promise<int> promise;
+    std::future<int> future = promise.get_future();
+
+    // Launch the async task
+    std::thread worker(asyncTask, std::move(promise));
+
+    // Do other work in the main thread
+    std::cout << "Doing other work while waiting for the result..." << std::endl;
+
+    // Wait for the result from the async task
+    try {
+        int result = future.get(); // This will throw the runtime_error
+        std::cout << "Result from async task: " << result << std::endl;
+    } catch (const std::runtime_error& e) {
+        std::cout << "Caught std::runtime_error: " << e.what() << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "Caught standard exception: " << e.what() << std::endl;
+    }
+
+    // Join the worker thread
+    worker.join();
+
+    return 0;
+}
+=======================================================================================
+#include <iostream>
+#include <thread>
+#include <future>
+#include <stdexcept>  // For std::runtime_error
+
+void asyncTask(std::promise<int> promise) {
+    try {
+        // Simulate some work
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        
+        // Simulate an error and use std::make_exception_ptr
+        throw std::runtime_error("An error occurred during async operation");
+        
+    } catch (...) {
+        // Use std::make_exception_ptr to create an exception_ptr from the caught exception
+        promise.set_exception(std::current_exception());
+        // Alternatively, you can also create an exception_ptr from the exception directly:
+        // promise.set_exception(std::make_exception_ptr(std::runtime_error("An error occurred during async operation")));
+    }
+}
+
+int main() {
+    // Create a promise and future
+    std::promise<int> promise;
+    std::future<int> future = promise.get_future();
+
+    // Launch the async task
+    std::thread worker(asyncTask, std::move(promise));
+
+    // Do other work in the main thread
+    std::cout << "Doing other work while waiting for the result..." << std::endl;
+
+    // Wait for the result from the async task
+    try {
+        int result = future.get(); // This will throw the runtime_error
+        std::cout << "Result from async task: " << result << std::endl;
+    } catch (const std::runtime_error& e) {
+        std::cout << "Caught std::runtime_error: " << e.what() << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "Caught standard exception: " << e.what() << std::endl;
+    }
+
+    // Join the worker thread
+    worker.join();
+
+    return 0;
+}
+=================================================================================================
+#include <iostream>
+#include <vector>
+#include <algorithm>  // For std::sort
+
+class MyClass {
+public:
+    int value;
+
+    // Constructor
+    MyClass(int v) : value(v) {}
+
+    // Overload the < operator
+    bool operator<(const MyClass& other) const {
+        return value < other.value;
+    }
+
+    // Optional: Overload the == operator
+    bool operator==(const MyClass& other) const {
+        return value == other.value;
+    }
+    
+    // Optional: Overload the > operator
+    bool operator>(const MyClass& other) const {
+        return value > other.value;
+    }
+    
+    // Optional: Overload the <= operator
+    bool operator<=(const MyClass& other) const {
+        return value <= other.value;
+    }
+    
+    // Optional: Overload the >= operator
+    bool operator>=(const MyClass& other) const {
+        return value >= other.value;
+    }
+    
+    // Optional: Overload the != operator
+    bool operator!=(const MyClass& other) const {
+        return value != other.value;
+    }
+};
+
+int main() {
+    std::vector<MyClass> vec = { MyClass(3), MyClass(1), MyClass(4), MyClass(2) };
+
+    // Sort the vector using std::sort
+    std::sort(vec.begin(), vec.end());
+
+    // Print the sorted vector
+    for (const auto& obj : vec) {
+        std::cout << obj.value << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+=============================================================
+#include <iostream>
+#include <unordered_set>
+#include <vector>
+#include <algorithm>  // For std::sort
+
+int main() {
+    // Create an unordered_set with some elements
+    std::unordered_set<int> unorderedSet = {4, 1, 3, 2, 5};
+
+    // Copy elements to a vector
+    std::vector<int> vec(unorderedSet.begin(), unorderedSet.end());
+
+    // Sort the vector
+    std::sort(vec.begin(), vec.end());
+
+    // Print the sorted elements
+    std::cout << "Sorted elements: ";
+    for (const auto& elem : vec) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+
+    // Optional: Copy sorted elements to a std::set
+    std::set<int> sortedSet(vec.begin(), vec.end());
+
+    std::cout << "Elements in std::set (sorted): ";
+    for (const auto& elem : sortedSet) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+======================================
+#include <iostream>
+#include <vector>
+#include <algorithm>  // For std::find
+
+int main() {
+    std::vector<int> vec = {1, 2, 3, 4, 5};
+
+    // Find the value 3 in the vector
+    auto it = std::find(vec.begin(), vec.end(), 3);
+
+    if (it != vec.end()) {
+        std::cout << "Value found: " << *it << std::endl;
+    } else {
+        std::cout << "Value not found." << std::endl;
+    }
+
+    return 0;
+}
+=======================================================
+#include <iostream>
+#include <vector>
+#include <algorithm>  // For std::count
+
+int main() {
+    std::vector<int> vec = {1, 2, 3, 4, 3, 5, 3};
+
+    // Count the number of occurrences of the value 3
+    int count = std::count(vec.begin(), vec.end(), 3);
+
+    std::cout << "Number of occurrences of 3: " << count << std::endl;
+
+    return 0;
+}
+=================================================
+#include <iostream>
+#include <vector>
+#include <algorithm>  // For std::count
+
+// Define a user-defined class
+class MyClass {
+public:
+    int value;
+
+    // Constructor
+    MyClass(int v) : value(v) {}
+
+    // Overload the equality operator
+    bool operator==(const MyClass& other) const {
+        return value == other.value;
+    }
+};
+
+int main() {
+    // Create a vector of MyClass objects
+    std::vector<MyClass> vec = { MyClass(1), MyClass(2), MyClass(3), MyClass(2), MyClass(2) };
+
+    // Define the object to count
+    MyClass target(2);
+
+    // Use std::count to count the occurrences of target in the vector
+    int count = std::count(vec.begin(), vec.end(), target);
+
+    std::cout << "Number of occurrences of target (value 2): " << count << std::endl;
+
+    return 0;
+}
+===========================================================
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    std::string filename = "example.txt";
+
+    // Open the file for reading
+    std::ifstream file(filename);
+
+    // Check if the file was successfully opened
+    if (!file) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        return 1;
+    }
+
+    std::string line;
+
+    // Read lines from the file and check stream state
+    while (std::getline(file, line)) {
+        if (file.eof()) {
+            std::cout << "End of file reached." << std::endl;
+        }
+        if (file.fail()) {
+            std::cerr << "A read operation failed." << std::endl;
+            break;
+        }
+        if (file.good()) {
+            std::cout << "Read line: " << line << std::endl;
+        }
+    }
+
+    // Check the final state of the file stream
+    if (file.eof()) {
+        std::cout << "Reached the end of file successfully." << std::endl;
+    }
+    if (file.fail()) {
+        std::cerr << "File reading failed before end of file." << std::endl;
+    }
+    if (file.bad()) {
+        std::cerr << "File stream is in a bad state." << std::endl;
+    }
+    if (file.good()) {
+        std::cout << "File stream is in good state." << std::endl;
+    }
+
+    // Close the file
+    file.close();
+
+    return 0;
+}
+=====================================================================================
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+int main() {
+    // Filename for the binary file
+    std::string filename = "example.bin";
+
+    // Step 1: Write some binary data to the file
+    {
+        std::ofstream ofs(filename, std::ios::binary);
+
+        if (!ofs) {
+            std::cerr << "Failed to open file for writing." << std::endl;
+            return 1;
+        }
+
+        // Write some binary data
+        std::vector<int> data = {1, 2, 3, 4, 5};
+        ofs.write(reinterpret_cast<const char*>(data.data()), data.size() * sizeof(int));
+
+        if (!ofs) {
+            std::cerr << "Failed to write to file." << std::endl;
+            return 1;
+        }
+    }
+
+    // Step 2: Read the binary data from the file
+    {
+        std::ifstream ifs(filename, std::ios::binary);
+
+        if (!ifs) {
+            std::cerr << "Failed to open file for reading." << std::endl;
+            return 1;
+        }
+
+        // Read the binary data
+        std::vector<int> data(5);  // Assuming we know the number of integers to read
+        ifs.read(reinterpret_cast<char*>(data.data()), data.size() * sizeof(int));
+
+        if (ifs.eof()) {
+            std::cout << "Reached the end of the file." << std::endl;
+        }
+
+        if (ifs.fail()) {
+            std::cerr << "Failed to read from file." << std::endl;
+        }
+
+        if (ifs.bad()) {
+            std::cerr << "A serious error occurred while reading the file." << std::endl;
+        }
+
+        if (ifs.good()) {
+            std::cout << "File read successfully." << std::endl;
+        }
+
+        // Output the read data
+        std::cout << "Read data: ";
+        for (const auto& value : data) {
+            std::cout << value << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+=======================================================================
+In binary files, unlike text files, the concept of an "end-of-file marker" is not explicitly written or represented 
+in the file content. Instead, the end of a binary file is typically detected when you attempt to read past the end of the file, 
+which is handled by the file  stream's internal state.
+
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+int main() {
+    // Filename for the binary file
+    std::string filename = "example.bin";
+
+    // Step 1: Write some binary data to the file
+    {
+        std::ofstream ofs(filename, std::ios::binary);
+
+        if (!ofs) {
+            std::cerr << "Failed to open file for writing." << std::endl;
+            return 1;
+        }
+
+        // Write some binary data
+        std::vector<int> data = {1, 2, 3, 4, 5};
+        ofs.write(reinterpret_cast<const char*>(data.data()), data.size() * sizeof(int));
+
+        if (!ofs) {
+            std::cerr << "Failed to write to file." << std::endl;
+            return 1;
+        }
+    }
+
+    // Step 2: Read the binary data from the file
+    {
+        std::ifstream ifs(filename, std::ios::binary);
+
+        if (!ifs) {
+            std::cerr << "Failed to open file for reading." << std::endl;
+            return 1;
+        }
+
+        // Read the binary data
+        std::vector<int> data(5);  // Assuming we know the number of integers to read
+        ifs.read(reinterpret_cast<char*>(data.data()), data.size() * sizeof(int));
+
+        if (ifs.eof()) {
+            std::cout << "Reached the end of the file." << std::endl;
+        }
+
+        if (ifs.fail()) {
+            std::cerr << "Failed to read from file." << std::endl;
+        }
+
+        if (ifs.bad()) {
+            std::cerr << "A serious error occurred while reading the file." << std::endl;
+        }
+
+        if (ifs.good()) {
+            std::cout << "File read successfully." << std::endl;
+        }
+
+        // Output the read data
+        std::cout << "Read data: ";
+        for (const auto& value : data) {
+            std::cout << value << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+
+===============================================================================
+#include <iostream>
+#include <unordered_map>
+#include <functional>  // For std::hash
+
+// Define a user-defined class
+class MyClass {
+public:
+    int id;
+    std::string name;
+
+    // Constructor
+    MyClass(int i, const std::string& n) : id(i), name(n) {}
+
+    // Overload the equality operator
+    bool operator==(const MyClass& other) const {
+        return id == other.id && name == other.name;
+    }
+};
+
+// Specialize std::hash for MyClass
+namespace std {
+    template <>
+    struct hash<MyClass> {
+        std::size_t operator()(const MyClass& obj) const {
+            // Combine the hash of the two members
+            std::size_t h1 = std::hash<int>{}(obj.id);
+            std::size_t h2 = std::hash<std::string>{}(obj.name);
+            return h1 ^ (h2 << 1); // XOR and shift to combine
+        }
+    };
+}
+
+int main() {
+    // Create an unordered_map with MyClass as the key
+    std::unordered_map<MyClass, std::string> myMap;
+
+    // Insert some data
+    myMap[MyClass(1, "Alice")] = "Engineer";
+    myMap[MyClass(2, "Bob")] = "Doctor";
+    myMap[MyClass(3, "Charlie")] = "Artist";
+
+    // Access and print data
+    for (const auto& pair : myMap) {
+        std::cout << "Key: (" << pair.first.id << ", " << pair.first.name << ")"
+                  << " => Value: " << pair.second << std::endl;
+    }
+
+    return 0;
+}
+
+===============================================================
+#include <iostream>
+
+int main() {
+    // Regular string with escaped backslashes
+    std::string regularString = "This is a regular string with backslashes: C:\\\\Program Files\\\\";
+
+    // Raw string literal with backslashes
+    std::string rawString = R"(This is a raw string with backslashes: C:\\Program Files\\)";
+
+    // Print both strings
+    std::cout << "Regular string: " << regularString << std::endl;
+    std::cout << "Raw string: " << rawString << std::endl;
+
+    return 0;
+}
+Regular string: This is a regular string with backslashes: C:\\Program Files\\
+Raw string: This is a raw string with backslashes: C:\\Program Files\\
+===============================================================================
+unorder container is good fit for search
+====================================================
+#include <iostream>
+#include <set>
+
+int main() {
+    // Create a multiset of integers
+    std::multiset<int> numbers;
+
+    // Insert elements into the multiset
+    numbers.insert(5);
+    numbers.insert(3);
+    numbers.insert(5);
+    numbers.insert(2);
+    numbers.insert(3);
+
+    // Print the elements in the multiset
+    std::cout << "Multiset elements:" << std::endl;
+    for (const auto& num : numbers) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    // Count occurrences of the number 5
+    std::cout << "Count of 5: " << numbers.count(5) << std::endl;
+
+    // Count occurrences of the number 3
+    std::cout << "Count of 3: " << numbers.count(3) << std::endl;
+
+    // Count occurrences of the number 10 (which is not in the multiset)
+    std::cout << "Count of 10: " << numbers.count(10) << std::endl;
+
+    return 0;
+}
+Multiset elements:
+2 3 3 5 5 
+Count of 5: 2
+Count of 3: 2
+Count of 10: 0
+=========================================================
+Which container to choose for frequent insertions and deletions at any position in a low memory environment with good performance?
+forward_list
+======================
+std::multiset and std::multimap are associative containers
+==============================
+we cannot use count in the multimap:
+#include <iostream>
+#include <map>
+
+int main() {
+    // Create a multimap with string keys and integer values
+    std::multimap<std::string, int> phonebook;
+
+    // Insert elements into the multimap
+    phonebook.insert({"John", 1234});
+    phonebook.insert({"Jane", 5678});
+    phonebook.insert({"John", 8765});
+    phonebook.insert({"Alice", 1234});
+    phonebook.insert({"Bob", 5678});
+    phonebook.insert({"John", 1357});
+
+    // Print the contents of the multimap
+    std::cout << "Phonebook entries:" << std::endl;
+    for (const auto& entry : phonebook) {
+        std::cout << entry.first << ": " << entry.second << std::endl;
+    }
+
+    // Find and print all phone numbers for "John"
+    std::cout << "Phone numbers for John:" << std::endl;
+    auto range = phonebook.equal_range("John");
+    for (auto it = range.first; it != range.second; ++it) {
+        std::cout << it->second << std::endl;
+    }
+
+    return 0;
+}
+=============================================================================
+ int arr[3][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12}
+    };
+=================
+#include <iostream>
+using namespace std;
+
+int main() {
+    int rows = 3;
+    int cols = 4;
+
+    // Create a 2D array dynamically
+    int** arr = new int*[rows];
+    for (int i = 0; i < rows; ++i) {
+        arr[i] = new int[cols];
+    }
+
+    // Initialize the array
+    int value = 1;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            arr[i][j] = value++;
+        }
+    }
+
+    // Print the array
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            cout << arr[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    // Clean up memory
+    for (int i = 0; i < rows; ++i) {
+        delete[] arr[i];
+    }
+    delete[] arr;
+
+    return 0;
+}
+=======================================
+#include <iostream>
+#include <array>
+
+int main() {
+    // Declare and initialize the 2D array
+    std::array<std::array<int, 3>, 3> arr = {{
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    }};
+
+    // Access an element
+    std::cout << "Element at arr[1][2]: " << arr[1][2] << std::endl;
+
+    // Modify an element
+    arr[2][1] = 99;
+    std::cout << "Modified element at arr[2][1]: " << arr[2][1] << std::endl;
+
+    // Iterate and print the array
+    std::cout << "The array contents:" << std::endl;
+    for (const auto& row : arr) {
+        for (int elem : row) {
+            std::cout << elem << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+=============================================================
+template <typename T>
+void process(T&& arg) {
+    // arg is a universal reference
+}
+==========
+When a function returns an object by value, it returns a copy of the object. 
+The process of returning by value involves several key concepts:
+
+Copy Construction: When an object is returned by value, the compiler often needs to create a copy of the object. 
+This involves the copy constructor.
+
+Move Semantics: To optimize performance, C++11 introduced move semantics. If the return type of a function is an rvalue, 
+the compiler may use the move constructor instead of the copy constructor to transfer resources from the temporary object to the destination. 
+This is typically more efficient because it avoids unnecessary copying.
+=======================================================================================
+calling copy constructor:
+
+Initialization of an Object from Another Object
+When you initialize a new object using an existing object of the same type, the copy constructor is called.
+
+
+MyClass obj1;          // Default constructor
+MyClass obj2 = obj1;   // Copy constructor is called here
+In this example, obj2 is initialized as a copy of obj1.
+
+2. Passing an Object by Value to a Function
+When you pass an object by value to a function, the copy constructor is used to create a copy of the argument.
+
+
+void process(MyClass obj) {  // obj is passed by value
+    // Function body
+}
+
+int main() {
+    MyClass original;
+    process(original);  // Copy constructor is called here
+    return 0;
+}
+Here, original is copied to obj in the process function.
+
+3. Returning an Object by Value from a Function
+When a function returns an object by value, a copy of the object is created as part of the return process. However, modern C++ compilers often optimize this using move semantics or return value optimization (RVO).
+
+
+MyClass createObject() {
+    MyClass obj;
+    return obj;  // Copy constructor might be called here
+}
+
+int main() {
+    MyClass newObj = createObject();  // Copy constructor might be called here
+    return 0;
+}
+In this case, obj is returned by value, potentially invoking the copy constructor. However, optimizations may minimize or eliminate this copy.
+
+4. Assignment Operator in Copy Assignment
+When you assign one object to another using the copy assignment operator, the copy constructor is not directly involved, but understanding how it fits with copying is useful. The assignment operator performs copying of members from the source object to the destination object.
+
+MyClass obj1, obj2;
+obj2 = obj1;  // Assignment operator is called here, not the copy constructor
+In this case, the assignment operator copies the content of obj1 into obj2. The copy constructor is not called here, but understanding it helps in knowing the copy behavior.
+
+5. Copying Elements in Containers
+When objects are inserted into containers like std::vector, std::list, or std::map, and the container needs to copy elements (e.g., during resizing or reallocation), the copy constructor is used.
+
+std::vector<MyClass> vec;
+MyClass obj;
+vec.push_back(obj);  // Copy constructor is called to insert obj into vec
+
+6. Explicit Copying Using the Copy Constructor
+You can explicitly call the copy constructor when creating a new object by copying an existing one.
+
+MyClass obj1;
+MyClass obj2(obj1);  // Explicit call to the copy constructor
+========================================
+my own string class:
+#include <iostream>
+#include <cstring> // For strlen, strcpy, and strcmp
+
+class MyString {
+private:
+    char* data;  // Pointer to dynamically allocated character array
+
+public:
+    // Default constructor
+    MyString() : data(new char[1]) {
+        data[0] = '\0'; // Empty string
+    }
+
+    // Constructor with C-string
+    MyString(const char* str) {
+        if (str) {
+            size_t length = strlen(str);
+            data = new char[length + 1];
+            strcpy(data, str);
+        } else {
+            data = new char[1];
+            data[0] = '\0';
+        }
+    }
+
+    // Copy Constructor
+    MyString(const MyString& other) {
+        size_t length = strlen(other.data);
+        data = new char[length + 1];
+        strcpy(data, other.data);
+    }
+
+    // Move Constructor
+    MyString(MyString&& other) noexcept : data(other.data) {
+        other.data = nullptr; // Transfer ownership and nullify the source pointer
+    }
+
+    // Copy Assignment Operator
+    MyString& operator=(const MyString& other) {
+        if (this == &other) return *this; // Self-assignment check
+
+        // Release current resource
+        delete[] data;
+
+        // Copy data from the other object
+        size_t length = strlen(other.data);
+        data = new char[length + 1];
+        strcpy(data, other.data);
+
+        return *this;
+    }
+
+    // Move Assignment Operator
+    MyString& operator=(MyString&& other) noexcept {
+        if (this == &other) return *this; // Self-assignment check
+
+        // Release current resource
+        delete[] data;
+
+        // Transfer ownership
+        data = other.data;
+        other.data = nullptr;
+
+        return *this;
+    }
+
+    // Destructor
+    ~MyString() {
+        delete[] data;
+    }
+
+    // Output the string to an output stream
+    friend std::ostream& operator<<(std::ostream& os, const MyString& str) {
+        os << str.data;
+        return os;
+    }
+};
+
+int main() {
+    MyString str1("Hello, world!");
+    MyString str2 = str1; // Copy constructor
+    MyString str3("Temporary");
+    
+    str3 = str1; // Copy assignment operator
+
+    MyString str4 = MyString("Moveable"); // Move constructor
+    MyString str5("Another");
+    
+    str5 = MyString("New moveable"); // Move assignment operator
+
+    std::cout << "str1: " << str1 << std::endl;
+    std::cout << "str2: " << str2 << std::endl;
+    std::cout << "str3: " << str3 << std::endl;
+    std::cout << "str4: " << str4 << std::endl;
+    std::cout << "str5: " << str5 << std::endl;
+
+    return 0;
+}
+
+=========================================================================
+The code creates three std::variant instances, each holding a different type: int, double, and std::string.
+It uses std::visit with a custom visitor (PrintVisitor) to print the contents of each variant.
+It also demonstrates using std::optional with a variant and checking if it holds a value before visiting.
+
+#include <iostream>
+#include <variant>
+#include <optional>
+
+struct PrintVisitor {
+    void operator()(int i) const {
+        std::cout << "int: " << i << std::endl;
+    }
+    
+    void operator()(double d) const {
+        std::cout << "double: " << d << std::endl;
+    }
+    
+    void operator()(const std::string& s) const {
+        std::cout << "string: " << s << std::endl;
+    }
+};
+
+int main() {
+    // Create a variant that can hold an int, double, or std::string
+    std::variant<int, double, std::string> var1 = 10;
+    std::variant<int, double, std::string> var2 = 3.14;
+    std::variant<int, double, std::string> var3 = "Hello, World!";
+    
+    // Use std::visit with a custom visitor
+    std::visit(PrintVisitor(), var1);
+    std::visit(PrintVisitor(), var2);
+    std::visit(PrintVisitor(), var3);
+    
+    // Create an optional that can hold a variant
+    std::optional<std::variant<int, double, std::string>> opt = var2;
+    if (opt) {
+        std::visit(PrintVisitor(), *opt);
+    }
+    
+    // Use std::visit with a lambda function
+    std::visit([](auto&& arg) {
+        std::cout << "Lambda: ";
+        PrintVisitor()(std::forward<decltype(arg)>(arg));
+    }, var1);
+    
+    return 0;
+}
+int: 10
+double: 3.14
+string: Hello, World!
+double: 3.14
+Lambda: int: 10
+.====================================================
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <vector>
+
+std::mutex mtx;
+std::condition_variable cv;
+bool ready = false;
+
+void wait_for_signal(int id) {
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock, []{ return ready; });  // Release mutex and wait
+    std::cout << "Thread " << id << " notified" << std::endl;
+    //after the thread ends the lock will be released so that the other thread can run
+}
+
+int main() {
+    std::vector<std::thread> threads;
+    
+    for (int i = 0; i < 5; ++i) {
+        threads.emplace_back(wait_for_signal, i);
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        ready = true;
+         //lock.unlock(); // lock_guard has no Manual unlocking
+         //so we added the scope for this mutex
+    }
+    cv.notify_all(); // Notify all waiting threads
+
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    return 0;
+}
+Thread 3 notified
+Thread 1 notified
+Thread 0 notified
+Thread 2 notified
+Thread 4 notified
+=================================
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <vector>
+
+std::mutex mtx;
+std::condition_variable cv;
+bool ready = false;
+
+void wait_for_signal(int id) {
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock, []{ return ready; });  // Release mutex and wait
+    std::cout << "Thread " << id << " notified" << std::endl;
+    //after the thread ends the lock will be released so that the other thread can run
+}
+
+int main() {
+    std::vector<std::thread> threads;
+    
+    for (int i = 0; i < 5; ++i) {
+        threads.emplace_back(wait_for_signal, i);
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        ready = true;
+         //lock.unlock(); // lock_guard has no Manual unlocking
+         //so we added the scope for this mutex
+    }
+    cv.notify_one(); // Notify only one thread other thread still wait on the condition
+
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    return 0;
+}
+Thread 0 notified
+==================================================
+not a must to do unlock in unquie to unlock.
+std::mutex mtx;
+void someFunction() {
+    std::unique_lock<std::mutex> lock(mtx); // Lock acquired
+    // critical section
+    lock.unlock(); // Mutex manually unlocked
+    // do other work without holding the mutex
+    lock.lock(); // Lock acquired again
+} // Lock released when 'lock' goes out of scope
+=====================================================
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
+std::mutex mtx;
+std::condition_variable cv;
+int current = 1; // Tracks which number to print
+const int MAX_NUM = 10;
+
+// Function for Thread A
+void threadA() {
+    for (int i = 1; i <= MAX_NUM; i += 3) {
+        std::unique_lock<std::mutex> lock(mtx);
+        cv.wait(lock, [] { return current % 3 == 1; }); // Wait if it's not thread A's turn
+        if (current <= MAX_NUM) {
+            std::cout << current << " ";
+            current++;
+        }
+        lock.unlock();
+        cv.notify_all(); // Notify all threads
+    }
+}
+
+// Function for Thread B
+void threadB() {
+    for (int i = 2; i <= MAX_NUM; i += 3) {
+        std::unique_lock<std::mutex> lock(mtx);
+        cv.wait(lock, [] { return current % 3 == 2; }); // Wait if it's not thread B's turn
+        if (current <= MAX_NUM) {
+            std::cout << current << " ";
+            current++;
+        }
+        lock.unlock();
+        cv.notify_all(); // Notify all threads
+    }
+}
+
+// Function for Thread C
+void threadC() {
+    for (int i = 3; i <= MAX_NUM; i += 3) {
+        std::unique_lock<std::mutex> lock(mtx);
+        cv.wait(lock, [] { return current % 3 == 0; }); // Wait if it's not thread C's turn
+        if (current <= MAX_NUM) {
+            std::cout << current << " ";
+            current++;
+        }
+        lock.unlock();
+        cv.notify_all(); // Notify all threads
+    }
+}
+
+int main() {
+    std::thread t1(threadA);
+    std::thread t2(threadB);
+    std::thread t3(threadC);
+
+    t1.join();
+    t2.join();
+    t3.join();
+
+    std::cout << std::endl; // Print a newline at the end
+    return 0;
+}
+
+// 1 2 3 4 5 6 7 8 9 10
+========================================================================
+std::invoke is a utility function that provides a uniform way to call functions or function objects.
+ It is useful for invoking callable objects in a generic way, especially in scenarios involving templates and when working with
+ different types of callables (e.g., functions, lambda expressions, member functions).
+ 
+ #include <iostream>
+#include <functional>
+
+void print(int x) {
+    std::cout << "Value: " << x << std::endl;
+}
+
+struct Printer {
+    void operator()(int x) const {
+        std::cout << "Printer Value: " << x << std::endl;
+    }
+    
+    void print_message() const {
+        std::cout << "Printing a message." << std::endl;
+    }
+};
+
+int main() {
+    // Using std::invoke with a regular function
+    std::invoke(print, 42);
+
+    // Using std::invoke with a function object
+    Printer printer;
+    std::invoke(printer, 42);
+
+    // Using std::invoke with a member function and object
+    std::invoke(&Printer::print_message, printer);
+
+    return 0;
+}
+
+===Value: 42
+Printer Value: 42
+Printing a message.
+-================================
+#include <iostream>
+#include <functional>
+
+class Greeter {
+public:
+    void greet(const std::string& prefix, const std::string& name) {
+        std::cout << prefix << ", " << name << "!" << std::endl;
+    }
+};
+
+int main() {
+    Greeter g;
+    auto bound_greet = std::bind(&Greeter::greet, &g, "Hello", std::placeholders::_1);
+    std::invoke(bound_greet, "World");
+    return 0;
+}
+Hello World
+====================================
+Not a must to pass by reference.
+
+reference is preferred to avoid slicing and avoid copying of object.
+
+
+#include <iostream>
+#include <functional>
+
+class Counter {
+public:
+    void increment(int value) {
+        count += value;
+        std::cout << "Count: " << count << std::endl;
+    }
+
+private:
+    int count = 0;
+};
+
+int main() {
+    Counter c;
+    // std::ref is used to pass the object as a reference
+    std::invoke(&Counter::increment, std::ref(c), 10);
+    return 0;
+}
+=============================
+Rule of 5:
+Destructor: Cleans up resources.
+Copy Constructor: Creates a new object as a copy of an existing object.
+Copy Assignment Operator: Assigns the values from one object to another.
+Move Constructor: Transfers resources from a temporary object to a new object.
+Move Assignment Operator: Transfers resources from a temporary object to an existing object.
+======================================
+What is SFINAE?
+Question: Explain SFINAE (Substitution Failure Is Not An Error) and give an example.
+
+Answer: SFINAE is a principle used in template metaprogramming that allows the compiler to exclude template specializations based on whether substituting template arguments would result in a compilation error.
+
+Example:
+
+cpp
+Copy code
+#include <type_traits>
+
+template<typename T>
+std::enable_if_t<std::is_integral_v<T>, void> print(T value) {
+    std::cout << "Integral: " << value << std::endl;
+}
+
+template<typename T>
+std::enable_if_t<!std::is_integral_v<T>, void> print(T value) {
+    std::cout << "Non-integral: " << value << std::endl;
+}
+
+int main() {
+    print(10);        // Calls the integral version
+    print(10.5);      // Calls the non-integral version
+    return 0;
+}
+====================================
+Explain RAII (Resource Acquisition Is Initialization)
+Question: What is RAII and how does it help in resource management?
+
+Answer: RAII is a programming idiom where resource allocation is tied to object lifetime. Resources such as memory, file handles, or mutexes are acquired during object construction and released during object destruction.
+
+Benefits:
+
+Automatic Resource Management: Ensures that resources are properly released when objects go out of scope.
+Exception Safety: RAII helps prevent resource leaks even in the presence of exceptions, as destructors will be called when objects are destroyed.
+Example:
+
+cpp
+Copy code
+class FileHandle {
+public:
+    FileHandle(const std::string& filename) : file(fopen(filename.c_str(), "r")) {
+        if (!file) throw std::runtime_error("Unable to open file");
+    }
+
+    ~FileHandle() {
+        if (file) fclose(file);
+    }
+
+    FILE* get() const { return file; }
+
+private:
+    FILE* file;
+};
+====================================================
+#include <iostream>
+#include <thread>
+#include <condition_variable>
+#include <mutex>
+#include <chrono>
+
+// Shared data
+bool ready = false;
+std::mutex mtx;
+std::condition_variable cv;
+
+// Function for the worker thread
+void worker_thread() {
+    std::cout << "Worker thread is waiting for the condition to be met...\n";
+
+    std::unique_lock<std::mutex> lock(mtx);
+    // Wait until 'ready' becomes true
+    cv.wait(lock, [] { return ready; });
+
+    // The condition has been met
+    std::cout << "Worker thread is running after condition is met.\n";
+}
+
+// Function for the notifying thread
+void notify_thread() {
+    std::this_thread::sleep_for(std::chrono::seconds(2)); // Simulate work
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        ready = true;
+        std::cout << "Notifying thread is notifying the worker thread...\n";
+    }
+    cv.notify_one(); // Notify the waiting thread
+}
+
+int main() {
+    std::thread worker(worker_thread);
+    std::thread notifier(notify_thread);
+
+    worker.join();
+    notifier.join();
+
+    return 0;
+}
+==========================================
+#include <iostream>
+#include <thread>
+#include <condition_variable>
+#include <mutex>
+#include <chrono>
+
+std::mutex mtx;
+std::condition_variable cv;
+bool ready = false;
+
+void worker_thread() {
+    std::unique_lock<std::mutex> lock(mtx);
+	// ready to to be set with in 3 seconds .
+	//if the re is no noticatication the mutex will be reased after 3 seconds.
+    if (cv.wait_for(lock, std::chrono::seconds(3), [] { return ready; })) {
+        std::cout << "Worker thread proceeding after condition is met.\n";
+    } else {
+	    //notified but the flag is not set
+		// Timeout , not notified and the ready is not set
+        std::cout << "Worker thread timed out.\n";
+    }
+}
+
+void notify_thread() {
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        ready = true;
+    }
+    cv.notify_one();
+}
+
+int main() {
+    std::thread worker(worker_thread);
+    std::thread notifier(notify_thread);
+
+    worker.join();
+    notifier.join();
+
+    return 0;
+}
+=============
+if there is no notification with in 3 seconds  then timeout will happen
+if (cv.wait_for(lock, std::chrono::seconds(3)) != std::cv_status::timeout) {
+	std::cout << "Worker thread proceeding after condition is met.\n";
+} else {
+	std::cout << "Worker thread timed out.\n";
+}
+============================================	
+  }
+  std::unique_lock<std::mutex> m_mutexEventWaitLock(m_mutexEventWait, std::defer_lock);
+ ================
+ #include <stdio.h>
+#include <stdlib.h> // For abort()
+
+int main(int argc, char *argv[]) {
+    // Assuming iCmdArgC is an integer that represents a command option
+    int iCmdArgC =  1;
+    switch(iCmdArgC) {
+        case 1:
+            // Handle the case where the command is 'l'
+            printf("Command 'l' selected\n");
+            break;
+
+        case 'r':
+            // Handle the case where the command is 'r'
+            printf("Command 'r' selected\n");
+            break;
+
+        case 's':
+            // Handle the case where the command is 's'
+            printf("Command 's' selected\n");
+            break;
+
+        default:
+            // Handle unknown commands
+            fprintf(stderr, "Unknown command: %c\n", iCmdArgC);
+            abort(); // Terminate the program
+            break;
+    }
+
+    return 0;
+}
+swutch 1 is selected
+=====================
+The std::defer_lock option in the std::unique_lock constructor is used to create a std::unique_lock object 
+without immediately locking the associated mutex. Here’s a detailed explanation of what this means and how it is used:
+#include <iostream>
+#include <mutex>
+#include <thread>
+
+std::mutex mtx1;
+std::mutex mtx2;
+
+void exampleFunction(bool condition) {
+    std::unique_lock<std::mutex> lock1(mtx1, std::defer_lock);
+    std::unique_lock<std::mutex> lock2(mtx2, std::defer_lock);
+
+    if (condition) {
+        // Lock both mutexes only if the condition is true
+        std::lock(lock1, lock2);
+        std::cout << "Both mutexes locked" << std::endl;
+        // Critical section
+        lock1.unlock();
+        lock2.unlock();
+    } else {
+        std::cout << "Condition not met, no locks acquired" << std::endl;
+    }
+}
+
+int main() {
+    std::thread t1(exampleFunction, true);
+    std::thread t2(exampleFunction, false);
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+===================================
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <chrono>
+
+std::mutex mtx;
+
+void worker(bool shouldLock) {
+    std::unique_lock<std::mutex> lock(mtx, std::defer_lock); // Create the lock but do not lock the mutex yet
+
+    if (shouldLock) {
+        lock.lock(); // Lock the mutex when needed
+        std::cout << "Mutex locked by thread " << std::this_thread::get_id() << std::endl;
+    } else {
+        std::cout << "Mutex not locked by thread " << std::this_thread::get_id() << std::endl;
+    }
+
+    // Perform some work
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    // Mutex will be automatically unlocked when lock goes out of scope
+}
+
+int main() {
+    std::thread t1(worker, true);  // This thread will lock the mutex
+    std::thread t2(worker, false); // This thread will not lock the mutex
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+============================
+change the permission for the files in all subdirectories to 777
+find /path/to/parent-directory -type f -exec chmod 777 {} +
+=======================================
+The Bridge design pattern is a structural pattern that aims to "bridge" the
+ gap between an abstraction and its implementation, allowing both to vary independently without affecting each other. 
+
+ The Builder pattern focuses on constructing complex objects step by step. It’s used when an object needs to be 
+ created with a series of steps, and the construction process may vary depending on the specific needs.
+ 
+ #include <iostream>
+#include <string>
+#include <vector>
+
+// Product class
+class House {
+public:
+    void addWall(const std::string& wall) { walls_.push_back(wall); }
+    void setRoof(const std::string& roof) { roof_ = roof; }
+    void addDoor(const std::string& door) { doors_.push_back(door); }
+
+    void show() const {
+        std::cout << "House with:\n";
+        for (const auto& wall : walls_) std::cout << "  Wall: " << wall << "\n";
+        std::cout << "  Roof: " << roof_ << "\n";
+        for (const auto& door : doors_) std::cout << "  Door: " << door << "\n";
+    }
+
+private:
+    std::vector<std::string> walls_;
+    std::string roof_;
+    std::vector<std::string> doors_;
+};
+
+// Builder interface
+class HouseBuilder {
+public:
+    virtual ~HouseBuilder() = default;
+    virtual void buildWalls() = 0;
+    virtual void buildRoof() = 0;
+    virtual void buildDoors() = 0;
+    virtual House* getResult() = 0;
+};
+
+// ConcreteBuilder for Modern House
+class ModernHouseBuilder : public HouseBuilder {
+public:
+    ModernHouseBuilder() { house_ = new House(); }
+    ~ModernHouseBuilder() { delete house_; }
+
+    void buildWalls() override {
+        house_->addWall("Glass Wall");
+        house_->addWall("Concrete Wall");
+    }
+
+    void buildRoof() override {
+        house_->setRoof("Flat Roof");
+    }
+
+    void buildDoors() override {
+        house_->addDoor("Sliding Door");
+        house_->addDoor("Front Door");
+    }
+
+    House* getResult() override {
+        return house_;
+    }
+
+private:
+    House* house_;
+};
+
+// ConcreteBuilder for Victorian House
+class VictorianHouseBuilder : public HouseBuilder {
+public:
+    VictorianHouseBuilder() { house_ = new House(); }
+    ~VictorianHouseBuilder() { delete house_; }
+
+    void buildWalls() override {
+        house_->addWall("Brick Wall");
+        house_->addWall("Stone Wall");
+    }
+
+    void buildRoof() override {
+        house_->setRoof("Gabled Roof");
+    }
+
+    void buildDoors() override {
+        house_->addDoor("Wooden Door");
+        house_->addDoor("Carved Door");
+    }
+
+    House* getResult() override {
+        return house_;
+    }
+
+private:
+    House* house_;
+};
+
+// Director class
+class HouseDirector {
+public:
+    void setBuilder(HouseBuilder* builder) {
+        builder_ = builder;
+    }
+
+    House* construct() {
+        builder_->buildWalls();
+        builder_->buildRoof();
+        builder_->buildDoors();
+        return builder_->getResult();
+    }
+
+private:
+    HouseBuilder* builder_;
+};
+
+// Main function
+int main() {
+    // Create the director
+    HouseDirector director;
+
+    // Create and use the modern house builder
+    ModernHouseBuilder modernBuilder;
+    director.setBuilder(&modernBuilder);
+    House* modernHouse = director.construct();
+    std::cout << "Modern House:\n";
+    modernHouse->show();
+    delete modernHouse;
+
+    // Create and use the Victorian house builder
+    VictorianHouseBuilder victorianBuilder;
+    director.setBuilder(&victorianBuilder);
+    House* victorianHouse = director.construct();
+    std::cout << "Victorian House:\n";
+    victorianHouse->show();
+    delete victorianHouse;
+
+    return 0;
+}
+==================================================
+Factory design pattern:
+The Factory Design Pattern is a creational design pattern that provides an interface for 
+creating objects in a super-class but allows subclasses to alter the type of objects that will be created. 
+In other words, it defines a method for creating objects, but it allows subclasses to decide which class to
+ instantiate. This pattern is useful when you want to delegate the responsibility of object creation to
+subclasses, or when the exact type of the object to be created is not known until runtime.
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+// Observer interface
+class Observer {
+public:
+    virtual ~Observer() = default;
+    virtual void update(float temperature, float humidity) = 0;
+};
+
+// Subject interface
+class Subject {
+public:
+    virtual ~Subject() = default;
+    virtual void addObserver(Observer* observer) = 0;
+    virtual void removeObserver(Observer* observer) = 0;
+    virtual void notifyObservers() = 0;
+};
+
+// ConcreteSubject for temperature
+class WeatherStation : public Subject {
+public:
+    void addObserver(Observer* observer) override {
+        observers_.push_back(observer);
+    }
+
+    void removeObserver(Observer* observer) override {
+        observers_.erase(std::remove(observers_.begin(), observers_.end(), observer), observers_.end());
+    }
+
+    void notifyObservers() override {
+        for (Observer* observer : observers_) {
+            observer->update(temperature_, 0.0f); // Temperature only, no humidity
+        }
+    }
+
+    void setTemperature(float temperature) {
+        temperature_ = temperature;
+        notifyObservers();
+    }
+
+private:
+    std::vector<Observer*> observers_;
+    float temperature_;
+};
+
+// ConcreteSubject for humidity
+class WeatherStationPro : public Subject {
+public:
+    void addObserver(Observer* observer) override {
+        observers_.push_back(observer);
+    }
+
+    void removeObserver(Observer* observer) override {
+        observers_.erase(std::remove(observers_.begin(), observers_.end(), observer), observers_.end());
+    }
+
+    void notifyObservers() override {
+        for (Observer* observer : observers_) {
+            observer->update(0.0f, humidity_); // Humidity only, no temperature
+        }
+    }
+
+    void setHumidity(float humidity) {
+        humidity_ = humidity;
+        notifyObservers();
+    }
+
+private:
+    std::vector<Observer*> observers_;
+    float humidity_;
+};
+
+// ConcreteObserver for temperature display
+class TemperatureDisplay : public Observer {
+public:
+    void update(float temperature, float humidity) override {
+        std::cout << "Temperature Display: " << temperature << "°C\n";
+    }
+};
+
+// ConcreteObserver for humidity display
+class HumidityDisplay : public Observer {
+public:
+    void update(float temperature, float humidity) override {
+        std::cout << "Humidity Display: " << humidity << "%\n";
+    }
+};
+
+// Main function
+int main() {
+    // Create subjects
+    WeatherStation weatherStation;
+    WeatherStationPro weatherStationPro;
+
+    // Create observers
+    TemperatureDisplay tempDisplay;
+    HumidityDisplay humidityDisplay;
+
+    // Attach observers to subjects
+    weatherStation.addObserver(&tempDisplay);
+    weatherStationPro.addObserver(&humidityDisplay);
+
+    // Change state of subjects
+    weatherStation.setTemperature(25.0f);
+    weatherStationPro.setHumidity(60.0f);
+
+    // Change state of subjects
+    weatherStation.setTemperature(30.0f);
+    weatherStationPro.setHumidity(70.0f);
+
+    // Detach an observer
+    weatherStation.removeObserver(&tempDisplay);
+    weatherStationPro.removeObserver(&humidityDisplay);
+
+    // Change state of subjects
+    weatherStation.setTemperature(22.0f);
+    weatherStationPro.setHumidity(65.0f);
+
+    return 0;
+}
+==========================================================
+factory design pattern:
+#include <iostream>
+#include <string>
+#include <memory>
+
+// Abstract Product
+class Notification {
+public:
+    virtual ~Notification() = default;
+    virtual void send(const std::string& message) const = 0;
+};
+
+// Concrete Products
+class EmailNotification : public Notification {
+public:
+    void send(const std::string& message) const override {
+        std::cout << "Sending email with message: " << message << std::endl;
+    }
+};
+
+class SMSNotification : public Notification {
+public:
+    void send(const std::string& message) const override {
+        std::cout << "Sending SMS with message: " << message << std::endl;
+    }
+};
+
+class PushNotification : public Notification {
+public:
+    void send(const std::string& message) const override {
+        std::cout << "Sending push notification with message: " << message << std::endl;
+    }
+};
+
+// Factory
+class NotificationFactory {
+public:
+    static std::unique_ptr<Notification> createNotification(const std::string& type) {
+        if (type == "email") {
+            return std::make_unique<EmailNotification>();
+        } else if (type == "sms") {
+            return std::make_unique<SMSNotification>();
+        } else if (type == "push") {
+            return std::make_unique<PushNotification>();
+        } else {
+            throw std::invalid_argument("Unknown notification type: " + type);
+        }
+    }
+};
+
+// Main function
+int main() {
+    try {
+        // Create and use different notifications
+        auto emailNotification = NotificationFactory::createNotification("email");
+        emailNotification->send("Hello via Email!");
+
+        auto smsNotification = NotificationFactory::createNotification("sms");
+        smsNotification->send("Hello via SMS!");
+
+        auto pushNotification = NotificationFactory::createNotification("push");
+        pushNotification->send("Hello via Push Notification!");
+
+        // Uncommenting the following line will throw an exception
+        // auto unknownNotification = NotificationFactory::createNotification("unknown");
+        // unknownNotification->send("This will fail");
+
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+========================================================
+Behavioral Design Patterns
+Purpose: Focus on communication between objects, how responsibilities are distributed among them, and how objects 
+cooperate to fulfill a particular task.
+
+Examples:
+
+Chain of Responsibility: Passes a request along a chain of handlers. Each handler can either process the request or 
+pass it along the chain.
+
+Example: Handling user input events in a GUI application.
+======
+State: Allows an object to alter its behavior when its internal state changes, appearing as if it changed its class.
+
+Example: A document editor with states like “editing,” “reviewing,” and “finalizing.”
+===========
+Strategy: Defines a family of algorithms, encapsulates each one, and makes them interchangeable. The algorithm can
+ vary independently  from the clients that use it.
+
+Example: Sorting strategies (QuickSort, MergeSort) used interchangeably based on context.
+
+====================
+Structural design pattern:
+Focus on how classes and objects are composed to form larger structures. They simplify the design by identifying a simple way to 
+realize relationships between entities.
+=========
+proxy design pattern:
+#include <iostream>
+#include <memory>
+#include <string>
+#include <unordered_map>
+
+// Server Interface
+class Server {
+public:
+    virtual ~Server() = default;
+    virtual std::string getPage(const std::string& pageName) const = 0;
+};
+
+// RealSubject
+class RealServer : public Server {
+public:
+    std::string getPage(const std::string& pageName) const override {
+        // Simulate fetching a page from a server
+        std::cout << "RealServer: Fetching page: " << pageName << std::endl;
+        return "Content of page: " + pageName;
+    }
+};
+
+// Proxy
+class ProxyServer : public Server {
+public:
+    ProxyServer() : realServer(std::make_unique<RealServer>()) {}
+
+    std::string getPage(const std::string& pageName) const override {
+        // Validate the request
+        if (!isAuthenticated() || !isValidPage(pageName)) {
+            return "Error: Invalid request.";
+        }
+
+        // Forward the request to RealServer
+        return realServer->getPage(pageName);
+    }
+
+private:
+    bool isAuthenticated() const {
+        // Simulate authentication check
+        std::cout << "ProxyServer: Checking authentication..." << std::endl;
+        // Assuming user is always authenticated in this example
+        return true;
+    }
+
+    bool isValidPage(const std::string& pageName) const {
+        // Simulate page validation
+        std::cout << "ProxyServer: Validating page request..." << std::endl;
+        return validPages.find(pageName) != validPages.end();
+    }
+
+    mutable std::unique_ptr<RealServer> realServer;
+    const std::unordered_set<std::string> validPages{"home", "about", "contact"}; // Simulated valid pages
+};
+
+// Main function
+int main() {
+    std::cout << "Client: Requesting pages through proxy server." << std::endl;
+
+    // Create a ProxyServer object
+    ProxyServer proxyServer;
+
+    // Request a valid page
+    std::string page1 = "home";
+    std::cout << proxyServer.getPage(page1) << std::endl; // This will fetch and return the page content
+
+    // Request an invalid page
+    std::string page2 = "invalid_page";
+    std::cout << proxyServer.getPage(page2) << std::endl; // This will return an error message
+
+    // Request another valid page
+    std::string page3 = "contact";
+    std::cout << proxyServer.getPage(page3) << std::endl; // This will fetch and return the page content
+
+    return 0;
+}
+=========================================
+startegy design pattern:
+he Strategy Design Pattern is a behavioral design pattern that enables selecting an algorithm at runtime. 
+It defines a family of algorithms, encapsulates each one, and makes them interchangeable. 
+The Strategy Pattern lets the algorithm vary independently from the clients that use it.
+
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <algorithm>
+
+// Strategy Interface
+class SortingStrategy {
+public:
+    virtual ~SortingStrategy() = default;
+    virtual void sort(std::vector<int>& data) const = 0;
+};
+
+// Concrete Strategy: Bubble Sort
+class BubbleSortStrategy : public SortingStrategy {
+public:
+    void sort(std::vector<int>& data) const override {
+        std::cout << "Using Bubble Sort" << std::endl;
+        for (size_t i = 0; i < data.size() - 1; ++i) {
+            for (size_t j = 0; j < data.size() - i - 1; ++j) {
+                if (data[j] > data[j + 1]) {
+                    std::swap(data[j], data[j + 1]);
+                }
+            }
+        }
+    }
+};
+
+// Concrete Strategy: Quick Sort
+class QuickSortStrategy : public SortingStrategy {
+public:
+    void sort(std::vector<int>& data) const override {
+        std::cout << "Using Quick Sort" << std::endl;
+        quickSort(data, 0, data.size() - 1);
+    }
+
+private:
+    void quickSort(std::vector<int>& data, int low, int high) const {
+        if (low < high) {
+            int pivotIndex = partition(data, low, high);
+            quickSort(data, low, pivotIndex - 1);
+            quickSort(data, pivotIndex + 1, high);
+        }
+    }
+
+    int partition(std::vector<int>& data, int low, int high) const {
+        int pivot = data[high];
+        int i = low - 1;
+        for (int j = low; j < high; ++j) {
+            if (data[j] < pivot) {
+                ++i;
+                std::swap(data[i], data[j]);
+            }
+        }
+        std::swap(data[i + 1], data[high]);
+        return i + 1;
+    }
+};
+
+// Context
+class Sorter {
+public:
+    Sorter(std::unique_ptr<SortingStrategy> strategy) : strategy(std::move(strategy)) {}
+
+    void setStrategy(std::unique_ptr<SortingStrategy> newStrategy) {
+        strategy = std::move(newStrategy);
+    }
+
+    void sortData(std::vector<int>& data) const {
+        strategy->sort(data);
+    }
+
+private:
+    std::unique_ptr<SortingStrategy> strategy;
+};
+
+// Main function
+int main() {
+    std::vector<int> data = {34, 7, 23, 32, 5, 62, 32, 1};
+
+    std::cout << "Original data: ";
+    for (int num : data) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    // Use Bubble Sort
+    Sorter sorter(std::make_unique<BubbleSortStrategy>());
+    sorter.sortData(data);
+    std::cout << "Sorted data (Bubble Sort): ";
+    for (int num : data) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    // Modify data
+    data = {34, 7, 23, 32, 5, 62, 32, 1};
+
+    // Use Quick Sort
+    sorter.setStrategy(std::make_unique<QuickSortStrategy>());
+    sorter.sortData(data);
+    std::cout << "Sorted data (Quick Sort): ";
+    for (int num : data) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+=======================================================
+composite design pattern:
+The Composite Design Pattern is used to allow individual objects and compositions of objects to be treated uniformly. 
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <string>
+
+// Component
+class GUIComponent {
+public:
+    virtual ~GUIComponent() = default;
+    virtual void render(int indent = 0) const = 0;
+};
+
+// Leaf: Button
+class Button : public GUIComponent {
+public:
+    Button(std::string label) : label(label) {}
+
+    void render(int indent = 0) const override {
+        std::cout << std::string(indent, ' ') << "Button: " << label << std::endl;
+    }
+
+private:
+    std::string label;
+};
+
+// Leaf: Label
+class Label : public GUIComponent {
+public:
+    Label(std::string text) : text(text) {}
+
+    void render(int indent = 0) const override {
+        std::cout << std::string(indent, ' ') << "Label: " << text << std::endl;
+    }
+
+private:
+    std::string text;
+};
+
+// Composite: Panel
+class Panel : public GUIComponent {
+public:
+    void add(std::shared_ptr<GUIComponent> component) {
+        components.push_back(component);
+    }
+
+    void render(int indent = 0) const override {
+        std::cout << std::string(indent, ' ') << "Panel:" << std::endl;
+        for (const auto& component : components) {
+            component->render(indent + 2);
+        }
+    }
+
+private:
+    std::vector<std::shared_ptr<GUIComponent>> components;
+};
+
+// Composite: Window
+class Window : public GUIComponent {
+public:
+    void add(std::shared_ptr<GUIComponent> component) {
+        components.push_back(component);
+    }
+
+    void render(int indent = 0) const override {
+        std::cout << std::string(indent, ' ') << "Window:" << std::endl;
+        for (const auto& component : components) {
+            component->render(indent + 2);
+        }
+    }
+
+private:
+    std::vector<std::shared_ptr<GUIComponent>> components;
+};
+
+// Main function
+int main() {
+    // Create individual components
+    auto button1 = std::make_shared<Button>("Submit");
+    auto label1 = std::make_shared<Label>("Username");
+
+    // Create a panel and add components to it
+    auto panel1 = std::make_shared<Panel>();
+    panel1->add(label1);
+    panel1->add(button1);
+
+    // Create a window and add a panel to it
+    auto window = std::make_shared<Window>();
+    window->add(panel1);
+
+    // Render the GUI hierarchy
+    std::cout << "Rendering GUI:" << std::endl;
+    window->render();
+
+    return 0;
+}
+Rendering GUI:
+Window:
+  Panel:
+    Label: Username
+    Button: Submit
+=============================================
+state design pattern example:
+The State Design Pattern is a behavioral design pattern 
+that allows an object to change its behavior when its internal state changes. The pattern is particularly
+ useful when an object needs to alter its behavior based on its state, and when the number of states and 
+ transitions between them are significant.
+ 
+ #include <iostream>
+#include <memory>
+
+// Forward declaration
+class TrafficSignalContext;
+
+// Base interface for traffic signal states
+class TrafficSignalState {
+public:
+    virtual ~TrafficSignalState() = default; // Virtual destructor
+    virtual void changeState(TrafficSignalContext* context) = 0;
+    virtual void displayState() = 0;
+};
+
+// Concrete state classes
+class StoppedState : public TrafficSignalState {
+public:
+    void changeState(TrafficSignalContext* context) override;
+    void displayState() override {
+        std::cout << "Red light\n";
+    }
+};
+
+class YellowState : public TrafficSignalState {
+public:
+    void changeState(TrafficSignalContext* context) override;
+    void displayState() override {
+        std::cout << "Yellow light\n";
+    }
+};
+
+class GreenState : public TrafficSignalState {
+public:
+    void changeState(TrafficSignalContext* context) override;
+    void displayState() override {
+        std::cout << "Green light\n";
+    }
+};
+
+// Context class to manage the current state
+class TrafficSignalContext {
+private:
+    std::unique_ptr<TrafficSignalState> currentState;
+
+public:
+    TrafficSignalContext() : currentState(std::make_unique<StoppedState>()) {}
+
+    void setState(std::unique_ptr<TrafficSignalState> state) {
+        currentState = std::move(state);
+    }
+
+    void changeState() {
+        currentState->changeState(this);
+    }
+
+    void displayState() {
+        currentState->displayState();
+    }
+};
+
+// Implementations of state transitions
+void StoppedState::changeState(TrafficSignalContext* context) {
+    std::cout << "Transitioning to Yellow state\n";
+    context->setState(std::make_unique<YellowState>());
+}
+
+void YellowState::changeState(TrafficSignalContext* context) {
+    std::cout << "Transitioning to Green state\n";
+    context->setState(std::make_unique<GreenState>());
+}
+
+void GreenState::changeState(TrafficSignalContext* context) {
+    std::cout << "Transitioning to Red state\n";
+    context->setState(std::make_unique<StoppedState>());
+}
+
+// Main function
+int main() {
+    TrafficSignalContext trafficSignal;
+
+    trafficSignal.displayState(); // Output: Red light
+    trafficSignal.changeState();
+    trafficSignal.displayState(); // Output: Yellow light
+    trafficSignal.changeState();
+    trafficSignal.displayState(); // Output: Green light
+
+    return 0;
+}
+Red light
+Transitioning to Yellow state
+Yellow light
+Transitioning to Green state
+Green light
+=================================
+
+#include <iostream>
+#include <memory>
+#include <thread>
+
+class MyClass : public std::enable_shared_from_this<MyClass>  //indicating we are going to use share_from
+{
+public:
+    MyClass() {
+        std::cout << "MyClass constructor called\n";
+    }
+
+    ~MyClass() {
+        std::cout << "MyClass destructor called\n";
+    }
+
+    void doSomething() {
+        std::cout << "MyClass::doSomething() called\n";
+
+        // Accessing the shared_ptr to this object:
+        auto shared_this = shared_from_this(); //instead of copying this pointer as the raw pointer
+
+        // Using the shared_ptr in a detached thread:
+        std::thread t([shared_this]() {
+            std::cout << "Thread: Accessing shared object\n";
+            shared_this->display();
+        });
+        t.detach();
+
+        // Do something else in the main thread
+        std::cout << "Main thread: Doing other things\n";
+    }
+
+    void display() {
+        std::cout << "MyClass::display() called\n";
+    }
+};
+
+int main() {
+    std::shared_ptr<MyClass> myObject = std::make_shared<MyClass>();
+
+    myObject->doSomething();
+
+    // Main thread continues to run while the detached thread executes
+    std::cout << "Main thread: Finished\n";
+
+    return 0;
+}
+
+MyClass constructor called
+MyClass::doSomething() called
+Main thread: Doing other things
+Main thread: Finished
+====================================================
+The Flyweight design pattern is a structural pattern used to efficiently handle a large number of similar objects. 
+It helps minimize memory usage by sharing as many data as possible with similar objects. 
+
+Without Flyweight Pattern:
+
+If you create a new instance of ConcreteCharacter for every occurrence of a character in the text, 
+you end up with many duplicate objects. For example, in the text "Hello", you might create separate instances 
+for 'H', 'e', 'l', 'l', 'o', which consume more memory.
+With Flyweight Pattern:
+
+CharacterFactory ensures that only one instance of ConcreteCharacter exists for each unique character.
+ This means that the 'H', 'e', 'l', 'o' characters are shared among different texts. When TextEditor renders 
+ "Hello" and "Flyweight", the same character instances are reused wherever possible.
+
+#include <iostream>
+#include <memory>
+#include <unordered_map>
+#include <string>
+
+// Flyweight interface for characters
+class CharacterFlyweight {
+public:
+    virtual ~CharacterFlyweight() = default;
+    virtual void display() const = 0;
+};
+
+// Concrete Flyweight for characters
+class ConcreteCharacter : public CharacterFlyweight {
+private:
+    char character;
+public:
+    ConcreteCharacter(char c) : character(c) {}
+    void display() const override {
+        std::cout << character;
+    }
+};
+
+// Flyweight interface for fonts
+class FontFlyweight {
+public:
+    virtual ~FontFlyweight() = default;
+    virtual void apply() const = 0;
+};
+
+// Concrete Flyweight for fonts
+class ConcreteFont : public FontFlyweight {
+private:
+    std::string fontName;
+public:
+    ConcreteFont(const std::string& name) : fontName(name) {}
+    void apply() const override {
+        std::cout << "[Font: " << fontName << "] ";
+    }
+};
+
+// Flyweight factory for characters
+class CharacterFactory {
+private:
+    std::unordered_map<char, std::shared_ptr<ConcreteCharacter>> characters;
+public:
+    std::shared_ptr<ConcreteCharacter> getCharacter(char c) {
+        if (characters.find(c) == characters.end()) {
+            characters[c] = std::make_shared<ConcreteCharacter>(c);
+        }
+        return characters[c];
+    }
+};
+
+// Flyweight factory for fonts
+class FontFactory {
+private:
+    std::unordered_map<std::string, std::shared_ptr<ConcreteFont>> fonts;
+public:
+    std::shared_ptr<ConcreteFont> getFont(const std::string& name) {
+        if (fonts.find(name) == fonts.end()) {
+            fonts[name] = std::make_shared<ConcreteFont>(name);
+        }
+        return fonts[name];
+    }
+};
+
+// Client code
+class TextEditor {
+private:
+    CharacterFactory charFactory;
+    FontFactory fontFactory;
+
+public:
+    void render(const std::string& text, const std::string& fontName) {
+        auto font = fontFactory.getFont(fontName);
+
+        std::cout << "Rendering text with " << fontName << ":\n";
+        for (char c : text) {
+            auto character = charFactory.getCharacter(c);
+            font->apply();
+            character->display();
+            std::cout << " ";
+        }
+        std::cout << std::endl;
+    }
+};
+
+int main() {
+    TextEditor editor;
+
+    editor.render("Hello", "Arial");         // Uses shared instances of 'H', 'e', 'l', 'o', 'Arial'
+    editor.render("Flyweight", "Times New Roman"); // Uses shared instances of 'F', 'l', 'y', 'w', 'e', 'i', 'g', 'h', 't', 'Times New Roman'
+    editor.render("Pattern", "Courier New"); // Uses shared instances of 'P', 'a', 't', 't', 'e', 'r', 'n', 'Courier New'
+
+    return 0;
+}
+
+================================================================================
+Flyweight Pattern Solution:
+In this example, the Flyweight pattern will be used to minimize the memory footprint by sharing common shape 
+properties among different shapes.
+#include <iostream>
+#include <map>
+#include <memory>
+
+// Flyweight Interface
+class Shape {
+public:
+    virtual void draw(int x, int y) const = 0; // Draw the shape at a given position
+};
+
+// Concrete Flyweights
+class Circle : public Shape {
+private:
+    std::string color;
+
+public:
+    Circle(const std::string& color) : color(color) {}
+
+    void draw(int x, int y) const override {
+        std::cout << "Drawing a " << color << " circle at (" << x << ", " << y << ")\n";
+    }
+};
+
+class Square : public Shape {
+private:
+    std::string color;
+
+public:
+    Square(const std::string& color) : color(color) {}
+
+    void draw(int x, int y) const override {
+        std::cout << "Drawing a " << color << " square at (" << x << ", " << y << ")\n";
+    }
+};
+
+class Triangle : public Shape {
+private:
+    std::string color;
+
+public:
+    Triangle(const std::string& color) : color(color) {}
+
+    void draw(int x, int y) const override {
+        std::cout << "Drawing a " << color << " triangle at (" << x << ", " << y << ")\n";
+    }
+};
+
+// Flyweight Factory
+class ShapeFactory {
+private:
+    std::map<std::string, std::shared_ptr<Shape>> shapes;
+
+public:
+    std::shared_ptr<Shape> getShape(const std::string& type, const std::string& color) {
+        std::string key = type + ":" + color;
+        if (shapes.find(key) == shapes.end()) {
+            if (type == "Circle") {
+                shapes[key] = std::make_shared<Circle>(color);
+            } else if (type == "Square") {
+                shapes[key] = std::make_shared<Square>(color);
+            } else if (type == "Triangle") {
+                shapes[key] = std::make_shared<Triangle>(color);
+            }
+        }
+        return shapes[key];
+    }
+};
+
+// Client Code
+class DrawingApplication {
+private:
+    ShapeFactory shapeFactory;
+
+public:
+    void drawShape(const std::string& type, const std::string& color, int x, int y) {
+        std::shared_ptr<Shape> shape = shapeFactory.getShape(type, color);
+        shape->draw(x, y);
+    }
+};
+
+int main() {
+    DrawingApplication app;
+
+    app.drawShape("Circle", "Red", 10, 20);
+    app.drawShape("Square", "Green", 30, 40);
+    app.drawShape("Triangle", "Blue", 50, 60);
+    app.drawShape("Circle", "Red", 70, 80); // Reuses the existing Red Circle instance
+
+    return 0;
+}
+==================================================
+bridge design pattern:
+The Bridge Design Pattern is a structural pattern that aims to "bridge" the gap between abstraction and
+ implementation, allowing both to evolve independently without affecting each other. This pattern is particularly
+ useful when you need to separate an abstraction from its implementation so that the two can vary independently.
+
+#include <iostream>
+#include <memory>
+
+// Implementor Interface
+class TV {
+public:
+    virtual void turnOn() = 0;
+    virtual void turnOff() = 0;
+    virtual ~TV() = default;
+};
+
+// Concrete Implementors
+class LEDTV : public TV {
+public:
+    void turnOn() override {
+        std::cout << "LED TV is now ON\n";
+    }
+    
+    void turnOff() override {
+        std::cout << "LED TV is now OFF\n";
+    }
+};
+
+class OLEDTV : public TV {
+public:
+    void turnOn() override {
+        std::cout << "OLED TV is now ON\n";
+    }
+    
+    void turnOff() override {
+        std::cout << "OLED TV is now OFF\n";
+    }
+};
+
+// Abstraction
+class RemoteControl {
+protected:
+    std::shared_ptr<TV> tv;
+
+public:
+    RemoteControl(std::shared_ptr<TV> tv) : tv(tv) {}
+
+    virtual void power() = 0;
+};
+
+// Refined Abstraction
+class BasicRemote : public RemoteControl {
+public:
+    BasicRemote(std::shared_ptr<TV> tv) : RemoteControl(tv) {}
+
+    void power() override {
+        if (isOn) {
+            tv->turnOff();
+            isOn = false;
+        } else {
+            tv->turnOn();
+            isOn = true;
+        }
+    }
+
+private:
+    bool isOn = false;
+};
+
+class AdvancedRemote : public RemoteControl {
+public:
+    AdvancedRemote(std::shared_ptr<TV> tv) : RemoteControl(tv) {}
+
+    void power() override {
+        if (isOn) {
+            tv->turnOff();
+            isOn = false;
+        } else {
+            tv->turnOn();
+            isOn = true;
+        }
+    }
+
+    void mute() {
+        std::cout << "TV is muted\n";
+    }
+
+private:
+    bool isOn = false;
+};
+
+int main() {
+    // Creating a LED TV and a Remote Control for it
+    auto ledTV = std::make_shared<LEDTV>();
+    BasicRemote basicRemote(ledTV);
+
+    // Using Basic Remote with LED TV
+    basicRemote.power(); // LED TV is now ON
+    basicRemote.power(); // LED TV is now OFF
+
+    // Creating an OLED TV and an Advanced Remote for it
+    auto oledTV = std::make_shared<OLEDTV>();
+    AdvancedRemote advancedRemote(oledTV);
+
+    // Using Advanced Remote with OLED TV
+    advancedRemote.power(); // OLED TV is now ON
+    advancedRemote.mute();  // TV is muted
+    advancedRemote.power(); // OLED TV is now OFF
+
+    return 0;
+}
+
+LED TV is now ON
+LED TV is now OFF
+OLED TV is now ON
+TV is muted
+OLED TV is now OFF
+
+=======================================================
+Certainly! Below is a single C++ program demonstrating
+ the Bridge design pattern in the context of a shape drawing application. This example separates the shape
+ abstraction from its drawing implementation, allowing flexibility in adding new shapes or rendering methods.
+ #include <iostream>
+#include <memory>
+
+// Implementor Interface
+class Renderer {
+public:
+    virtual void renderCircle(float x, float y, float radius) = 0;
+    virtual void renderRectangle(float x, float y, float width, float height) = 0;
+    virtual ~Renderer() = default;
+};
+
+// Concrete Implementor A
+class OpenGLRenderer : public Renderer {
+public:
+    void renderCircle(float x, float y, float radius) override {
+        std::cout << "Drawing a circle at (" << x << ", " << y << ") with radius " << radius << " using OpenGL.\n";
+    }
+
+    void renderRectangle(float x, float y, float width, float height) override {
+        std::cout << "Drawing a rectangle at (" << x << ", " << y << ") with width " << width << " and height " << height << " using OpenGL.\n";
+    }
+};
+
+// Concrete Implementor B
+class DirectXRenderer : public Renderer {
+public:
+    void renderCircle(float x, float y, float radius) override {
+        std::cout << "Drawing a circle at (" << x << ", " << y << ") with radius " << radius << " using DirectX.\n";
+    }
+
+    void renderRectangle(float x, float y, float width, float height) override {
+        std::cout << "Drawing a rectangle at (" << x << ", " << y << ") with width " << width << " and height " << height << " using DirectX.\n";
+    }
+};
+
+// Abstraction
+class Shape {
+protected:
+    std::shared_ptr<Renderer> renderer;
+public:
+    Shape(std::shared_ptr<Renderer> renderer) : renderer(renderer) {}
+    virtual void draw() = 0;
+    virtual ~Shape() = default;
+};
+
+// Refined Abstraction A
+class Circle : public Shape {
+    float x, y, radius;
+public:
+    Circle(float x, float y, float radius, std::shared_ptr<Renderer> renderer)
+        : Shape(renderer), x(x), y(y), radius(radius) {}
+
+    void draw() override {
+        renderer->renderCircle(x, y, radius);
+    }
+};
+
+// Refined Abstraction B
+class Rectangle : public Shape {
+    float x, y, width, height;
+public:
+    Rectangle(float x, float y, float width, float height, std::shared_ptr<Renderer> renderer)
+        : Shape(renderer), x(x), y(y), width(width), height(height) {}
+
+    void draw() override {
+        renderer->renderRectangle(x, y, width, height);
+    }
+};
+
+int main() {
+    // Create OpenGL and DirectX renderers
+    auto openGLRenderer = std::make_shared<OpenGLRenderer>();
+    auto directXRenderer = std::make_shared<DirectXRenderer>();
+
+    // Create shapes with different renderers
+    Circle circle(5, 10, 7, openGLRenderer);
+    Rectangle rectangle(1, 2, 3, 4, openGLRenderer);
+
+    // Draw shapes using OpenGL
+    circle.draw();         // Output: Drawing a circle at (5, 10) with radius 7 using OpenGL.
+    rectangle.draw();     // Output: Drawing a rectangle at (1, 2) with width 3 and height 4 using OpenGL.
+
+    // Switch to DirectX renderer
+    circle = Circle(5, 10, 7, directXRenderer);
+    rectangle = Rectangle(1, 2, 3, 4, directXRenderer);
+
+    // Draw shapes using DirectX
+    circle.draw();         // Output: Drawing a circle at (5, 10) with radius 7 using DirectX.
+    rectangle.draw();     // Output: Drawing a rectangle at (1, 2) with width 3 and height 4 using DirectX.
+
+    return 0;
+}
+
+======================================
+Associative Containers:
+
+std::map: Stores unique key-value pairs. Elements are sorted based on their keys.
+std::unordered_map: Stores unique key-value pairs. Elements are not sorted and are hashed for efficient retrieval.
+std::set: Stores unique elements. Elements are sorted in ascending order.
+std::unordered_set: Stores unique elements. Elements are not sorted and are hashed for efficient retrieval.
+2. Sequential Containers:
+
+std::vector: Dynamically resizable array. Elements are stored contiguously in memory.
+std::list: Doubly linked list. Elements are stored in a linear order with pointers to previous and next elements.
+std::deque: Double-ended queue. Elements can be efficiently added or removed from both ends.
+std::stack: LIFO (Last-In-First-Out) container. Elements are added and removed from the top.
+std::queue: FIFO (First-In-First-Out) container. Elements are added to the back and removed from the front.
+Other Specialized Containers:
+
+std::array: Fixed-size array.
+std::bitset: Fixed-size sequence of bits.
+std::forward_list: Singly linked list.
+std::priority_queue: Priority queue.
+std::unordered_multimap: Similar to std::unordered_map, but allows multiple elements with the same key.
+std::unordered_multiset: Similar to std::unordered_set, but allows duplicate elements.
+===================================================
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <mutex>
+
+// Shared data
+int shared_counter = 0;
+
+// Mutex to protect shared data
+std::mutex counter_mutex;
+
+// Function to increment shared counter
+void incrementCounter(int id) {
+    // Lock the mutex using std::lock_guard
+    std::lock_guard<std::mutex> lock(counter_mutex);
+
+    // Critical section: safely modify shared_counter
+    ++shared_counter;
+
+    // Output the current counter value
+    std::cout << "Thread " << id << " incremented counter to " << shared_counter << std::endl;
+
+    // Mutex is automatically released when lock_guard goes out of scope
+}
+
+int main() {
+    const int num_threads = 10;
+    std::vector<std::thread> threads;
+
+    // Create and start threads
+    for (int i = 0; i < num_threads; ++i) {
+        threads.emplace_back(incrementCounter, i);
+    }
+
+    // Join all threads
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    std::cout << "Final counter value: " << shared_counter << std::endl;
+
+    return 0;
+}
+Thread 0 incremented counter to 1
+Thread 3 incremented counter to 2
+Thread 1 incremented counter to 3
+Thread 2 incremented counter to 4
+Thread 5 incremented counter to 5
+Thread 6 incremented counter to 6
+Thread 4 incremented counter to 7
+Thread 7 incremented counter to 8
+Thread 8 incremented counter to 9
+Thread 9 incremented counter to 10
+Final counter value: 10
+=================================================
+ou can use counter_mutex.lock() and counter_mutex.unlock() directly in your C++ code, 
+but it requires careful handling to avoid issues like deadlocks and resource leaks.
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <mutex>
+
+// Shared data
+int shared_counter = 0;
+
+// Mutex to protect shared data
+std::mutex counter_mutex;
+
+// Function to increment shared counter
+void incrementCounter(int id) {
+    // Lock the mutex manually
+    counter_mutex.lock();
+    
+    // Critical section: safely modify shared_counter
+    ++shared_counter;
+
+    // Output the current counter value
+    std::cout << "Thread " << id << " incremented counter to " << shared_counter << std::endl;
+    
+    // Unlock the mutex manually
+    counter_mutex.unlock();
+}
+
+int main() {
+    const int num_threads = 10;
+    std::vector<std::thread> threads;
+
+    // Create and start threads
+    for (int i = 0; i < num_threads; ++i) {
+        threads.emplace_back(incrementCounter, i);
+    }
+
+    // Join all threads
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    std::cout << "Final counter value: " << shared_counter << std::endl;
+
+    return 0;
+}
+=================================================
+#include <iostream>
+#include <utility> // for std::pair
+
+int main() {
+    // Create a pair
+    std::pair<int, std::string> myPair(1, "Hello");
+
+    // Use structured bindings to unpack the pair
+    auto [number, text] = myPair;
+
+    // Output the values
+    std::cout << "Number: " << number << "\n";
+    std::cout << "Text: " << text << "\n";
+
+    return 0;
+}
+
+#include <iostream>
+#include <tuple>
+
+int main() {
+    // Create a tuple
+    std::tuple<int, double, std::string> myTuple(1, 3.14, "Hello");
+
+    // Use structured bindings to unpack the tuple
+    auto [integer, floatingPoint, str] = myTuple;
+
+    // Output the values
+    std::cout << "Integer: " << integer << "\n";
+    std::cout << "Floating Point: " << floatingPoint << "\n";
+    std::cout << "String: " << str << "\n";
+
+    return 0;
+}
+
+=============================
+#include <iostream>
+#include <tuple>
+
+class MyClass {
+public:
+    int x;
+    std::string y;
+
+    MyClass(int x, const std::string& y) : x(x), y(y) {}
+};
+
+int main() {
+    MyClass obj(10, "Hello");
+
+    // Using std::pair to apply structure binding
+    std::pair<int, std::string> pair = std::make_pair(obj.x, obj.y);
+    auto [x, y] = pair;
+    std::cout << x << " " << y << std::endl;
+	
+	//std::tuple<int, std::string> tuple = std::make_tuple(obj.x, obj.y);
+    //auto [x, y] = tuple;
+
+    // Using std::tuple to apply structure binding
+    std::tuple<int, std::string> tuple = std::make_tuple(obj.x, obj.y);
+    auto [a, b] = tuple;
+    std::cout << a << " " << b << std::endl;
+
+    return 0;
+}
+structure binding will not work directly on the obhect
+==============================
+In C++, the explicit keyword is used to prevent implicit conversions that could lead to unexpected behaviors.
+#include <iostream>
+#include <string>
+
+class Date {
+public:
+    Date(int day) : day(day) {}
+
+    void show() const {
+        std::cout << "Day: " << day << std::endl;
+    }
+
+private:
+    int day;
+};
+
+void printDate(const Date& date) {
+    date.show();
+}
+
+int main() {
+    printDate(5);  // Implicit conversion from int to Date
+    return 0;
+}
+
+#include <iostream>
+#include <string>
+
+class Date {
+public:
+    explicit Date(int day) : day(day) {}
+
+    void show() const {
+        std::cout << "Day: " << day << std::endl;
+    }
+
+private:
+    int day;
+};
+
+void printDate(const Date& date) {
+    date.show();
+}
+
+int main() {
+    // printDate(5);  // Error: no implicit conversion allowed
+    printDate(Date(5));  // Explicit conversion required
+    return 0;
+}
+============
+#include <iostream>
+#include <string>
+
+class StringWrapper {
+public:
+    StringWrapper(const std::string& str) : str(str) {}
+
+    operator std::string() const {
+        return str;
+    }
+
+private:
+    std::string str;
+};
+
+void printString(const std::string& str) {
+    std::cout << str << std::endl;
+}
+
+int main() {
+    StringWrapper wrapper("Hello, World!");
+    printString(wrapper);  // Implicit conversion to std::string
+    return 0;
+}
+=================
+#include <iostream>
+#include <string>
+
+class StringWrapper {
+public:
+    StringWrapper(const std::string& str) : str(str) {}
+
+    explicit operator std::string() const {
+        return str;
+    }
+
+private:
+    std::string str;
+};
+
+void printString(const std::string& str) {
+    std::cout << str << std::endl;
+}
+
+int main() {
+    StringWrapper wrapper("Hello, World!");
+    // printString(wrapper);  // Error: no implicit conversion allowed
+    printString(static_cast<std::string>(wrapper));  // Explicit conversion required
+    return 0;
+}
+--------------------------
+std::index_sequence is a utility that provides a way to work with sequences of 
+integer indices at compile time. It's part of the <utility> header and is used primarily in conjunction with 
+variadic templates to help unpack arguments or perform operations over a range of indices.
+
+#include <iostream>
+#include <tuple>
+#include <utility>
+
+// Helper function to print tuple elements
+template <typename Tuple, std::size_t... I>
+void printTuple(const Tuple& t, std::index_sequence<I...>) {
+    // Expanding tuple elements using indices
+    ((std::cout << std::get<I>(t) << ' '), ...);
+}
+
+int main() {
+    auto myTuple = std::make_tuple(1, 2, 3, 4, 5);
+    printTuple(myTuple, std::make_index_sequence<std::tuple_size<decltype(myTuple)>::value>{}); //here it generenate the sequence of integers
+    return 0;
+}
+==========================
+#include <iostream>
+#include <tuple>
+#include <utility>
+
+// Helper function that processes each element of a tuple
+template <typename Tuple, std::size_t... Indices>
+void processTuple(const Tuple& t, std::index_sequence<Indices...>) {
+    // Using a fold expression to print each element
+    ((std::cout << std::get<Indices>(t) << ' '), ...);
+}
+
+// Function to initiate tuple processing
+template <typename... Args>
+void processArgs(const std::tuple<Args...>& t) {
+    processTuple(t, std::make_index_sequence<sizeof...(Args)>{});
+}
+
+int main() {
+    auto myTuple = std::make_tuple(1, 2.5, "hello", 'c');
+    processArgs(myTuple); // Output: 1 2.5 hello c
+    return 0;
+}
+============================================
+#include <iostream>
+#include <filesystem>
+
+int main() {
+    std::filesystem::path target = "target_file.txt";
+    std::filesystem::path symlink = "symlink_to_target.txt";
+    
+    try {
+        std::filesystem::create_symlink(target, symlink);
+        std::cout << "Symlink created.\n";
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Filesystem error: " << e.what() << '\n';
+    }
+    
+    return 0;
+}
+
+=============
+#include <iostream>
+#include <filesystem>
+
+int main() {
+    std::filesystem::path symlink = "symlink_to_target.txt";
+    
+    try {
+        std::filesystem::path target = std::filesystem::read_symlink(symlink);
+        std::cout << "Symlink points to: " << target << '\n';
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Filesystem error: " << e.what() << '\n';
+    }
+    
+    return 0;
+}
+=====================
+#include <iostream>
+#include <filesystem>
+
+int main() {
+    std::filesystem::path symlink = "symlink_to_target.txt";
+    
+    try {
+        if (std::filesystem::remove(symlink)) {
+            std::cout << "Symlink removed.\n";
+        } else {
+            std::cout << "Symlink not found.\n";
+        }
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Filesystem error: " << e.what() << '\n';
+    }
+    
+    return 0;
+}
+==============
+#include <iostream>
+#include <filesystem>
+
+int main() {
+    std::filesystem::path filePath = "path/to/file.txt";
+    
+    try {
+        std::uintmax_t fileSize = std::filesystem::file_size(filePath);
+        std::cout << "File size: " << fileSize << " bytes\n";
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Filesystem error: " << e.what() << '\n';
+    }
+    
+    return 0;
+}
+==================================
+#include <iostream>
+#include <filesystem>
+
+void listFilesAndDirectories(const std::filesystem::path& path) {
+    try {
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
+            if (entry.is_directory()) {
+                std::cout << "Directory: " << entry.path() << '\n';
+            } else if (entry.is_regular_file()) {
+                std::cout << "File: " << entry.path() << '\n';
+            }
+        }
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Filesystem error: " << e.what() << '\n';
+    }
+}
+
+int main() {
+    listFilesAndDirectories("path/to/your/directory");
+    return 0;
+}
+
+======================================================

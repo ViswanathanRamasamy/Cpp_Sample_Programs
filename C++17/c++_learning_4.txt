@@ -1,0 +1,6103 @@
+C++17:
+========
+Features depricated:
+
+register : storage class. variable needs to be stored in register. used in 98.
+exception specification
+operator++(bool): increment operator on bool is not allowed. decrement operator never allowed
+Trigraphs
+auto_ptr
+library function:
+std::randon_shuffle: shuffle list of element. depend on c function rand
+std::unary_function: replaced by function
+std:ptr_fun: replaced by function
+std::bind1st : replaced by bind
+
+=========
+not allowed; compiler error
+bool x{}
+x++;
+================
+Trigraphs:
+special charatecter sequence used when the system doesnot support 7 bit ascii.
+in old computer we ?? to produce ~
+these have been removed to speed up the compilation process.
+=============
+exception Specification:
+Features that allowed a function to advertise what exception it throw
+not implemented by many compiler
+replaced by no except
+
+void check(int a) throw (int) {
+ throw 1;
+ }
+=========================
+std::auto_ptr:
+no ownership semantics
+could lead to bug
+replaced with unique_ptr and std::shared_ptr
+==============
+conversion opertor to bool
+b is not calable object ie not as b();
+
+#include <iostream>
+
+class BoolWrapper {
+public:
+    BoolWrapper(bool value = false) : value(value) {}
+
+    // Prefix increment
+    BoolWrapper& operator++() {
+        value = !value; // Toggle the value between true and false
+        return *this;
+    }
+
+    // Postfix increment
+    BoolWrapper operator++(int) {
+        BoolWrapper temp = *this;
+        ++(*this); // Use the prefix increment to toggle the value
+        return temp;
+    }
+
+    // Conversion operator to bool
+    operator bool() const {
+        return value;
+    }
+
+private:
+    bool value;
+};
+
+int main() {
+    BoolWrapper b(false);
+    std::cout << "Initial value: " << b << std::endl;
+
+    ++b; // Prefix increment
+    std::cout << "After prefix increment: " << b << std::endl;
+
+    b++; // Postfix increment
+    std::cout << "After postfix increment: " << b << std::endl;
+
+    return 0;
+}
+
+// Overload << operator for BoolWrapper to print the value
+std::ostream& operator<<(std::ostream& os, const BoolWrapper& b) {
+    os << (bool(b) ? "true" : "false");
+    return os;
+}
+
+Initial value: 0
+After prefix increment: 1
+After postfix increment: 0
+======================================
+Transfer of Ownership:
+
+auto_ptr transfers ownership when it is copied or assigned.
+ This means the source auto_ptr becomes empty (nullptr) after the transfer.
+This behavior can lead to unexpected issues if you 
+accidentally copy or assign an auto_ptr, causing the original pointer to become nullptr.
+
+#include <iostream>
+#include <memory> // For std::unique_ptr
+
+void example() {
+    std::auto_ptr<int> p1(new int(10));
+    std::auto_ptr<int> p2 = p1; // Transfers ownership to p2
+
+    std::cout << "p1: " << (p1.get() ? "not null" : "null") << std::endl; // p1 is now null
+    std::cout << "p2: " << (p2.get() ? "not null" : "null") << std::endl; // p2 owns the resource
+}
+
+int main() {
+    example();
+    return 0;
+}
+p1: null
+p2: not null
+==================================================
+#include <iostream>
+#include <memory>
+
+void example() {
+    std::unique_ptr<int> p1(new int(10));
+    // std::unique_ptr<int> p2 = p1; // Error: cannot copy unique_ptr
+    std::unique_ptr<int> p2 = std::move(p1); // Transfers ownership to p2
+
+    std::cout << "p1: " << (p1 ? "not null" : "null") << std::endl; // p1 is now null
+    std::cout << "p2: " << (p2 ? "not null" : "null") << std::endl; // p2 owns the resource
+}
+
+int main() {
+    example();
+    return 0;
+}
+p1: null
+p2: not null
+=======================================================
+direct list initialization:
+auto a{1} //int
+auto b {1,2}; //ill-formed //compiler error
+auto c ={1};//std::initializer_list
+auto d = {1,2};//std::initializer_list
+auto b = {1, 2};  // b is of type std::initializer_list<int>
+
+#include <initializer_list>
+#include <iostream>
+
+int main() {
+    auto b = std::initializer_list<int>{1, 2};
+
+    for (auto val : b) {
+        std::cout << val << " "; //1 2
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+======================
+//range based for loop:
+rangebased for loop allow easy iterate over a range
+it automatically expands to a loop that uses iterator to iterate over the range
+relies on presence of iterator
+begin and end iterator is must
+
+c++17: removes this limitation ; they can be of different type but must provide operator != for comparison
+
+std::array<int,5> values {1,2,3,4,5};
+for (auto v:values) {
+//uses V
+}
+
+auto &&range = values;
+auto begin = std::begin(range);
+auto end = std::end(range);
+
+for(;begin !=end; ++begin)
+{
+    auto v =*begin;
+	//use v
+}
+
+===============================================
+int main() {
+    auto b = std::vector<int>{1, 2};
+    //b is vector<int>
+    for (auto val : b) { //range based for loop
+        std::cout << val << " "; // 1 2
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+========================
+#include <vector>
+#include <iostream>
+
+int main() {
+    auto b = std::vector<int>{1, 2};
+
+    // Using iterator to iterate through the vector
+    for (auto it = b.begin(); it != b.end(); ++it) {
+        std::cout << *it << " "; // Dereference the iterator to get the value
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+===============================
+
+int main() {
+    auto b = {1, 2}; //b is of type std::initializer_list<int>
+
+    // Using iterator to iterate through the initializer list
+    for (auto it = b.begin(); it != b.end(); ++it) {
+        std::cout << *it << " "; // Dereference the iterator to get the value
+    } // 1 2
+    std::cout << std::endl;
+
+    return 0;
+}
+===========================================
+#include <array>
+#include <iostream>
+#include <iterator>
+
+int main() {
+    // Initialize an array with 5 integers
+    std::array<int, 5> values {1, 2, 3, 4, 5};
+
+    // Range-based for loop
+    std::cout << "Range-based for loop: ";
+    for (auto v : values) {
+        std::cout << v << " "; // Use v
+    }
+    std::cout << std::endl;
+
+    // Using universal reference and iterators
+    auto &&range = values; // Universal reference to values
+	//error  std::array<int, 5> &&range = values; // Universal reference to values
+    auto begin = std::begin(range); // Iterator to the beginning of the array
+    auto end = std::end(range); // Iterator to the end of the array
+
+//or 
+//auto begin = std::begin(values); // Iterator to the beginning of the array
+//auto end = std::end(values); // Iterator to the end of the array
+	
+    // Iterator-based for loop
+    std::cout << "Iterator-based for loop: ";
+    for (; begin != end; ++begin) {
+        auto v = *begin; // Dereference the iterator to get the value
+        std::cout << v << " "; // Use v
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+Range-based for loop: 1 2 3 4 5 
+Iterator-based for loop: 1 2 3 4 5 
+===================================
+ std::array<int, 5> values {1, 2, 3, 4, 5};
+auto &&range = values; //no error  results in range being an lvalue reference (std::array<int, 5> &).
+Although range is declared with &&, it is an lvalue reference because values is an lvalue.
+
+ std::array<int, 5> values {1, 2, 3, 4, 5};
+  std::array<int, 5> &&range = values; //error
+=====================================
+#include <iostream>
+#include <utility> // For std::forward
+
+// Declarations of the overloaded functions
+void another_function(int& x);
+void another_function(const int& x);
+void another_function(int&& x);
+
+// Function template with a universal reference
+template<typename T>
+void process(T&& arg) {
+    // Forward the argument to another function
+    another_function(std::forward<T>(arg));
+}
+
+// Definitions of the overloaded functions
+void another_function(int& x) {
+    std::cout << "Lvalue reference: " << x << std::endl;
+}
+
+void another_function(const int& x) {
+    std::cout << "Const lvalue reference: " << x << std::endl;
+}
+
+void another_function(int&& x) {
+    std::cout << "Rvalue reference: " << x << std::endl;
+}
+
+int main() {
+    int a = 10;
+    process(a);          // Calls process with lvalue
+    const int t=100;
+    process(t);
+    process(20);         // Calls process with rvalue
+
+    return 0;
+}
+Lvalue reference: 10
+Const lvalue reference: 100
+Rvalue reference: 20
+
+=========================================
+#include <iostream>
+
+int main() {
+    int value = 100;
+
+    // Valid: rvalue reference initialized with an rvalue
+    int &&y = 100;
+
+    // Valid: lvalue reference bound to an lvalue
+    int &x = value;
+
+    // Invalid: cannot bind an rvalue reference to an lvalue reference
+    // int &&a = x; // This will cause a compilation error
+   /// Invalid: cannot bind an rvalue reference to an lvalue reference
+   //int &&a = value;
+    // Valid: rvalue reference to an lvalue reference (x is an lvalue reference)
+    int &&a = std::move(x);
+
+    std::cout << "y: " << y << std::endl;
+    std::cout << "x: " << x << std::endl;
+    std::cout << "a: " << a << std::endl;
+
+    return 0;
+}
+y: 100
+x: 100
+a: 100
+=======================================================
+static_assert : compile time assertion . it takes 2 argument 
+1st one condition and second argument message. compile time
+assert message.
+in c++17: static_assert can have the condition check without the 
+message
+
+#include <iostream>
+#include <type_traits>
+
+template <typename T>
+void checkPointer(T args) {
+    static_assert(std::is_pointer_v<T>, "Only pointer types are allowed.");
+	//output in the argument data type is not pointer main.cpp(7): error C2338: Only pointer types are allowed.
+	
+    // in c++17 static_assert(std::is_pointer_v<T>);
+	//output in the argument data type is not pointer  error c2007: static_assertion failed
+}
+
+int main() {
+    int X{};
+    
+    // This will cause a static assertion failure since X is not a pointer
+    // checkPointer(X);
+
+    // This will work since &X is a pointer
+    checkPointer(X);
+    
+    return 0;
+}
+
+main.cpp(7): error C2338: Only pointer types are allowed.
+==============================================
+Attrubute:
+Attributes used to be compiler specific commands that give
+additional information to the compiler
+They might be utalized for the optimization or checs.
+
+befor c++11 different compiler vendor used keywrds for attributes eg MSCV
+uses __declspec, GCC uses __attribut, etc
+-- we can use only inbuild attrubute
+
+[[noreturn]] : function doesnt return any value it can be empty return
+[[deprecated("")]] the entity is deprecated
+[[nodiscard]]: return value should not be discarded
+[[maybe_unused]]: prevent the warning for issuing non used entity.
+[[fall_through]]: indicate deliberate fall through in a case statement
+
+
+// [[noreturn]] attribute indicates that this function doesn't return.
+[[noreturn]] void terminateProgram() {
+    throw std::runtime_error("Terminating program...");
+    //return; // no error
+}
+
+// [[deprecated]] attribute marks the function as deprecated with a custom message.
+[[deprecated("Use newFunction() instead.")]]
+void oldFunction() {
+    std::cout << "This function is deprecated." << std::endl;
+}
+
+// [[nodiscard]] attribute indicates that the return value should not be discarded.
+[[nodiscard]] int importantCalculation() {
+    return 42;
+}
+
+// [[maybe_unused]] attribute suppresses compiler warnings about unused variables.
+void someFunction() {
+    [[maybe_unused]] int unusedVariable = 10;
+
+    int usedVariable = 20;
+    std::cout << "Used variable: " << usedVariable << std::endl;
+}
+
+void switchExample(int value) {
+    switch (value) {
+        case 1:
+            std::cout << "Case 1" << std::endl;
+            // [[fallthrough]] attribute indicates intentional fall-through to the next case.
+            [[fallthrough]];
+        case 2:
+            std::cout << "Case 2" << std::endl;
+            break;
+        default:
+            std::cout << "Default case" << std::endl;
+            break;
+    }
+}
+
+int main() {
+    // Uncommenting the following line will generate a deprecation warning.
+    // oldFunction();
+
+    // This will generate a warning if the return value is ignored.
+    int result = importantCalculation();
+    std::cout << "Result of important calculation: " << result << std::endl;
+
+    oldFunction();
+    someFunction();
+
+    switchExample(1);
+
+    // Uncommenting the following line will terminate the program.
+    // terminateProgram();
+
+    return 0;
+}
+main.cpp: In function ‘int main()’:
+main.cpp:52:16: warning: ‘void oldFunction()’ is deprecated: Use newFunction() instead. [-Wdeprecated-declarations]
+   52 |     oldFunction();
+      |     ~~~~~~~~~~~^~
+main.cpp:12:6: note: declared here
+   12 | void oldFunction() {
+      |      ^~~~~~~~~~~
+Result of important calculation: 42
+This function is deprecated.
+Used variable: 20
+Case 1
+Case 2
+
+=================================
+t is not necessary to gave the attribute name both in the function declaration and definition. declartion or declaration and definition.
+error: not in declaration but the attribute name in definition.
+===============
+gcc
+void myFunction() __attribute__((noreturn));
+
+void myFunction() {
+    throw "This function does not return";
+}
+
+struct __attribute__((packed)) PackedStruct {
+    char a;
+    int b;
+    char c;
+};
+
+void oldFunction() __attribute__((deprecated("Use newFunction instead")));
+
+void oldFunction() {
+    // Deprecated function logic
+}
+====
+#if defined(_MSC_VER)
+    #define DEPRECATED __declspec(deprecated)
+#elif defined(__GNUC__) || defined(__clang__)
+    #define DEPRECATED __attribute__((deprecated))
+#else
+    #pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+    #define DEPRECATED
+#endif
+
+DEPRECATED void oldFunction() {
+    // Implementation
+}
+======================================
+compiler will give the diagnostic message during the compilation for the deprecated attribute.
+
+class [[deprecated("use of this class is deprecated")]] Test {
+};
+
+namespace [[deprecated("use of this namespace is deprecated")]] A {
+}
+
+calling the namespace
+using namespace A;
+
+MSVC (Microsoft Visual C++ compiler)
+use of this namespace or class will give error in the visual studio compiler but not in the gcc.
+
+template <typename T>
+[[nodiscard]]
+T* CreateArray(size_t size)
+{
+    return new T[size];
+}
+
+auto p = CreateArray<int>(3); no warning or error 
+CreateArray<int>(3); //warning or error 
+==================================
+class is marked as noreturn so the function returning the object of this class
+cannot be discarded. function name needn't have nodiscard for this function.
+class [[nodiscard]]] Number {
+};
+
+Number GetNumber(int a) {
+  return NUmber{};
+}
+
+GetNumber(3); //warning discard of the return value of the function
+====================================
+Feature Test Macro (C++17)
+
+C++17 introduce a new macro __has_include
+can be used to check if a header is available for inclusion or not
+helps track the progress of the partial implementation of the new c++ standard.
+can be used with #if and #elif expression only
+you can also use this to check the platform specific header files
+
+#ifdef __has_include
+	#if __has_include(<filesystem>)
+		#include <filesystem>
+		namespace fs =std::filesystem;
+
+	#else
+		#include <experimental/filesystem>
+		namespace fs=std::experimental::filesystem;
+	#endif
+#endif
+
+int main()
+{
+    fs::path p {"c:"};
+    return 0;
+}
+====================
+to check for the platform specifi files
+
+#if __has_include (<windows.h>)
+#include <windows.h>
+#endif
+
+#if __has_include (<unistd.h>)
+#include <unistd.h>
+#endif
+
+===============
+we also have the macro to check which year the feature is added
+
+cout<< __cpp_capture_star_this => year where the this is can be used in capture
+
+__cpp_inline_variables
+Description: This macro checks for the availability of the inline variables feature, which was introduced in C++17.
+
+#include <iostream>
+
+#if defined(__cpp_capture_star_this) && __cpp_capture_star_this >= 201310L
+struct Example {
+    int value;
+    auto makeLambda() const {
+        std::cout <<"viswa"<<std::endl;
+        return [*this] { return value; };
+    }
+};
+#else
+struct Example {
+    int value;
+    auto makeLambda() const {
+        // Alternative implementation without capturing *this
+        int capturedValue = value;
+        return [capturedValue] { return capturedValue; };
+    }
+};
+#endif
+
+int main() {
+    Example ex{42};
+    auto lambda = ex.makeLambda();
+    std::cout << "Lambda captured value: " << lambda() << std::endl;
+    return 0;
+}
+viswa
+Lambda captured value: 42
+=========================================
+inline variable:
+even though the variable is declared in the header all the cpp file will consider 
+it as the single unit
+
+inline for Variables:
+
+Allows the variable to be defined in multiple translation units (via a header file) without violating the One Definition Rule.
+Ensures that all translation units share the same instance of the variable.
+
+#ifndef HEADER1_H
+#define HEADER1_H
+
+inline int globalCount = 0;  // Global variable defined inline
+inline constexpr int maxUsers = 100;  // Inline constant
+
+#endif // HEADER1_H
+
+#include "header1.h"
+
+void someFunction() {
+    globalCount++;
+}
+
+#include "header1.h"
+
+void anotherFunction() {
+    if (globalCount < maxUsers) {
+        globalCount++;
+    }
+}
+=====
+static member variable vs static inline
+struct MyClass {
+    static int instanceCount;  // Declaration
+};
+
+// In some .cpp file
+int MyClass::instanceCount = 0;  // Definition and initialization
+=================
+struct MyClass {
+    inline static int instanceCount = 0;  // Inline definition and initialization
+};
+=================
+for (int i=0; i<10;i++)
+{
+   //i is used only with in the loop statement;
+}
+
+=======================
+if and switch statement having intitlization:
+
+if statement having the initialization:
+we dont want unnecessary variable outside the loop statement.
+
+void alloc()
+{
+   int *p = (int*) malloc(sizeof(int));
+   if( p!= nullptr)
+   {
+      *p = 50;
+      free(p);
+   }
+   
+   //scope of p has to be with in the if statement
+   
+in c++17. P is accessable only in if statement
+if (int *p = (int*) malloc(sizeof(int));p!= nullptr)
+{
+ *p = 50;
+  free(p);
+}
+elseif (some condition) {
+   //Here p accessable
+}
+else{
+//Here p accessable
+}
+
+================
+writing data into the file:
+
+void write (const std::string &data)
+{
+   std::ofstream out("c:\file.txt");
+   if(out) {
+	   if(!data.empty()){
+		   std::cout <<"writing data into the file";
+		   out <<data;
+		}
+		else {
+		  std::cout <<"data content is empty";
+		   out <<"######";
+		}
+	}
+}
+
+void write (const std::string &data)
+{
+   if(std::ofstream out("c:\file.txt");out) {
+	   if(!data.empty()){
+		   std::cout <<"writing data into the file";
+		   out <<data;
+		}
+		else {
+		  std::cout <<"data content is empty";
+		   out <<"######";
+		}
+	}
+}
+==============
+switch statement having the initialization:
+
+class FileInfo {
+public:
+  enum Type{ Executable, Text}
+  
+  Type GetFileType() const
+  {
+      return {}; //first enum will be return is Executable
+  }
+
+  size_t GetFileSize()const {
+     return 0;
+  }
+};
+
+FileInfo GetInfo(const std::string &file) {
+   return{}; //default-constructed object of the FileInfo class
+}
+
+void operator(const std::string &file)
+{
+    auto info = GetInfo(file);
+	switch(info.GetFileType())
+	{
+	    case FileInfo::Executable:
+		    break;
+		case FileInfo::Text:
+			break;
+		default:
+			break;
+		
+	}
+}
+
+//modified
+void operator()(const std::string &file) //has to be inside the class or struct
+{   
+	switch(auto info = GetInfo(file);info.GetFileType())
+	{
+	    case FileInfo::Executable:
+		    break;
+		case FileInfo::Text:
+			break;
+		default:
+			break;
+		
+	}
+}
+===========
+
+enum Type{ Executable=1, Text};
+  
+  Type GetFileType() 
+  {
+      return {}; //0 //return 0 but it is not a valid enum. lead to undefined behaviour while running
+  }
+  
+int main()
+{
+    std::cout <<GetFileType(); //0 will retun 0 but it is not valid value
+
+    return 0;
+}
+======================================================
+#include <iostream>
+#include <string>
+
+// Enum Type defined elsewhere in your code
+enum Type { Executable = 1, Text };
+
+// Hypothetical FileInfo class
+class FileInfo {
+public:
+    Type GetFileType() const {
+        return Text; // For the sake of example, returning Text
+    }
+};
+
+// A function that returns a FileInfo object based on the file string
+FileInfo GetInfo(const std::string& file) {
+    return {}; // Default returning an empty FileInfo (undefined in this context)
+}
+
+// Class with operator() overloaded
+class FileProcessor {
+public:
+    void operator()(const std::string &file) {    // Overload the operator()
+        switch(auto info = GetInfo(file); info.GetFileType()) {
+            case Executable:
+                std::cout << "Processing Executable File\n";
+                break;
+            case Text:
+                std::cout << "Processing Text File\n";
+                break;
+            default:
+                std::cout << "Unknown File Type\n";
+                break;
+        }
+    }
+};
+
+int main() {
+    FileProcessor processor;
+    processor("example.txt"); // Calling the operator() like a function
+
+    return 0;
+}
+===================================
+inline variable:
+global variable needs to accessed by different source file.
+declaring the variable and initializing it in the header file may lead to linker error since the header file 
+may be included in multiple source file.
+
+var.h header file.
+var.h file is includein a.cpp , b.cpp and main.cpp
+
+====
+global variable in var.h
+int global = 0;
+//or int global
+
+in a.cpp:
+#include "var.h"
+
+
+in b.cpp:
+#include "var.h"
+
+
+in main.cpp:
+#include "var.h"
+
+int main()
+{
+  return 0;
+}
+when you compile the above program we get the linker error for the int global already defined.
+=====
+var.h
+no declaration of global variable
+
+in a.cpp:
+#include "var.h"
+int global = 0;
+//or int global
+
+
+in b.cpp:
+#include "var.h"
+extern int global;
+
+in main.cpp:
+#include "var.h"
+extern int global;
+
+int main()
+{
+  return 0;
+}
+// no error
+===============
+or
+
+var.h
+extern int global;
+
+in a.cpp:
+#include "var.h"
+int global = 0;
+//or int global
+
+
+in b.cpp:
+#include "var.h"
+
+
+in main.cpp:
+#include "var.h"
+
+
+int main()
+{
+  return 0;
+}
+no error
+=========================
+There will be only one definition for the variable
+global variable in var.h
+inline int global = 0;
+//or int global
+
+in a.cpp:
+#include "var.h"
+
+
+in b.cpp:
+#include "var.h"
+
+
+in main.cpp:
+#include "var.h"
+
+int main()
+{
+  return 0;
+}
+====================
+Assume i have header file
+class Test {
+  static int m_data;
+}
+
+//The initialization of the static member has to be in the cpp file.
+//becauseit voilate the one definition rule but in c++17
+class Test {
+  inline static int m_data = 10;
+  int x =10; 
+  constexpr static int m_data1 = 10; //iplicitly inline
+  //or constexpr static int m_data2 = 100;
+}
+=========================
+class MyClass {
+public:
+    operator int() const {
+        return 42;
+    }
+};
+
+int main() {
+    MyClass obj;
+    int value = obj; // Implicit call to conversion operator
+    std::cout << "Value: " << value << std::endl;
+    return 0;
+}
+==============================
+class MyClass {
+public:
+    MyClass(int value) {
+        std::cout << "Constructor with value " << value << std::endl;
+    }
+};
+
+int main() {
+    MyClass obj(10); // Explicit call to the constructor with an argument
+    return 0;
+}
+=================================
+class MyClass {
+public:
+    MyClass() {
+        std::cout << "Default constructor called" << std::endl;
+    }
+};
+
+int main() {
+    MyClass obj; // Implicit call to the default constructor
+	//please not  MyClass obj(); //this will not create the object it is considered as the 
+	//function declaration.
+    return 0;
+}
+=====================================
+Nested Namespace: simplify the syntx of the nested namespace
+=================
+namespace A {
+	namespace B {
+		namespace C {
+			void Foo(){}
+		}
+	}
+}
+#include <iostream>
+
+namespace A::B::C {
+   void Foo(){
+       std::cout <<"Foo function Called" <<std::endl;
+   }
+}
+
+int main()
+{
+   //A::B::C::Foo(); // 1. Explicit call to Foo using fully qualified name
+
+   //using A::B::C::Foo;
+   //Foo(); // 2. Call to Foo after bringing it into the local scope using 'using'
+
+   using namespace A::B::C;
+   Foo(); // 3. Call to Foo after bringing the entire namespace 'C' into the local scope using 'using'
+}
+===============================
+noexcept
+
+//foo function can throw only 2 exception in c++98
+void Foo() throw(int, float) {
+}
+//if Foo function throw any other exception , program terminate
+
+c++11 throw(datatype1,...) was deprecated.
+===
+void Foo() noexcept {
+}
+
+void Bar() {
+}
+
+int main() {
+  void (*p)()noexcept;
+  p = Bar; //This will give the error in the C++17
+  p();
+}
+===============
+void Foo() noexcept {
+}
+
+void Bar() {
+}
+
+int main() {
+  void (*p)(); //p can throw except
+  p = Foo; // no error in c++17
+  p();
+}
+=====================   
+const lamda expression:
+std::string GetDescription(const std::string &header) {
+   std::ostringstream ost;
+   ost<< header <<std::endl;
+   ost << "Name:" << "Viswanathan" <<std::endl;
+   return ost.str();
+}   
+
+cout << GetDescription("########");
+========
+deferred execution
+
+#include <iostream>
+#include <sstream>
+#include <string>
+
+class Person {
+public:
+    std::string name = "Viswanathan";
+
+    auto GetDescription() {
+        return [this](const std::string &header){
+            std::ostringstream ost;
+            ost << header << std::endl;
+            ost << "Name: " << this->name << std::endl;
+            return ost.str();
+        };
+    }
+};
+
+int main() {
+    Person person;
+    auto p = person.GetDescription();
+    std::cout << p("########") << std::endl;  // Custom header
+    std::cout << p("$$$$$$$$") << std::endl;  // Another custom header
+}
+
+########
+Name: Viswanathan
+
+$$$$$$$$
+Name: Viswanathan
+==================================
+
+in the case of heap memory: 
+since the original object is deleted the program might crash.
+
+if a function returns the lamda expression that inturn uses the member variable
+then try use *this in the capture list.
+
+int main() {
+    Person *per = new Person;
+    auto p = per->GetDescription();
+	delete per; //original object id deleted
+    std::cout << p("########") << std::endl;  // Custom header
+    std::cout << p("$$$$$$$$") << std::endl;  // Another custom header
+}
+
+to fix capture the object by value
+#include <iostream>
+#include <sstream>
+#include <string>
+
+class Person {
+public:
+    std::string name = "Viswanathan";
+
+    auto GetDescription() {
+	    //provided the product object should be copyable
+        return [*this](const std::string &header){
+            std::ostringstream ost;
+            ost << header << std::endl;
+            ost << "Name: " << this->name << std::endl;
+            ost << "Name: " << name << std::endl;
+            return ost.str();
+        };
+    }
+};
+
+
+int main() {
+    Person *per = new Person;
+    auto p = per->GetDescription();
+	delete per; //original object id deleted
+    std::cout << p("########") << std::endl;  // Custom header
+    std::cout << p("$$$$$$$$") << std::endl;  // Another custom header
+}
+########
+Name: Viswanathan
+Name: Viswanathan
+
+$$$$$$$$
+Name: Viswanathan
+Name: Viswanathan
+
+=================================================================
+auto f = [](int x, int y) //stateless lamda ie no capture list.
+//implicity changed to constexpr
+//good to add the const auto f = [](int x, int y)
+{
+   return x+y;
+}
+
+//or auto f = [](int x, int y) constexpr 
+{
+   return x+y;
+}
+//or constepr auto f = [](int x, int y) constexpr 
+{
+   return x+y;
+}
+
+constexpr auto sum = f(3,4); /evaluated at compile time
+printf("%d",sym);
+
+auto sum = f(3,4); //evaluated at runtime
+=========
+Capturing Lambda (Cannot be constexpr):
+int value = 10;
+auto f = [value](int x, int y) {
+    return x + y + value; // Captures 'value' from the surrounding scope
+};
+================
+auto multiply = [](int x, int y) -> int {
+    return x * y;
+};
+auto multiply: This declares a variable multiply with a lambda function assigned to it. The auto keyword is used to deduce the type of the lambda.
+[](int x, int y) -> int: This is the lambda expression where:
+[] is the capture list (empty in this case, so the lambda does not capture any external variables).
+(int x, int y) is the parameter list.
+-> int specifies that the return type of the lambda is int.
+==============================
+structure binding:
+when you want initialize the variables with the member variable of the class
+or array.
+
+allow initialization of multiple variable with the elements or member of an object.
+the object could be object of class/struct or an array
+for object of classes , the meber should be public
+the number of variable should match with the number of lements in the object.
+
+auto [variable] = object/array;
+
+<const/volatile> auto &[variable] = object;
+
+makes the code more readable by binding the value directly to a name that convey the real purpose of data.
+
+struct Person{
+std::string m_name;
+int m_age;
+
+Person() = default;
+Person(const std::string &ma,e, int age):m_name{name},m_age{age}
+{
+}
+
+int main()
+{
+  Person p{"viswa",12};
+  std::string name =p.m_name;
+  auto age =p.age;
+  
+  auto [name1, age1] = p;
+  auto &[name2, age2] = p;
+  age2 =100;
+  //swill change the p.age  to 100;
+  const auto &[name2, age2] = p;
+  //age2 =100; //not allowed
+  
+  std::pair<int,int> p1{3.5};
+  auto [key,value] =p;
+  
+  std::map <int,std::string> errorInfo{{1,"not vailable"},{2,"port is in use"}};
+  
+  for (auto err:errorinfo)
+  {
+	std::cout <<err.first <<":"<<err.second <<std::endl;
+  }
+  
+    for (auto [key,value] :errorinfo)
+  {
+	std::cout <<key <<":"<<value <<std::endl;
+  }
+  
+  int arr[] ={1,2,3}
+  auto [x,y,z] = arr; //the number of element equal to the number of variable. 
+  
+  auto array2 = arr; //here array2 is decay to int *
+  
+  struct S1 {
+  int arra[10];
+  char ch1[100];
+  }
+  
+  s1 s;
+  auto [s1,s2] = s;
+  //array dont decay in structure paddings
+  //in structire padding no decaying so s1 is array of int and ch1 is array of character.
+  
+  return 0;
+}
+===================
+struct Point {
+private:
+    int x;
+    int y;
+public:
+    Point(int x_, int y_) : x(x_), y(y_) {}
+};
+
+Point p = {1, 2};
+auto [a, b] = p;  // Error: cannot access private members
+
+=================================
+struct Point {
+private:
+    int x;
+    int y;
+public:
+    Point(int x_, int y_) : x(x_), y(y_) {}
+
+    int getX() const { return x; }
+    int getY() const { return y; }
+};
+
+Point p = {1, 2};
+auto [a, b] = std::tie(p.getX(), p.getY());  // a = 1, b = 2
+
+=============================================
+struct Point {
+    static int counter;
+    int x;
+    int y;
+};
+
+int Point::counter = 0;
+
+Point p = {1, 2};
+auto [a, b] = p;  // This works for x and y, but static members like counter can't be unpacked
+
+============================================
+struct Point {
+protected:
+    int x;
+    int y;
+public:
+    Point(int x_, int y_) : x(x_), y(y_) {}
+};
+
+Point p = {1, 2};
+auto [a, b] = p;  // Error: cannot access protected members
+
+====================================
+Expression Evaluation Order:
+in Previous standars, the evaluation order of subexpression in function paramter was unpredicatable
+
+using namespace std;
+cout << a() << b() << c();
+
+cout.operator<<(a()).operator<<(b()).operator<<(c());
+
+Evaluation: a b c and then operators
+Evaluation: c b a and then operators
+======================
+void F(
+  std::uniqueue_ptr<int> p1,
+  std::uniqueue_ptr<int> p2) {
+  
+}
+
+int main() {
+   F(
+       std::unique_ptr<int> //1
+			{new int}, //2
+	   std::unique_ptr<int> //3  
+			{new int} //4
+	);
+
+Problem in the above approach is that when the second new throw exception it could lead leak
+when the first memory new is anot yet assigned to p1 in C++14
+There is interleaving between the calls.
+
+compiler cannot jump between sub expression in c++17 ie 4, 2 ,3,1
+it has to complete one expression beofre going to next expression.
+
+#include <iostream>
+
+class EvaluationOrder {
+public:
+    EvaluationOrder& First(int) {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
+        return *this;
+    }
+
+    EvaluationOrder& Second(int) {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
+        return *this;
+    }
+};
+
+int FirstSubExpression(int) {
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    return 0;
+}
+
+int SecondSubExpression(int) {
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    return 0;
+}
+
+int main() {
+    EvaluationOrder eo;
+    eo.First(FirstSubExpression(0)).Second(SecondSubExpression(0));
+    return 0;
+}
+// no interleaving in c++17 but still no idea which sub expression will be 
+//evaluated first
+
+int FirstSubExpression(int)
+EvaluationOrder& EvaluationOrder::First(int)
+int SecondSubExpression(int)
+EvaluationOrder& EvaluationOrder::Second(int)
+
+or 
+
+int SecondSubExpression(int)
+EvaluationOrder& EvaluationOrder::Second(int)
+int FirstSubExpression(int)
+EvaluationOrder& EvaluationOrder::First(int)
+=====================================
+in the c++ 14 there will interleaving beteen the call ie 
+int FirstSubExpression(int)
+int SecondSubExpression(int)
+EvaluationOrder& EvaluationOrder::First(int)
+EvaluationOrder& EvaluationOrder::Second(int)
+===================================================
+__FUNCSIG__: Specific to Microsoft Visual Studio.
+__PRETTY_FUNCTION__: Use this for detailed function signatures in GCC and Clang.
+================================
+copy ellision:
+Copy elision is an optimization technique used by C++ compilers to eliminate unnecessary 
+copying or moving of objects. This can happen in certain situations where the language 
+allows the compiler to construct an object directly in its final location, rather than 
+first creating it and then copying or moving it to that location.
+
+//even theough the class doint use the copy or move constructor it is necessary to have
+copy and move constructor to work in c++14 for copy elision.
+Returning a Local Object by Value from a Function:
+Throwing and Catching Exceptions:
+void func() {
+    throw MyClass();  // Copy elision can occur here
+}
+Initialization of Variables from Temporaries:
+MyClass obj = MyClass();  // Copy elision can happen here
+
+although copy ellision maynot use the copy or move constructor it is 
+necessary to have the class to that in the class for the compilation in c++14.
+if the compiler is not able to apply the copy ellision in that case it will call 
+the call the copy or move constructor.
+
+class Number {
+public:
+   Number(int value) {
+      std::cout << "paramter constructor" <<std::endl;
+   }
+    
+	Number(const Number &) {
+      std::cout << "copy constructor" <<std::endl;
+   }
+   
+   	Number(Number &&) {
+      std::cout << "move constructor" <<std::endl;
+   }
+}
+in copy ellision
+move nd copy constructor may not be called
+//copy ellision is not the part of the standard until c++17
+void Foo(Number n) { 
+}
+
+Number create() {
+ Number n(0); //parameter constructor
+ return n; //copy ellision name return value optimization
+ //move called
+ 
+ return Number{0}; //copy ellision return value optimization
+ //parameter call
+}
+
+int main()
+{
+   Number n = 3; //or Number n1= Number{3}; //temporary object is created
+   
+   Foo(3);
+   Foo(Number{3});
+   auto n3 =Create();
+   return 0;
+}
+=======================
+c++17: copy elision become mandatory:
+c++17 copy elision doesnot require the copy and move constructor.
+when the lvalue is initialized by rvalue then the compiler can apply copy elision.
+
+move or copy is not required unsless it is required.
+
+we can even mark it as 
+
+Number(const Number &) = delete;
+Number(Number &&) = delete;
+
+note there should be any name return value . if it has then c++17 also needs the
+move constructor.
+int main()
+{
+   Number n = 3; //or Number n1= Number{3}; //temporary object is created
+   
+   Foo(3);
+   Foo(Number{3});
+   auto n3 =Create();
+   return 0;
+}
+
+Number create() {
+ Number n(0); //parameter constructor
+ return n; //copy ellision name return value optimization. Requires the move
+}
+===========
+MyClass CreateObject() {
+    return MyClass();  // Rvalue returned
+}
+
+int main() {
+    MyClass obj = CreateObject();  // Lvalue initialized by rvalue
+}
+===================
+class MyClass {
+    // Assume necessary constructors, destructors, etc., are defined
+};
+
+MyClass CreateObject() {
+    MyClass n = MyClass();  // n is an lvalue
+    return n;               // n is returned
+}
+
+int main() {
+    MyClass obj = CreateObject();  // Lvalue initialized by rvalue
+}
+//return n;: When you return n, you are returning an lvalue. However, 
+because it is being returned by value, the compiler will treat the returned 
+value as an rvalue.
+================================
+//Args&&... args: This declares the function parameter pack, which uses 
+forwarding references (also known as  universal references) to accept any number of arguments. 
+//return T(args...);: This line constructs an object of type T using the arguments
+//passed to the function and then returns it.
+//not required to have the copy or move constructor
+template <typename T, typename ...Args>
+T create (Args&&... args) {
+   return T(args...)
+}
+int main()
+{
+   auto t = create <Number>(0);
+ }
+ ================================================
+Template:
+Template are used for generic programing ie you can write algoritham and class without regards to data type
+need to avoid the overload for each data type
+write a function or class that can operate on any type of datatype
+
+To find the max of 2 numbers?
+
+int Max(int a , int b)
+{
+    return  x>y ? x:y;
+}
+
+float Max(float a , float b)
+{
+    return  x>y ? x:y;
+}
+
+int main() {
+  auto f =  Max(5,3);
+  std::cout << Max(5,3); //5
+  std::cout <<Max(1.2f,6.6f); //6.6
+  return 0;
+}
+
+to overcome 
+//template <class T> or
+template <typename T> // T is the placeholder for Type . it will subsituted by the compiler
+//during the compilation
+T Max(T x, T y)
+{
+   return  x>y ? x:y;
+}
+//compilere examine the type of the argument and deuce the type
+int main() {
+  auto f =  Max(5,3);
+  std::cout << Max(5,3); //5
+  std::cout <<Max(1.2f,6.6f); //6.6
+  return 0;
+}
+in the above example template will generate the 2 max function int and float
+function template is not invoked , then function for those type is not generated
+process by which the function are generated based on the inovke argument type is called
+function instatiation ( t is deduced) 
+===============================
+in the above program if wrongly pass the argument
+main.cpp:13:18: error: no matching function for call to ‘Max(float, int)’
+   13 |   std::cout <<Max(1.2f,6); //6.6
+======================
+Template:
+Generalized software components
+such components can be reused in different situations
+operate on anykind of data
+high performance algorith and classes
+compile time ; no runtime costs are involved
+libraries such as atl , boost , poco, ace etc use template for implementation.
+=====================
+Functiom Templates:
+ typename is the placeholder for the actual type(dedect the type by argument dedection)
+ can accept any type
+ template type can be used as retuyrn type
+ always begin with template keyword
+
+first the type is deduced and then the function will be instantiated for that type.
+This process happens during the compilation
+=========================
+#include <iostream>
+#include <vector>
+#include <list>
+
+// Template that takes another template as a parameter
+template <template <typename> typename Container>
+class Wrapper {
+public:
+   //void addElement(const int& element) or
+    void addElement(const typename Container<int>::value_type& element) {
+        container_.push_back(element);
+    }
+
+    void printElements() const {
+        for (const auto& element : container_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+    }
+
+private:
+    Container<int> container_; // This will be changed to Mycontainer<int> container_;
+};
+
+// A simple template class
+template <typename T>
+class MyContainer {
+public:
+    using value_type = T;
+
+    void push_back(const T& value) {
+        data_.push_back(value);
+    }
+
+    typename std::vector<T>::const_iterator begin() const {
+        return data_.begin();
+    }
+
+    typename std::vector<T>::const_iterator end() const {
+        return data_.end();
+    }
+
+private:
+    std::vector<T> data_;
+};
+
+int main() {
+    // Create a Wrapper object that uses MyContainer
+    Wrapper<MyContainer> wrapper;
+
+    wrapper.addElement(10);
+    wrapper.addElement(20);
+    wrapper.addElement(30);
+
+    std::cout << "Elements in the container: ";
+    wrapper.printElements();
+
+    return 0;
+}
+Elements in the container: 10 20 30 
+===============================================
+#include <iostream>
+#include <vector>
+#include <list>
+
+// Template that takes a container type as a parameter
+template <typename Container>
+class Wrapper {
+public:
+    void addElement(const typename Container::value_type& element) {
+        container_.push_back(element);
+    }
+
+    void printElements() const {
+        for (const auto& element : container_) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+    }
+
+private:
+    Container container_;  // Container is now a specific type like std::vector<int>
+};
+
+// A simple template class
+template <typename T> //her it is detected as int and not as vector <int>
+class MyContainer {
+public:
+    using value_type = T;
+
+    void push_back(const T& value) {
+        data_.push_back(value);
+    }
+
+    typename std::vector<T>::const_iterator begin() const {
+        return data_.begin();
+    }
+
+    typename std::vector<T>::const_iterator end() const {
+        return data_.end();
+    }
+
+private:
+    std::vector<T> data_;
+};
+
+int main() {
+    // Using std::vector<int> as the container
+    Wrapper<std::vector<int>> vectorWrapper;
+
+    vectorWrapper.addElement(10);
+    vectorWrapper.addElement(20);
+    vectorWrapper.addElement(30);
+
+    std::cout << "Elements in vectorWrapper: ";
+    vectorWrapper.printElements();  // Output: 10 20 30
+
+    // Using MyContainer<int> as the container
+    Wrapper<MyContainer<int>> myContainerWrapper;
+
+    myContainerWrapper.addElement(40);
+    myContainerWrapper.addElement(50);
+    myContainerWrapper.addElement(60);
+
+    std::cout << "Elements in myContainerWrapper: ";
+    myContainerWrapper.printElements();  // Output: 40 50 60
+
+    return 0;
+}
+
+==================================================
+sum of the array elements
+#include <iostream>
+
+// Template function to calculate the sum of elements in an array
+template <typename T, std::size_t N>
+T sumArray(const T (&array)[N]) {
+    T sum = 0;
+    for (std::size_t i = 0; i < N; ++i) {
+        sum += array[i];
+    }
+    return sum;
+}
+
+int main() {
+    int intArray[] = {1, 2, 3, 4, 5};
+    double doubleArray[] = {1.1, 2.2, 3.3, 4.4, 5.5};
+
+    std::cout << "Sum of intArray: " << sumArray(intArray) << std::endl;
+    std::cout << "Sum of doubleArray: " << sumArray(doubleArray) << std::endl;
+
+    return 0;
+}
+Sum of intArray: 15
+Sum of doubleArray: 16.5
+=====================================
+#include <iostream>
+
+// Template function to calculate the sum of elements in an array
+template <typename T, std::size_t N>
+T sumArray(T array[N]) {
+    T sum = 0;
+    for (std::size_t i = 0; i < N; ++i) {
+        sum += array[i];
+    }
+    return sum;
+}
+
+int main() {
+    int intArray[] = {1, 2, 3, 4, 5};
+    double doubleArray[] = {1.1, 2.2, 3.3, 4.4, 5.5};
+
+    std::cout << "Sum of intArray: " << sumArray<int , 5>(intArray) << std::endl;
+    std::cout << "Sum of doubleArray: " << sumArray<double , 5>(doubleArray) << std::endl;
+
+    return 0;
+}
+
+========================================================
+main.cpp: In function ‘int main()’:
+main.cpp:17:49: error: no matching function for call to ‘sumArray(int [5])’
+   17 |     std::cout << "Sum of intArray: " << sumArray(intArray) << std::endl;
+      |                                         ~~~~~~~~^~~~~~~~~~
+	  ==========================
+#include <iostream>
+
+// Template function to calculate the sum of elements in an array
+template <typename T>
+T sumArray(const T* array, std::size_t size) {
+    T sum = 0;
+    for (std::size_t i = 0; i < size; ++i) {
+        sum += array[i];
+    }
+    return sum;
+}
+
+int main() {
+    int intArray[] = {1, 2, 3, 4, 5};
+    double doubleArray[] = {1.1, 2.2, 3.3, 4.4, 5.5};
+
+    std::cout << "Sum of intArray: " << sumArray(intArray, sizeof(intArray)/sizeof(intArray[0])) << std::endl;
+    std::cout << "Sum of doubleArray: " << sumArray(doubleArray, sizeof(doubleArray)/sizeof(doubleArray[0])) << std::endl;
+
+    return 0;
+}
+================================
+Template Argument deduction:
+During template argument deduction no conversion are performed
+each functon argument is detected
+the corresponding type argument is deduced from the argument
+override deduction by specifying type in template argument listMax<int>(3,5)
+=========
+template Instatiation:
+a template function or class only act as blue print
+the compiler generates code from the blueprint at compile time
+know as template instatiation happens at compile time
+definition of the template is implemented in the header file since the 
+full definition of the template should be avilabale.
+
+====================
+function template instantaition using the function pointer assignement ie
+when you take its address and explicit instantiation
+
+template <typename T>
+T Max(T x, T y) {
+  std::cout << typeid(T).name()<<endl;
+  return  x>y ? x:y;
+}
+//explict instatiation
+template char Max(char x, char y) ;// max function is instantiated for char type
+int main() {
+	Max(3,5) //int
+	Max(3,5.07f)// error since the template will not do the type conversion
+    Max(3, static_cast<int> (5.07f)); //no error
+	Max<double>(3,3.6f) ; //double ;//specifying the type of the argument
+	//no argument dedection it will replace T by double
+	
+	int (*pfn)(int,int) = Max; //Max function is deducted for int type
+	//not invloking the Max function
+}
+=========================
+Explicit Specialization:
+why we need it?
+Template specialized for a particular type
+provide correct sematic for some datatype
+or implement an algorithm optimally for specific type;
+Explicitly specialized functions must be defined in cpp file and not in header file
+since explicit specialized function are already instantiated
+if it is declared in the header file it will lead to the violation of 
+one definition rule.
+primary template definition occur before specializtion
+
+template <> const char* Max<const char*>(const char* x, const char* y)
+//or template <> const char* Max(const char* x, const char* y)
+needs the empty template
+=========================
+template <typename T>
+T Max(T x, T y) {
+  std::cout << typeid(T).name()<<endl; //pointer value comparision
+  return  x>y ? x:y;
+}
+
+int main() {
+	const char *a {"z"}; //if address of A is 50
+	const char *b { "b"}; //address of b is 60
+	auto s = Max(a,b); //output is b
+	return 0;
+}
+// output will be a 
+To fix the above error
+#include <iostream>
+#include <cstring>
+template <typename T>
+T Max(T x, T y) {
+  std::cout << typeid(T).name()<<std::endl;//pointer 
+  return  x>y ? x:y;//ponter address comparion
+}
+template <> const char* Max<const char*>(const char* x, const char* y)
+//or template <> const char* Max(const char* x, const char* y)
+{
+     std::cout << typeid(x).name()<<std::endl;//ponter 
+	return (strcmp(x,y))> 0 ? x:y ;//content comparison
+	//or return (strcmp(x,y)) ? x:y ;//content comparison
+}
+
+int main() {
+	const char *a {"z"}; //if address of A is 50
+	const char *b { "b"}; //address of b is 60
+	auto s = Max(a,b); //z
+	std::cout <<s << std::endl;
+	return 0;
+}
+=======================================
+General Template Declaration
+template <typename T>
+class MyClass {
+public:
+    void print() {
+        std::cout << "General template" << std::endl;
+    }
+};
+
+Explicit Specialization for a Specific Type
+template <>
+class MyClass<int> {
+public:
+    void print() {
+        std::cout << "Specialized template for int" << std::endl;
+    }
+};
+
+int main() {
+    MyClass<double> obj1;
+    obj1.print();  // Output: General template
+
+    MyClass<int> obj2;
+    obj2.print();  // Output: Specialized template for int
+
+    return 0;
+}
+==========================================================
+#include <iostream>
+#include <typeinfo>
+
+// Template class definition with default parameters
+template <typename T = int, std::size_t Size = 10>
+class v {
+    T arr[Size];  // Array of type T with Size elements
+
+public:
+    // Constructor to initialize array elements
+    v() {
+        for (std::size_t i = 0; i < Size; ++i) {
+            arr[i] = T();  // Initialize each element with the default value of T
+        }
+    }
+
+    // Function to print the array's type and size
+    void print() const {
+        std::cout << "Array of size " << Size << " and type " << typeid(T).name() << std::endl;
+    }
+
+    // Function to access array elements
+    T& operator[](std::size_t index) {
+        std::cout << " reference" <<std::endl;
+        return arr[index];
+    }
+
+    // Const version of the function to access array elements
+    const T& operator[](std::size_t index) const {
+        std::cout << " const reference" <<std::endl;
+        return arr[index];
+    }
+};
+
+// Main function to demonstrate the use of the template class
+int main() {
+    // Object using the default template parameters (T = int, Size = 10)
+    v<> obj1; //lass templates require explicit or defaulted template arguments.
+    //v obj2; //will give error
+    obj1.print();  // Output: Array of size 10 and type int
+
+    // Object with custom template parameters (T = double, Size = 5)
+    v<double, 5> obj2;
+    obj2.print();  // Output: Array of size 5 and type double
+
+    // Access and modify elements
+    obj1[0] = 42; //call non const referencea
+    std::cout << "First element of obj1: " << obj1[0] << std::endl;  // Output: First element of obj1: 42
+
+    obj2[0] = 3.14; //call no const reference
+    std::cout << "First element of obj2: " << obj2[0] << std::endl;  // Output: First element of obj2: 3.14
+
+    const v<int, 10> constObj; //call const reference []
+    std::cout << "First element of constObj: " << constObj[0] << std::endl;
+    return 0;
+}
+
+==================================================
+#include <iostream>
+#include <array>
+
+// Template function with default template parameters
+template <typename T = int, std::size_t Size = 10>
+void printArray(const std::array<T, Size>& arr) {
+    std::cout << "Array of size " << Size << " and type " << typeid(T).name() << ":\n";
+    for (const auto& elem : arr) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Using the default template parameters (T = int, Size = 10)
+    std::array<int, 10> arr1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    printArray(arr1);  // Uses default parameters
+    
+    // Using custom template parameters (T = double, Size = 5)
+    std::array<double, 5> arr2 = {1.1, 2.2, 3.3, 4.4, 5.5};
+    printArray(arr2);  // Uses provided parameters
+    printArray<>(arr2);  // wht still double // template argument deduction has higher priority, 
+    //it overrides the default values provided in the template declaration.
+    // printArray<int,5>(arr2); mot allowed since arr2 is the double
+    // Using default size but custom type (T = char)
+    std::array<char, 10> arr3 = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
+    printArray<char>(arr3);  // Uses provided type, default size
+
+    return 0;
+}
+=========================================================
+#include <iostream>
+#include <array>
+#include <typeinfo>
+
+// Template function for std::array with default template parameters
+template <typename T = int, std::size_t Size = 10>
+void printArray(const std::array<T, Size>& arr) {
+    std::cout << "std::array of size " << Size << " and type " << typeid(T).name() << ":\n";
+    for (const auto& elem : arr) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+}
+
+// Overloaded template function for C-style arrays
+template <typename T = int, std::size_t Size = 10> //template declaration with default template parameters.
+void printArray(const T (&arr)[Size]) {
+    std::cout << "C-style array of size " << Size << " and type " << typeid(T).name() << ":\n";
+    for (std::size_t i = 0; i < Size; ++i) {
+        std::cout << arr[i] << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Using the default template parameters (T = int, Size = 10)
+    std::array<int, 10> arr1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    printArray(arr1);  // Uses default parameters, works with std::array
+    
+    // Using custom template parameters (T = double, Size = 5)
+    std::array<double, 5> arr2 = {1.1, 2.2, 3.3, 4.4, 5.5};
+    printArray(arr2);  // Uses provided parameters, works with std::array
+    
+    // C-style array
+    int arr3[10] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    printArray(arr3);  // Works with C-style array
+
+    // Another C-style array of a different size
+    double arr4[5] = {2.2, 3.3, 4.4, 5.5, 6.6};
+    printArray(arr4);  // Works with C-style array
+	
+	//printArray<int>(arr4); //error //mismatched type
+	//printArray((double*)arr4); // no matching function call for double*
+
+    return 0;
+}
+std::array of size 10 and type i:
+1 2 3 4 5 6 7 8 9 10 
+std::array of size 5 and type d:
+1.1 2.2 3.3 4.4 5.5 
+C-style array of size 10 and type i:
+10 9 8 7 6 5 4 3 2 1 
+C-style array of size 5 and type d:
+2.2 3.3 4.4 5.5 6.6 
+=============================================
+Non type Template arguments:
+should be const expression
+we have to specofy the value in teh template argument list
+<3> has to be the const value
+template <int size>
+
+must be a const expression (static address, references, integeral
+nullptr, enums)
+
+void Print() {
+  //size = 4; //cannot be modified error
+  char buffer[size];
+  std::cout <<size <<std::endl;
+}
+
+int main()
+{
+   print<3>();
+   int i =3;
+   //Print<i>(); //not allowed
+   Print<sizeof(i)>(); //allowed //sizeof() is computed at compile time
+   const int i = 3;
+   print<i>();  // Using the non-type template argument
+	
+    return 0;
+}
+===============================
+template <typename T>
+T Sum(T *parr, int size)
+{
+    T sum{};
+	for (int i=0; i< size;i++) {
+	  sum +=parr[i];
+	}
+	return sum;
+}
+
+int maim()
+{
+   int arr[]{3,1,9,7}
+   int sum =Sum(arr,4);
+}
+===============
+passing an array to a function without spcifying it size;
+
+int arr[]{1,2,3,4}
+int (&ref)[4] = arr; //reference to an array
+//int (&ref)[5] = arr; //error
+//size is const
+template <typename T, int size>
+T Sum(T (&parr)[size])
+{
+    T sum{};
+	for (int i=0; i< size;i++) {
+	  sum +=parr[i];
+	}
+	return sum;
+}
+
+int maim()
+{
+   int arr[]{3,1,9,7}
+   int sum =Sum(arr);
+   
+   auto it =std::begin(arr); //used same appraoach
+}
+=================
+#include <iostream>
+
+constexpr int globalValue = 3;  // Must be a constant expression
+
+// Template with a non-type integral parameter
+template <int N>
+void print() {
+    std::cout << "The value is: " << N << std::endl;
+}
+
+int main() {
+    print<globalValue>();  // OK: globalValue is a constant expression
+    return 0;
+}
+==============================
+#include <iostream>
+#include <cstddef> // for std::nullptr_t
+
+// Primary template
+template <typename T>
+void process(T) {
+    std::cout << "General template" << std::endl;
+}
+
+// Specialization for std::nullptr_t
+template <std::nullptr_t>
+void process(std::nullptr_t) {
+    std::cout << "Specialized template for nullptr" << std::endl;
+}
+
+int main() {
+    process(42);        // Calls the general template
+    process(nullptr);   // Calls the specialized template for nullptr
+    return 0;
+}
+===============================
+#include <iostream>
+
+// Template that takes a pointer to an integer
+template <int* ptr>
+void print() {
+    std::cout << "The value pointed to is: " << *ptr << std::endl;
+}
+
+int globalValue = 42; // Global variable //if it is the local variable 
+//it will lead to error.
+
+int main() {
+    // Pass the address of the global variable as a non-type template argument
+    print<&globalValue>(); // OK: &globalValue is a constant expression //42
+	
+	int globalValue2 = 422;
+	//print<&globalValue2>();//error
+    return 0;
+}
+========================================
+#include <iostream>
+
+// Template that takes a reference to an integer
+template <int& ref>
+void print() {
+    std::cout << "The value referenced is: " << ref << std::endl;
+}
+
+int globalValue = 42; // Global variable
+
+int main() {
+    // Pass the global variable reference as a non-type template argument
+    print<globalValue>(); // OK: globalValue is a constant expression
+    return 0;
+}
+==================================================
+const int globalValue = 42; // Global variable
+
+template <int ptr>
+void print() {
+    std::cout << "The value pointed to is: " << ptr << std::endl;
+}
+
+int main() {
+    // Pass the address of the global variable as a non-type template argument
+    print<globalValue>(); // OK: globalValue is a constant expression
+    return 0;
+}
+=============================================
+int globalValue = 42; // Global variable
+
+template <int ptr>
+void print() {
+    std::cout << "The value pointed to is: " << ptr << std::endl;
+}
+
+int main() {
+    // Pass the address of the global variable as a non-type template argument
+    print<globalValue>(); // error
+    return 0;
+}
+==========================================
+begin and end
+#include <iterator> // For std::begin and std::end
+
+// For containers
+template<class C>
+auto std::begin(const C& container) -> decltype(container.begin()) {
+    return container.begin();
+}
+
+template<class C>
+auto std::end(const C& container) -> decltype(container.end()) {
+    return container.end();
+}
+
+// For arrays
+template<class T, std::size_t N>
+T* std::begin(T (&array)[N]) noexcept {
+    return array;
+}
+
+template<class T, std::size_t N>
+T* std::end(T (&array)[N]) noexcept {
+    return array + N;
+}
+================================================
+int arr[] = {1, 2, 3, 4, 5};
+
+    // Using std::begin and std::end with a C-style array
+    auto start = std::begin(arr);
+    auto finish = std::end(arr);
+
+    for (auto it = start; it != finish; ++it) {
+        std::cout << *it << ' ';
+    }
+==========================================
+std::vector<int> vec = {1, 2, 3, 4, 5};
+
+    // Using std::begin and std::end with a std::vector
+    auto start = std::begin(vec);
+    auto finish = std::end(vec);
+
+    for (auto it = start; it != finish; ++it) {
+        std::cout << *it << ' ';
+    }
+=============================
+// Template function to process an array of std::string
+template<typename T, std::size_t N> //template to capture the array type and size
+void processArrayOfStrings(T(&arr)[N]) {
+    // Use std::begin and std::end to get iterators for the array
+    auto start = std::begin(arr);
+    auto finish = std::end(arr);
+
+    // Iterate over the array and print each string
+    for (auto it = start; it != finish; ++it) {
+        std::cout << *it << std::endl;
+    }
+}
+
+int main() {
+    // Define an array of std::string
+    std::string arr[] = {"Hello", "World", "This", "Is", "C++"};
+
+    // Call the template function with the array
+    processArrayOfStrings(arr);
+
+    return 0;
+}
+==================================
+//or 
+template<std::size_t N> //template to capture only the size //allwoed
+void processArrayOfStrings(std::string (&arr)[N]) {
+    for (const auto& str : arr) {
+        std::cout << str << std::endl;
+    }
+}
+int main() {
+    // Define an array of std::string
+    std::string arr[] = {"Hello", "World", "This", "Is", "C++"};
+
+    // Call the template function with the array
+    processArrayOfStrings(arr);
+
+    return 0;
+}
+==========================================
+Perfect Forwarding:
+
+====================
+#include <iostream>
+#include <string>
+
+class Integer {
+    int value;
+public:
+    // Default constructor
+    Integer(int v = 0) : value(v) {
+        std::cout << "Integer constructed: " << value << std::endl;
+    }
+
+    // Copy constructor
+    Integer(const Integer &other) : value(other.value) {
+        std::cout << "Integer copy-constructed: " << value << std::endl;
+    }
+
+    // Destructor
+    ~Integer() {
+        std::cout << "Integer destroyed: " << value << std::endl;
+    }
+    
+    // Print value (for demonstration purposes)
+    void print() const {
+        std::cout << value << std::endl;
+    }
+};
+
+class Employee {
+    std::string m_name;
+    Integer m_id;
+public:
+    // Parameterized constructor
+    Employee(const std::string &name, const Integer &id)
+        : m_name{name}, m_id{id} { // Copy constructor of Integer will be called here
+        std::cout << "Employee constructed with name: " << m_name << std::endl;
+    }
+
+    // Copy constructor
+    Employee(const Employee &other)
+        : m_name{other.m_name},
+		m_id{other.m_id} {
+        std::cout << "Employee copy-constructed" << std::endl;
+    }
+
+    // Destructor
+    ~Employee() {
+        std::cout << "Employee destroyed with name: " << m_name << std::endl;
+    }
+};
+
+int main() {
+    std::cout << "Creating Employee 'emp'..." << std::endl;
+    Employee emp("viswa", 100); // Temporary Integer object will be destroyed after this line
+    //or Employee emp("viswa", Integer(100));
+	//or  Employee emp("viswa", Integer{100}); // note reference will not call the constructor but when the reference is class name 
+	// and it needs the conversion from int so constructor is called;
+    std::cout << "Exiting main..." << std::endl;
+    return 0;
+}
+Creating Employee 'emp'...
+Integer constructed: 100
+Integer copy-constructed: 100
+Employee constructed with name: viswa
+Integer destroyed: 100 //temprary 
+Exiting main...
+Employee destroyed with name: viswa
+Integer destroyed: 100
+
+============================
+How to void the copy constructor and call move
+Please note the move constructor should not have the const
+ // Parameterized constructor
+    Employee(std::string &&name, Integer &&id)
+        : m_name{name}, 
+		m_id{id} { // Copy constructor of Integer will be called here
+        std::cout << "Employee move constructed with name: " << m_name << std::endl;
+    }
+
+Employee emp("viswa", 100);
+
+still you see the 
+Creating Employee 'emp'...
+Integer constructed: 100
+Integer copy-constructed: 100 //m_id{id} id is name so it is lvalue
+Employee move constructed with name: viswa
+============================
+// Parameterized constructor
+    Employee(std::string &&name, Integer &&id)
+        : m_name{name},
+		m_id{std::move(id)} { // move constructor of Integer will be called here
+        std::cout << "Employee move constructed with name: " << m_name << std::endl;
+    }
+
+Employee emp("viswa", 100);
+
+still you see the 
+Creating Employee 'emp'...
+Integer constructed: 100
+Integer move-constructed: 100 //m_id{id} id is name so it is lvalue
+Employee move constructed with name: viswa
+===============================
+std::string name = "viswa";
+Employee emp2{name,100); //this will call the copy construtor of the 
+//employee
+Integer a =100;
+Employee emp2{"viswa", a); //which one it will call copy or move construtor
+===========
+#include <iostream>
+#include <string>
+
+class Integer {
+    int value;
+public:
+    // Default constructor
+    Integer(int v = 0) : value(v) {
+        std::cout << "Integer constructed: " << value << std::endl;
+    }
+
+    // Copy constructor
+    Integer(const Integer &other) : value(other.value) {
+        std::cout << "Integer copy-constructed: " << value << std::endl;
+    }
+
+    // Move constructor
+    Integer(Integer &&other) noexcept : value(other.value) {
+        other.value = 0; // Optionally reset the other object
+        std::cout << "Integer move-constructed: " << value << std::endl;
+    }
+
+    // Copy assignment
+    Integer& operator=(const Integer &other) {
+        if (this != &other) {
+            value = other.value;
+            std::cout << "Integer copy-assigned: " << value << std::endl;
+        }
+        return *this;
+    }
+
+    // Move assignment
+    Integer& operator=(Integer &&other) noexcept {
+        if (this != &other) {
+            value = other.value;
+            other.value = 0; // Optionally reset the other object
+            std::cout << "Integer move-assigned: " << value << std::endl;
+        }
+        return *this;
+    }
+
+    // Destructor
+    ~Integer() {
+        std::cout << "Integer destroyed: " << value << std::endl;
+    }
+    
+    // Print value (for demonstration purposes)
+    void print() const {
+        std::cout << value << std::endl;
+    }
+};
+
+class Employee {
+    std::string m_name;
+    Integer m_id;
+public:
+    // Parameterized constructor
+    Employee(const std::string &name, const Integer &id)
+        : m_name{name}, m_id{id} { // Copy constructor of Integer will be called here
+        std::cout << "Employee constructed with name: " << m_name << std::endl;
+    }
+
+    // Move constructor
+    Employee(std::string &&name, Integer &&id) noexcept
+        : m_name{std::move(name)}, m_id{std::move(id)} {
+        std::cout << "Employee move-constructed with name: " << m_name << std::endl;
+    }
+
+    // Copy constructor
+    Employee(const Employee &other)
+        : m_name{other.m_name}, m_id{other.m_id} {
+        std::cout << "Employee copy-constructed" << std::endl;
+    }
+
+    // Move assignment operator
+    Employee& operator=(Employee &&other) noexcept {
+        if (this != &other) {
+            m_name = std::move(other.m_name);
+            m_id = std::move(other.m_id);
+            std::cout << "Employee move-assigned" << std::endl;
+        }
+        return *this;
+    }
+
+    // Copy assignment operator
+    Employee& operator=(const Employee &other) {
+        if (this != &other) {
+            m_name = other.m_name;
+            m_id = other.m_id;
+            std::cout << "Employee copy-assigned" << std::endl;
+        }
+        return *this;
+    }
+
+    // Destructor
+    ~Employee() {
+        std::cout << "Employee destroyed with name: " << m_name << std::endl;
+    }
+};
+
+int main() {
+    std::string name = "viswa";
+
+    // Construct Employee with an int literal (which invokes Integer(int))
+    //Integer constructed: 100
+    //Integer copy-constructed: 100
+    // Employee constructed with name: viswa
+    Employee emp1{name, 100}; 
+
+    // Construct Employee with an Integer object (which invokes Integer copy constructor)
+    Integer a = 100;
+    Employee emp2{name, a}; 
+
+    // Move-construct Employee with rvalue references
+    Employee emp3{"temporary_name", Integer(200)}; 
+
+    // Move-construtor Employee from another Employee
+    Employee emp4("temp", Integer(300)); 
+    // Move-assign Employee from another Employee
+    emp4 = std::move(emp3); 
+
+    Integer obj(1300);
+    //employee constructor
+    Employee emp5("temp", obj); 
+    
+    return 0;
+}
+=============================================
+template defined inside the class is called member template
+
+This construtor will work for all the 4 possible compination ie
+//name , 100
+//"viswa", obj
+//"visw",10
+//name, obj
+ 
+template <typename T1, typename T2>
+Employee(T1 &&name, T2 &&id) :
+   m_name{name},
+   m_id {id} // THis will always call the copy constructor
+   //for the bove 4 different types
+{
+}
+======================================
+perfect forwarding-2
+
+Rule: function template that accepts r value as the reference
+a. if the lvalue are passed as an argument to the function template then the T1 and T2 will become the lvalue reference
+b. if the rvalue are passed as an argument to the function template then the T1 and T2 will become the rvalue reference
+//preserve the argument lvalue or rvalue original reference type
+//information is preservered for the next function call.
+
+template <typename T1, typename T2>
+Employee(T1 &&name, T2 &&id) :
+   m_name{std::forward<T1>name},
+   m_id {std::forward<T2>(id)} 
+   // THis will always call the move constructor if the Integer is temporary from main
+   //This will call the copy construtor if the integer is an lvalue object from the main function
+   //for the bove 4 different types
+{
+}
+//name , integer(100) ;// will call the move constructor of integer class
+//Integer val{100};std::string("name"), val // for string move constructor string will be called
+//for val copy constructor will be called
+===========================
+template <typename T1, typename T2>
+Employee *Create(T1 &&x, T2 &&b)
+{
+   return new Employee(std::forward<T1>(a),std::forward<T1>(b));
+}
+   //Integer{100} call the parameter construtor and then move constructor
+   auto emp = Create ("umer",Integer{100});
+   //call the parameter construtor and then no move constructor for 100
+   auto emp = Create ("umer",100);
+====
+#include <iostream>
+#include <string>
+#include <utility> // For std::forward
+
+class Integer {
+    int value;
+public:
+    // Default constructor
+    Integer(int v = 0) : value(v) {
+        std::cout << "Integer constructed: " << value << std::endl;
+    }
+
+    // Copy constructor
+    Integer(const Integer &other) : value(other.value) {
+        std::cout << "Integer copy-constructed: " << value << std::endl;
+    }
+
+    // Move constructor
+    Integer(Integer &&other) noexcept : value(other.value) {
+        other.value = 0; // Optionally reset the other object
+        std::cout << "Integer move-constructed: " << value << std::endl;
+    }
+
+    // Copy assignment
+    Integer& operator=(const Integer &other) {
+        if (this != &other) {
+            value = other.value;
+            std::cout << "Integer copy-assigned: " << value << std::endl;
+        }
+        return *this;
+    }
+
+    // Move assignment
+    Integer& operator=(Integer &&other) noexcept {
+        if (this != &other) {
+            value = other.value;
+            other.value = 0; // Optionally reset the other object
+            std::cout << "Integer move-assigned: " << value << std::endl;
+        }
+        return *this;
+    }
+
+    // Destructor
+    ~Integer() {
+        std::cout << "Integer destroyed: " << value << std::endl;
+    }
+    
+    // Print value (for demonstration purposes)
+    void print() const {
+        std::cout << value << std::endl;
+    }
+};
+
+class Employee {
+    std::string m_name;
+    Integer m_id;
+public:
+    // Template constructor
+    template < typename T2>
+    Employee( T2 &&id)
+        : m_id{std::forward<T2>(id)} {
+        
+    }
+
+    // Defaulted special member functions
+    Employee(const Employee&) = default;
+    Employee(Employee&&) noexcept = default;
+    Employee& operator=(const Employee&) = default;
+    Employee& operator=(Employee&&) noexcept = default;
+
+    // Destructor
+    ~Employee() {
+       
+    }
+};
+
+// Factory function
+template <typename T1>
+Employee* Create(T1 &&b) {
+    return new Employee(std::forward<T1>(b));
+}
+
+int main() {
+    // Create an Employee with an Integer object
+    //auto emp1 = Create(Integer{100}); // This should use the parameter constructor and then move constructor of Integer if applicable
+
+    // Create an Employee with an int value
+   auto emp2 = Create(100); // This should use the default constructor of Integer New Employee(100)
+   //ie is t2 is detected as int
+
+    // Clean up dynamically allocated memory
+   // delete emp1;
+   // delete emp2;
+
+    return 0;
+}
+======================================
+variadic template:
+are the function and classes that accept the variable number of arguments in class and function.
+printf function can accept any number of argument since it uses macro.
+//macro is not typesafe. can take reference as the argumnet.
+//
+template <typename T>
+void Print(std::initializer_list<T> args) {
+ for (const auto &x:args) {
+	std::cout << x << " ";
+ }
+}
+int main()
+{
+   Print({1,2,3,4,5});
+   return 0;
+}
+
+//1 2 3 4 5
+//problem here is the argument has to be passed as the initializer of same type
+Print({1,2.2,3,4,5}); //compilation error //fails in template argument detection
+==================
+to overcome the above we go for variadic template
+... ellipse
+
+
+//template parameter pack
+//param pack of template type
+template <typename... Params>
+//function parameter pack. can accept any number anytype of argument
+void Print(Params... args) {
+  //how to access the inddividual argument type. need to use recursion
+  //ie in each recusrion the number of argument is reduced by one
+  //need a condition to end the recusion ie nned to use the print function without variadic function
+  //ie base case function print to stop the recursion
+  //Print(args...); //will call the runtime overflow since it will call the same function
+}
+int main()
+{
+   Print(1,2.2,3.3,"4",5);
+   return 0;
+}
+The program will compile but will get the warning saying the stack overflow.
+=====================================
+//compiler will look for the print which dont get any argument
+//her ther compiler will create the 5 different print function
+//base case function
+void Print()
+{
+  std::cout <<"end of line" <<std::endl;
+}
+
+template <typename T, typename... Params>
+//function parameter pack. can accept any number anytype of argument
+void Print(T a, Params... args) {
+ //std::cout <<sizeof...(args) <<std::endl; 3 2 1 0
+ //or 
+ //std::cout <<sizeof...(Params) <<std::endl; // 3 2 1 0
+ 
+ std::cout << a;
+ if(sizeof...(args) != 0)
+ {
+    std::cout << ",";
+ }
+ Print(args...); //will call the runtime overflow since it will call the same function
+}
+
+int main()
+{
+   Print(1,2.2,3.3,"4");
+   return 0;
+}
+/* Print(1,2.2,3.3,"4")
+Print(2.2,3.3,"4") ;a = 1
+Print(3.3,"4") ;a=2.2
+Print("4") //a =3.3
+Print() //a = 4
+*/
+============
+variadic template class-2
+template <typename T, typename... Params>
+//function parameter pack. can accept any number anytype of argument
+void Print(const T& a, const Params&... args) {
+ //std::cout <<sizeof...(args) <<std::endl; 3 2 1 0
+ //or 
+ //std::cout <<sizeof...(Params) <<std::endl; // 3 2 1 0
+ 
+ std::cout << a;
+ if(sizeof...(args) != 0)
+ {
+    std::cout << ",";
+ }
+ Print(args...); //will call the runtime overflow since it will call the same function
+}
+========
+integer class has the overload operator to print 1
+print function is variadic template
+Integer val {1};
+Print{0,val,Integer{2});
+
+#include <iostream>
+#include <string>
+#include <utility> // For std::forward
+#include <iostream>
+
+// Integer class definition
+class Integer {
+public:
+    Integer(int value) : value(value) {}
+
+    // Friend function to allow ostream to access private members
+    friend std::ostream& operator<<(std::ostream& os, const Integer& integer);
+
+private:
+    int value;
+};
+
+// Overloading the << operator
+std::ostream& operator<<(std::ostream& os, const Integer& integer) {
+    os << integer.value;
+    return os;
+}
+
+#include <iostream>
+
+// Variadic template function to print arguments
+template<typename T>
+void print(const T& t) {
+    std::cout << t << std::endl;
+}
+
+template<typename T, typename... Args>
+void print(const T& t, const Args&... args) {
+    std::cout << t << " ";
+    print(args...); // Recursive call to handle remaining arguments
+    //here the rvalus is converted to l value
+}
+
+int main() {
+    Integer val {1};
+
+    // Calling the variadic template function print
+    print(0, val, Integer{2});
+
+    return 0;
+}
+=============================
+#include <iostream>
+#include <string>
+#include <utility> // For std::forward
+#include <iostream>
+
+// Integer class definition
+class Integer {
+public:
+    Integer(int value) : value(value) {}
+
+    // Friend function to allow ostream to access private members
+    friend std::ostream& operator<<(std::ostream& os, const Integer& integer);
+
+private:
+    int value;
+};
+
+// Overloading the << operator
+std::ostream& operator<<(std::ostream& os, const Integer& integer) {
+    os << integer.value;
+    return os;
+}
+
+#include <iostream>
+
+// Variadic template function to print arguments
+template<typename T>
+void print( T&& t) {
+    std::cout << t << std::endl;
+}
+
+template<typename T, typename... Pramas>
+void print(T&& t, Pramas&&... args) {
+    std::cout << t << " ";
+    print(std::forward<Pramas>(args)...); // Recursive call to handle remaining arguments
+    //here the rvalus is converted to l value
+}
+
+int main() {
+    Integer val {1};
+
+    // Calling the variadic template function print
+    print(0, val, Integer{2});
+
+    return 0;
+}
+//0 1 2
+=============================
+#include <iostream>
+#include <string>
+#include <utility> // For std::forward
+#include <iostream>
+
+// Integer class definition
+class Integer {
+public:
+    Integer(int value) : value(value) {}
+
+    // Friend function to allow ostream to access private members
+    friend std::ostream& operator<<(std::ostream& os, const Integer& integer);
+
+private:
+    int value;
+};
+
+// Overloading the << operator
+std::ostream& operator<<(std::ostream& os, const Integer& integer) {
+    os << integer.value;
+    return os;
+}
+
+#include <iostream>
+
+void print() {
+    std::cout << "end function" << std::endl;
+}
+
+template<typename T, typename... Pramas>
+void print(T&& t, Pramas&&... args) {
+    std::cout << t << " ";
+    print(std::forward<Pramas>(args)...); // Recursive call to handle remaining arguments
+    //here the rvalus is converted to l value
+}
+
+int main() {
+    Integer val {1};
+
+    // Calling the variadic template function print
+    print(0, val, Integer{2});
+
+    return 0;
+}
+//0 1 2 endfunction
+==================================
+class template:
+classes to handle different types.
+serveral containers implemented through class template like vector set map
+
+#include <iostream> // For std::cout
+
+class stack {
+    static const int MAX_SIZE = 512; // Define the maximum size of the stack
+    int m_buffer[MAX_SIZE];
+    int m_top {-1}; // Top index, -1 indicates an empty stack
+
+public:
+    // Push an element onto the stack
+    void push(int element) {
+        if (m_top < MAX_SIZE - 1) { // Check for stack overflow
+            m_buffer[++m_top] = element;
+        } else {
+            std::cerr << "Stack overflow!" << std::endl;
+        }
+    }
+    
+    // Pop the top element off the stack
+    void pop() {
+        if (isempty()) {
+            std::cerr << "Stack underflow!" << std::endl;
+        } else {
+            --m_top;
+        }
+    }
+
+    // Return the top element of the stack
+    int top() const {
+        if (isempty()) {
+            std::cerr << "Stack is empty!" << std::endl;
+            return -1; // or throw an exception
+        }
+        return m_buffer[m_top];
+    }
+
+    // Check if the stack is empty
+    bool isempty() const {
+        return m_top == -1;
+    }
+};
+
+int main() {
+    stack s;
+    s.push(3);
+    s.push(2);
+    s.push(1);
+    
+    // Print elements from stack until it's empty
+    while (!s.isempty()) {
+        std::cout << s.top() << std::endl;
+        s.pop();
+    }
+    
+    return 0;
+}
+
+===================================
+template <typename T>
+class stack {
+    static const int MAX_SIZE = 512; // Define the maximum size of the stack
+    T m_buffer[MAX_SIZE];
+    int m_top {-1}; // Top index, -1 indicates an empty stack
+
+public:
+    // Push an element onto the stack
+    void push(const T &element) {
+        if (m_top < MAX_SIZE - 1) { // Check for stack overflow
+            m_buffer[++m_top] = element;
+        } else {
+            std::cerr << "Stack overflow!" << std::endl;
+        }
+    }
+    
+   void pop() {
+        if (isempty()) {
+            std::cerr << "Stack underflow!" << std::endl;
+        } else {
+            --m_top;
+        }
+    }
+
+    // Return the top element of the stack
+     const T& top() const {
+        if (isempty()) {
+            std::cerr << "Stack is empty!" << std::endl;
+            return -1; // or throw an exception
+        }
+        return m_buffer[m_top];
+    }
+
+    // Check if the stack is empty
+    bool isempty() const {
+        return m_top == -1;
+    }
+};
+
+stack<int> s;
+stack<float> sf;
+===========
+class can also take the non template type argument
+//template parameter are the part of the class
+//definition the function outside the class
+//shorthandation can be used only inside the class
+//long hand notation can be used inside and outside also
+template <typename T, int size>
+class stack {
+      T m_buffer[size];
+public:
+    void pop();
+	Stack() = default;
+	
+	stack(const stack &obj) { //short handnotation
+	   m_top = obj.m_top;
+	   for (int i = 0;i<=m_top; i++
+	   {
+	      m_buffer[i++] = obj.m_buffer[i++];
+	   }
+	}
+	//or you can also use long jhand notation inside the class
+	stack(const stack<T,size> &obj) { //long handnotation
+	   m_top = obj.m_top;
+	   for (int i = 0;i<=m_top; i++
+	   {
+	      m_buffer[i++] = obj.m_buffer[i++];
+	   }
+	}
+	static stack create() //short hand notation class occurs inside the class
+	{
+	   return stack<T,size>();
+	}
+	static stack create1(); 
+}
+//definiting the pop function outside the class
+template <typename T, int size>
+void stack<T,size>::pop(){
+  //popfunction implementation
+}
+
+stack <float,10> s = stack <float,10>::create();
+<float,10> //has to match
+
+auto s1(s);
+========
+short handnotation cannot be used outside the class
+if you wnat define the create1 outside the class
+template <typename T, int size>
+stack<T,size> stack<T,size>::create1() {
+   return stack<T,size>();
+}
+======================
+class template explicit specialization:
+#include <iostream>
+#include <string>
+#include <utility> // For std::forward
+#include <iostream>
+template <typename T>
+class PrettyPrinter {
+ T *m_pdata;
+public:
+  PrettyPrinter(T *data):m_pdata(data)//
+  //or PrettyPrinter(T *data):m_pdata{data}
+  {
+  }
+  
+  void print() {
+	std::cout << "{" << *m_pdata << "}" <<std::endl;
+  }
+  T* GetData() {
+	return m_pdata;
+  }
+};
+
+int main() {
+  int data = 5;
+  float f = 5.5;
+  PrettyPrinter<int> p1(&data);
+  PrettyPrinter<float> p2(&f);
+  p1.print(); {5}
+  p2.print(); {5.5}
+}
+
+// char *p{"hello worl"};
+PrettyPrint <char*> p3(&p);
+p3.print();
+char *pdata= p3.GetData(); // give error double pointer to single pointer
+
+// char *p{"hello worl"};
+PrettyPrint <char> p3(&p);
+p3.print(); //print only H
+char *pdata= p3.GetData(); // no error
+===================
+template <typename T>
+class PrettyPrinter {
+ T *m_pdata;
+public:
+  PrettyPrinter(T *data):m_pdata(data)//
+  //or PrettyPrinter(T *data):m_pdata{data}
+  {
+  }
+  
+  void print() {
+	std::cout << "{" << *m_pdata << "}" <<std::endl;
+  }
+  T* GetData() {
+	return m_pdata;
+  }
+};
+
+template <>
+class PrettyPrinter <char*> {
+ char *m_pdata;
+public:
+  PrettyPrinter(char *data):m_pdata(data)//
+  //or PrettyPrinter(char *data):m_pdata{data}
+  {
+  }
+  
+  void print() {
+	std::cout << "{" << *m_pdata << "}" <<std::endl;
+  }
+  char* GetData() {
+	return m_pdata;
+  }
+};
+===========
+     char *n="heloworld";
+     PrettyPrinter<char*> printerc(&n); 
+    printerc.print(); //Hellow world
+     std::cout <<*printerc.GetData(); //hello world
+=====================
+void function(char* str) {
+}
+// String literal
+const char* original_str = "helloworld";
+// Call function that takes char*
+function(const_cast<char*>(original_str));
+===========================
+above template will not work for vector
+
+std::vector<int> v{1,2,3,4,5};
+PrettyPrinter>std::vector<int>>pv(&v); // this will not work for std::cout <<*m_pdata
+pv.print();
+
+template <>
+class PrettyPrinter <vector<int>> {
+ vector<int> *m_pdata;
+public:
+  PrettyPrinter(vector<int> *data):m_pdata(data)//
+  //or PrettyPrinter(char *data):m_pdata{data}
+  {
+  }
+  
+  void print() {
+	std::cout << "{" << 
+	for (const auto &x:*m_pdata) {
+	 std:cout << x;
+	}
+	std::cout << "}" <<std::endl;
+  }
+  vector<int> * GetData() {
+	return m_pdata;
+  }
+};
+=================================
+explict specialize the member function template definition
+has to be outside the class
+
+//write only the specialized member function for 
+template <typename T>
+class PrettyPrinter {
+ T *m_pdata;
+public:
+  PrettyPrinter(T *data):m_pdata(data)//
+  //or PrettyPrinter(T *data):m_pdata{data}
+  {
+  }
+  
+  void print() {
+	std::cout << "{" << *m_pdata << "}" <<std::endl;
+  }
+  T* GetData() {
+	return m_pdata;
+  }
+};
+
+template <>
+void PrettyPrinter<vector<int>>::print() {
+	std::cout << "{" << 
+	for (const auto &x:*m_pdata) {
+	 std:cout << x;
+	}
+	std::cout << "}" <<std::endl;
+  }
+
+std::vector<int> v{1,2,3,4,5};
+PrettyPrinter>std::vector<int>>pv(&v); // this will not work for std::cout <<*m_pdata
+pv.print();
+==============================
+partialial specialization?
+we specialize some of the parameter of the class
+explicit sepcilaiation all th template parmeters are specialized
+partial spcialization aonly some of the parameter are specialized.
+//colums : const
+template <typename T, int columns>
+class PrettyPrinter {
+ T *m_pdata;
+public:
+  PrettyPrinter(T *data):m_pdata(data)//
+  //or PrettyPrinter(T *data):m_pdata{data}
+  {
+  }
+  void print() {
+  std::cout <<"columns" << columns <<std::endl;
+	std::cout << "{" << *m_pdata << "}" <<std::endl;
+  }
+  T* GetData() {
+	return m_pdata;
+  }
+};
+
+template <typename T>
+class PrettyPrinter <T,80>{
+ T *m_pdata;
+public:
+  PrettyPrinter(T *data):m_pdata(data)//
+  //or PrettyPrinter(T *data):m_pdata{data}
+  {
+  }
+  void print() {
+  std::cout <<"columns 80 specialization s"<<std::endl;
+	std::cout << "{" << *m_pdata << "}" <<std::endl;
+  }
+  T* GetData() {
+	return m_pdata;
+  }
+};
+
+int main()
+{
+ int data = 200;
+ PrettyPrinter<int,40> p{&data};
+ p.Print()
+}
+
+======================
+template <typename T>
+class smartpointer {
+
+T* m_ptr;
+public:
+    smartpointer(T* ptr):m_ptr(ptr)
+	{
+	}
+	
+	T*operator ->() {
+	  return m_ptr;
+	}
+	
+	T& operator*() {
+	 return *m_ptr;
+	}
+	
+	~smartpointer()
+	{
+	    delete m_ptr;
+	}
+	   
+};
+
+int main() {
+ smartpointer<int> s1{new int{3}};
+ cout <<*s1;
+}
+
+the above program will not work for the 
+smartpointer<int> s1{new int[5]};
+cout <<*s1;
+============================
+//partial specialization
+template <typename T>
+class smartpointer <T{}> {
+
+T* m_ptr;
+public:
+	smartpointer(T* ptr):m_ptr(ptr)
+	{
+	}
+	//overload subscript operator
+	T& operator*(int index) {
+	 return *m_ptr[index];
+	}
+	
+	~smartpointer()
+	{
+	    delete []m_ptr;
+	}
+	   
+};
+smartpointer<int[]> s1{new int[5]};
+s1[3] = 3;
+cout <<s1[3];
+=======================
+tyedef {type definition)
+new name for the existing name
+this name becomes synonym of that type
+useful to construct shorter or more meaningful name for existing types
+simplifies declaration of sometypes (eg function pointer and template)
+implementation details that may change can be encapsulated
+
+example:
+typedef unsigned int UINT;
+UINT val{}
+
+typedef long long LLONG;
+LLONG em{};
+
+typedef std::vector<std::list<Employee>> Teams;
+Teams testingTeams;
+Teams::iterator it=testingTeams.begin();
+
+or you can use auto it = testingTeams.begin();
+
+typedef const char *(*ErrorFn)(int);
+ErrorFn pfn = GetErrorMessage;
+=================
+Type Alias:
+========
+it is similar to the way the variable declared.
+same as typedef but use using
+
+using identifier = type;
+
+using  UINT = unsigned int ;
+UINT val{}
+
+using LLONG = long long LLONG;
+LLONG em{};
+
+using Teams = std::vector<std::list<Employee>> ;
+Teams testingTeams;
+Teams::iterator it=testingTeams.begin();
+
+or you can use auto it = testingTeams.begin();
+
+using ErrorFn = const char *(*)(int);
+ErrorFn pfn = GetErrorMessage;
+==================
+const char *geterrormessage(int errorno)
+{
+}
+
+void showerror(const char*(*pfn)(int))
+{
+}
+===========
+const char *geterrormessage(int errorno)
+{
+}
+typedef const char*(*PFN)(int)
+void showerror(PFN pfn)
+{
+   pfn(10);
+}
+
+PFN pfn = geterrormessage;
+showerror(pfn);
+============
+const char *geterrormessage(int errorno)
+{
+}
+using PFN =const char*(*)(int)
+void showerror(PFN pfn)
+{
+   pfn(10);
+}
+
+PFN pfn = geterrormessage;
+showerror(pfn);
+==============================
+drawback of typedef is we cannot temptalize example
+typedef std::vector<std::list<std::string>> Names;
+Names<Player> name; // will not work
+
+template <typename T>
+using Names = std::vector<std::list<T>>;
+Names<std::string> name;
+Names<Names<std::string>> dname;
+
+prefer alias over typedef when you want to parameterize template type of alias
+==================================
+type traits:
+type_traits gives the ability to introspect
+transform the properities of the type
+useful in template meta programing
+will either return a boolean or type when inspecting the type
+provides teamplate-based interface and defined in header <type_traits>
+
+require the header 
+#<type_traits>
+is_void, is_null_pointer; is_integeral;is_floating_point, is_array, is_enum, is_class; is_function; is_pointer
+====
+#include <iostream>
+#include <type_traits>
+
+void func() {}
+using FuncPtr = void(*)();
+
+int main() {
+    std::cout << std::boolalpha;
+    std::cout << "is_function<void()>: " << std::is_function<void()>::value << std::endl; // true
+    std::cout << "is_function<FuncPtr>: " << std::is_function<FuncPtr>::value << std::endl; // false
+    std::cout << "is_function<void>: " << std::is_function<void>::value << std::endl; // false
+    return 0;
+}
+===================
+#include <iostream>
+#include <type_traits>
+
+int main() {
+    std::cout << std::boolalpha;
+    std::cout << "is_pointer<int*>: " << std::is_pointer<int*>::value << std::endl; // true
+    std::cout << "is_pointer<int>: " << std::is_pointer<int>::value << std::endl; // false
+    return 0;
+}
+===================
+#include <iostream>
+#include <type_traits>
+
+class MyClass {};
+struct MyStruct {};
+
+int main() {
+    std::cout << std::boolalpha;
+    std::cout << "is_class<MyClass>: " << std::is_class<MyClass>::value << std::endl; // true
+    std::cout << "is_class<MyStruct>: " << std::is_class<MyStruct>::value << std::endl; // true
+    std::cout << "is_class<int>: " << std::is_class<int>::value << std::endl; // false
+    return 0;
+}
+=================
+#include <iostream>
+#include <type_traits>
+
+int main() {
+    std::cout << std::boolalpha;
+    std::cout << "is_array<int[5]>: " << std::is_array<int[5]>::value << std::endl; // true
+    std::cout << "is_array<int>: " << std::is_array<int>::value << std::endl; // false
+    return 0;
+}
+================
+#include <iostream>
+#include <type_traits>
+
+int main() {
+    std::cout << std::boolalpha;
+    std::cout << "is_null_pointer<int>: " << std::is_null_pointer<int>::value << std::endl; // false
+    std::cout << "is_null_pointer<std::nullptr_t>: " << std::is_null_pointer<std::nullptr_t>::value << std::endl; // true
+    return 0;
+}
+======================
+is_integral<int>::value => true
+
+template <typename T>
+T Divide(T a, T b)
+{
+    if(std::is_floating_point<T>::value==false)
+	//This consdition changed to if(false==false) in compilation so the else part is not consider in compilation
+	{
+		std::cout << "type has to be floating point";
+		return 0;
+	}
+	return (a/b);
+}
+
+std::cout <<Divide(5/2) <<std::endl; //if there is no check it will 2
+//now you get the output as 0
+
+================
+#include <iostream>
+#include <type_traits>
+
+int main() {
+    std::cout << std::boolalpha;
+
+    std::cout << "is_reference<int>: " << std::is_reference<int>::value << std::endl; // false
+    std::cout << "is_reference<int&>: " << std::is_reference<int&>::value << std::endl; // true
+    std::cout << "is_reference<int&&>: " << std::is_reference<int&&>::value << std::endl; // true
+
+    return 0;
+}
+=====================
+template <typename T>
+void check(T&&)
+{
+    cout<< std::is_reference<T>::value
+}
+
+check(5); //5 s detected as int //&& will detect the original type
+int value{};
+check(value); //true
+==========
+#include <iostream>
+#include <type_traits>
+#include <utility>
+
+// A function that takes an lvalue reference
+void process(int& x) {
+    std::cout << "Processing lvalue reference: " << x << std::endl;
+}
+
+// A function that takes an rvalue reference
+void process(int&& x) {
+    std::cout << "Processing rvalue reference: " << x << std::endl;
+}
+
+// Template function to forward arguments
+template <typename T>
+void forwardToProcess(T&& arg) {
+    process(std::forward<T>(arg)); // Forward the argument preserving its type
+}
+
+int main() {
+    int value = 10;
+
+    // Forwarding an lvalue
+    std::cout << "Forwarding lvalue:" << std::endl;
+    forwardToProcess(value); // Calls process(int& x)
+
+    // Forwarding an rvalue
+    std::cout << "Forwarding rvalue:" << std::endl;
+    forwardToProcess(20); // Calls process(int&& x)
+
+    return 0;
+}
+========================
+std::is_reference<const int&>::value //true
+template <typename T>
+void check(T&&)
+{
+is_reference<typename std::remove_reference<T>::type>::value //false
+}
+int value{}
+check(value);
+===============
+#include <iostream>
+#include <type_traits>
+
+int main() {
+    // Example with int
+    int value = 10;
+
+    // Remove reference from int&
+    using BaseType1 = std::remove_reference<int&>::type;
+    BaseType1 x = value; // int x = value
+
+    // Remove reference from int&&
+    using BaseType2 = std::remove_reference<int&&>::type;
+    BaseType2 y = value; // int y = value
+
+    std::cout << "x: " << x << std::endl; //10
+    std::cout << "y: " << y << std::endl; //10
+
+    return 0;
+}
+==================================
+static_assert
+test for expression to abort the program
+
+static_assert is a new kind of declaration for evaluating expression
+accepts an expression and user defined type message
+used for testing an expression at compile time
+if the expression return false the compiler display the specified message and compilation fails
+
+code compiles in 32 bit
+This check will be done in runtime
+if (sizeof(void*) != 4) {
+ std::cout << not compiled in 32 bit machine" <<std::endl;
+ return 0;
+}
+
+prevent the compilation in 32 bit mode 
+int main()
+{
+	//assert is false compilation is stopped
+	//diagnostic message
+  static_assert(sizeof(void*) == 4, "compilation is not for the 32 bit machine");
+  return 0;
+}
+if the assert is false it will stop the compilation
+
+template <typename T>
+T Divide(T a, T b)
+{
+   static_assert(is_floating_point<T>::value,"onlyfloating point is allowed");
+   return (a/b);
+}   
+
+Divide(5/2) ;//compilation error
+Divide(5.2/2.3); //no compilation error
+=================
+#include <iostream>
+#include <type_traits>
+
+// Template function to perform division
+template <typename T>
+T Divide(T a, T b) {
+    // Check if T is a floating-point type
+    if (std::is_floating_point<T>::value == true) {
+        return a/b; // Perform division for floating-point types
+    }
+    else
+    {
+        int x = "hello"; // compilation error
+    }
+}
+
+int main() {
+    double x = 10.5, y = 2.0;
+  
+    // Perform division with floating-point numbers
+    std::cout << "Divide(double): " << Divide(x, y) << std::endl; // Output: 5.25
+    return 0;
+}
+===================================
+#include <iostream>
+#include <type_traits>
+
+// Template function to perform division
+template <typename T>
+T Divide(T a, T b) {
+    // Check if T is a floating-point type
+    if constexpr (std::is_floating_point<T>::value == true) {
+        return a/b; // Perform division for floating-point types
+    }
+    else
+    {
+        int x = "hello"; // Invalid code
+    }
+}
+
+int main() {
+    double x = 10.5, y = 2.0;
+  
+    // Perform division with floating-point numbers
+    std::cout << "Divide(double): " << Divide(x, y) << std::endl; // Output: 5.25
+    return 0;
+}
+5.25
+==========================
+compiler still check the syntax error
+// Template function to perform division
+template <typename T>
+T Divide(T a, T b) {
+    // Check if T is a floating-point type
+    if constexpr (std::is_floating_point<T>::value == true) {
+        return 1; // Perform division for floating-point types
+    }
+    else
+    {
+        fhdkjghdkjfhgkjh // Invalid code
+    }
+}
+
+int main() {
+    double x = 10.5, y = 2.0;
+  
+    // Perform division with floating-point numbers
+    std::cout << "Divide(double): " << Divide(x, y) << std::endl; // Output: 5.25
+    return 0;
+}
+=============
+#include <iostream>
+
+// Function template definition
+template <typename T>
+T add(T a, T b) {
+    return a + b;
+}
+
+// Explicit instantiation of the template for int
+template int add<int>(int, int);
+
+int main() {
+    int x = 5, y = 10;
+
+    // Calling the instantiated function
+    std::cout << "The sum of " << x << " and " << y << " is " << add(x, y) << std::endl;
+
+    return 0;
+}
+=====================================
+#include <iostream>
+#include <type_traits>
+
+template <typename T>
+void checkType() {
+    if (std::is_arithmetic<T>::value) {
+        std::cout << typeid(T).name() << " is an arithmetic type." << std::endl;
+    } else {
+        std::cout << typeid(T).name() << " is NOT an arithmetic type." << std::endl;
+    }
+}
+
+int main() {
+    // Test with various types
+    checkType<int>();         // int is an arithmetic type
+    checkType<double>();      // double is an arithmetic type
+    checkType<char>();        // char is an arithmetic type
+    checkType<std::string>(); // std::string is NOT an arithmetic type
+    checkType<bool>();        // bool is an arithmetic type
+
+    return 0;
+}
+===================================
+// Primary template function
+template <typename T>
+void prettyprint( T &X) {
+    // Default implementation (if needed)
+    std::cout << "General template: " << X << std::endl;
+}
+
+// Template specialization for char*
+template <>
+void prettyprint(char* &X) {
+    // Specialized implementation for char* (non-const)
+    std::cout << "char* specialization: " << X << std::endl;
+}
+
+// Template specialization for const char*
+template <>
+void prettyprint<const char*>(const char*& X) {
+    // Specialized implementation for const char*
+    std::cout << "const char* specialization: " << X << std::endl;
+}
+
+int main() {
+    char* p = "hello"; 
+    prettyprint(p);  // Calls the char* specialization
+
+    return 0;
+}
+==========================================
+//why generalized lambda is called for the "hello"
+// if the generalized template takes reference then spacialized lamda also needs to take reference but not viceversa
+
+#include <iostream>
+
+// Primary template function
+template <typename T>
+void prettyprint( T X) {
+    // Default implementation (if needed)
+    std::cout << "General template: " << X << std::endl;
+}
+
+// Template specialization for char*
+template <>
+void prettyprint(char* X) {
+    // Specialized implementation for char* (non-const)
+    std::cout << "char* specialization: " << X << std::endl;
+}
+
+int main() {
+    char* p = "hello"; 
+    prettyprint(p);  // Calls the char* specialization
+    prettyprint("hello"); //call generalized template//since ther is no specialization for const char* is given here it will 
+	//call the generalized template
+	prettyprint<char*>("hello");  //specialized template
+
+    return 0;
+}
+===================
+#include <iostream>
+
+// Primary template
+template <typename T1=int, typename T2=int>
+class abc {
+public:
+    void print() {
+        std::cout << "Primary template" << std::endl;
+    }
+};
+
+// Partial specialization for T2 = float
+template <typename T1>
+class abc<T1, float> {
+public:
+    void print() {
+        std::cout << "Specialized template for float" << std::endl;
+    }
+};
+
+int main() {
+    // Using the primary template
+    abc<> obj1;
+    obj1.print();  // Output: Primary template
+
+    // Using the partial specialization
+    abc<int,float> obj2;
+    obj2.print();  // Output: Specialized template for float
+
+    return 0;
+}
+=================================================
+#include <iostream>
+
+// Primary template
+template <typename T>
+class MyClass {
+public:
+    void print() {
+        std::cout << "Primary template: T is not specialized." << std::endl;
+    }
+};
+
+// Explicit specialization for T = int
+template <>
+class MyClass<int> {
+public:
+    void print() {
+        std::cout << "Specialized template: T is int." << std::endl;
+    }
+};
+
+int main() {
+    MyClass<double> obj1;
+    MyClass<int> obj2;
+
+    obj1.print();  // Output: Primary template: T is not specialized.
+    obj2.print();  // Output: Specialized template: T is int.
+
+    return 0;
+}
+=====================================================
+#include <iostream>
+#include <memory>  // For std::unique_ptr
+
+// Function to create a dynamic array with a fixed size and type
+template <std::size_t Size, typename T>
+std::unique_ptr<T[]> createDynamicArray() {
+    // Create a unique_ptr to a dynamic array of type T with the specified size
+    return std::make_unique<T[]>(Size);
+}
+
+int main() {
+    // Create a dynamic array of size 2 and type int
+    auto array = createDynamicArray<2, int>();
+
+    // Initialize the array
+    array[0] = 10;
+    array[1] = 20;
+
+    // Print the array elements
+    std::cout << "Array[0]: " << array[0] << std::endl;  // Output: 10
+    std::cout << "Array[1]: " << array[1] << std::endl;  // Output: 20
+
+    return 0;
+}
+Array[0]: 10
+Array[1]: 20
+===============================
+class Template Argument detection:
+ Template argument deduction is a process by which a compiler deduces the types
+ until C++14. This works only with functions and not classes
+ consequently to create instances of classes with multiple template
+ argument we had to resort to make_ function eg: make_pair
+ There are 2 types - compiler generated and user defined
+ 
+template <typename T>
+class Data {
+ public:
+    Data(const T &a) {
+	}
+};
+
+int main()
+{
+   Data <int> d1{4};
+   Data d2{4} //detect to int
+   
+   Data d3 =d1;
+   
+   auto d4 = new Data{"hello"}; //type is going to char[] here
+   auto d5{"hello"} //type is going to char[]
+   
+   std::pair<int,int> p1{1,2}
+   auto p2 = std::make_pair{2.3}
+   
+   std::pair p2{3,4}
+   std::vector v1{1,2,3,4}
+   
+   std::mutx m;
+   std::loc_guard lck{m}
+}
+=============
+class Data {
+ public:
+    Data(const T &a) {
+	}
+};
+
+Data(const char*) -> Data<std::string>;
+data(int)->data<long>
+
+Data d2{4} //detect to long
+auto d5{"hello"} //type is going to std::string
+Data d2{4.5f} //type is going to be float
+===========================
+unique_lock
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <condition_variable>
+
+std::mutex mtx;
+std::condition_variable cv;
+bool ready = false;
+
+void waitForReady() {
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock, []{ return ready; }); // Wait until `ready` is true
+
+    std::cout << "Condition met, proceeding..." << std::endl;
+}
+
+void setReady() {
+    std::unique_lock<std::mutex> lock(mtx);
+    ready = true;
+    cv.notify_all(); // Notify all waiting threads
+}
+
+int main() {
+    std::thread waiter(waitForReady);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::thread notifier(setReady);
+
+    waiter.join();
+    notifier.join();
+
+    return 0;
+}
+//condition meet processing
+===================================================
+ class template argument detection often involves determining the type or properties of the template arguments provided to a class template.
+SFINAE (Substitution Failure Is Not An Error): This technique allows the compiler to select the most appropriate template based on type information.
+Template Specialization: Creates specialized versions of a template for specific types.
+
+//typename Enable = voidfall back if no specialization matched
+
+#include <iostream>
+#include <type_traits>
+
+template <typename T, typename Enable = void>
+class TypeDetector {
+public:
+    void print() {
+        std::cout << "Primary template: Unspecified type." << std::endl;
+    }
+};
+
+// Specialization for integral types
+template <typename T>
+class TypeDetector<T, std::enable_if_t<std::is_integral_v<T>>> {
+public:
+    void print() {
+        std::cout << "Specialized template for integral types." << std::endl;
+    }
+};
+
+// Specialization for floating-point types
+template <typename T>
+class TypeDetector<T, std::enable_if_t<std::is_floating_point_v<T>>> {
+public:
+    void print() {
+        std::cout << "Specialized template for floating-point types." << std::endl;
+    }
+};
+
+// Specialization for pointer types
+template <typename T>
+class TypeDetector<T*, std::enable_if_t<!std::is_array_v<T>>> {
+public:
+    void print() {
+        std::cout << "Specialized template for pointer types." << std::endl;
+    }
+};
+
+// Specialization for array types
+template <typename T, std::size_t N>
+class TypeDetector<T[N]> {
+public:
+    void print() {
+        std::cout << "Specialized template for array types." << std::endl;
+    }
+};
+
+int main() {
+    TypeDetector<int> intDetector;
+    TypeDetector<double> doubleDetector;
+    TypeDetector<std::string> stringDetector;
+    TypeDetector<int*> pointerDetector;
+    TypeDetector<int[10]> arrayDetector;
+
+    intDetector.print();
+    doubleDetector.print();
+    stringDetector.print();
+    pointerDetector.print();
+    arrayDetector.print();
+
+    return 0;
+}
+
+Specialized template for integral types.
+Specialized template for floating-point types.
+Primary template: Unspecified type.
+Specialized template for pointer types.
+Specialized template for array types.
+================================
+folding basics:
+ It is process that applies a binary operator to a list of values receurseively
+ the results are combined recursively that buils up the final result
+ 
+ auto sum(){
+   return 0;
+ }
+ 
+ template <typename T, typename ...Args>
+ auto Sum(T a, Args...args)
+ {
+     return a+ Sun(args...)
+ }
+ /*
+   sum{1,2,3,4,5}
+   return 1 + sum{2,3,4,5}
+   return 2 + sum{3,4,5}
+   return 3 + sum{4,5}
+   return 4 + sum{5}
+   return 5 + sum{}
+   return 0 
+ 
+    1+(2+(3+(4+(5+0)))) //we are applying binary operator over the list of operators.
+	
+ */
+ int main()
+ {
+  auto result = sum(1,2,3,4,5); //15  
+ }
+ ================
+ folder expression:
+ c+17 offer new way to unpack variadic parameter with binary operatorthis called fold expressiona fold expression reduces a parameter pack over a binary operator
+ this is a compact syntx for applying binary operations to the elements of a parameter pack;
+ 
+ (pack op ...) : unary right fold
+ (... op pack): unary left fold. op is the operator
+ (pack op ... op init) : binary right fold. init is the initialize value
+ (init op ... op pack) : binary left fold; init is identity element
+ ===========================
+  template <typename ...Args>
+ auto Sum(Args...args)
+ {
+     //return (args +...) //right fold (1+(2+(3+(4+(5)))) 
+	 return (... + args ) //left fold ((((1+2)+3)+4)+5)
+ }
+  int main()
+ {
+  auto result = sum(1,2,3,4,5); //15  
+  auto result = sum() ;;error //fix by binary right or left fold
+ }
+ ======================
+ folded expression binary right and left folds
+ 
+  template <typename ...Args>
+ auto Sum(Args...args)
+ {
+     //return (0+... + args ) //binary left fold ((((0+1)+2)+3)+4)+5)
+	 return (args+... + 0 ) //binary right fold ((1+(2+(3+(4+(5))))
+ }
+  int main()
+ {
+  auto result = sum() ;0
+  auto result = sum(1,2,3,4,5)
+ }
+ ===This are the operator that can be used with fold espression:
+ + - / % ^ = < > >> << += = *= && || ,
+ 
+ empty argument
+ && true
+ || false
+ ,  void()
+ others illformed
+ =======================
+ template<typename...Args>
+ bool Anyof(Args...args)
+ {
+  return(... || (args%2 ==0));
+ }
+ 
+  bool Allof(Args...args)
+ {
+  return(... && (args%2 ==0));//all number are even or not
+ }
+  
+  cout <<Anyof(1,3,5) ==> return 0
+  cout <<Anyof(1,3,5) == > 0
+====================================
+#include <iostream>
+
+// Template function to check if any argument satisfies the predicate
+template<typename Predicate, typename... Args>
+bool AnyOf2(Predicate P, Args... args) {
+    return (... || P(args)); // Use fold expression to combine results
+}
+
+int main() {
+    // Example usage
+    std::cout << AnyOf2([](int x) { return x % 2 == 0; }, 10, 2, 3) << std::endl;
+    // Output: 1 (true), as 10 and 2 are even numbers
+    return 0;
+}
+===============================
+type trait suffix:
+to check whether the object has the default constructor or not?
+#include <iostream>
+#include <type_traits>
+
+// Function template enabled only for default-constructible types
+template <typename T>
+typename std::enable_if<std::is_default_constructible_v<T>, void>::type
+process() {
+    std::cout << "Processing default-constructible type." << std::endl;
+}
+
+// Function template enabled only for non-default-constructible types
+template <typename T>
+typename std::enable_if<!std::is_default_constructible_v<T>, void>::type
+process() {
+    std::cout << "Processing non-default-constructible type." << std::endl;
+}
+
+class DefaultConstructible {
+public:
+    DefaultConstructible() {}
+};
+
+class NonDefaultConstructible {
+public:
+    NonDefaultConstructible(int) {}
+};
+
+//message is printed in runtime
+int main() {
+    process<DefaultConstructible>(); // Prints: Processing default-constructible type.
+    process<NonDefaultConstructible>(); // Prints: Processing non-default-constructible type.
+
+    return 0;
+}
+==========================================
+class Name 
+{
+		int m_data;
+	public:
+		Number() = default;
+		Number(int x):m_data(n){}
+};
+
+int main() {
+   static_assert(std::is_default_constructible<Number>::value,"only the object with default constructable");
+   //or static_assert(std::is_default_constructible_v<Number>,"only the object with default constructable");
+   return 0;
+}
+===================
+similary
+std::is_reference<t>::value to std::is_reference_v<t>
+
+std::remove_reference<T>::type to std::remove_reference_t<T>
+after removing the reference check whether it is reference
+
+cout << std::is_reference_v<typename std::remove_reference_t<T>>
+//added in c++14: std::remove_reference_t ie _t
+//added in c++17: is_reference_v ie _v
+================================
+if constexpr
+
+compile time if
+This feature allows the condition of an if statement to be evaluated at
+compile time
+
+it also discard branches of an if statement at compile time ie those code dont become the 
+part of the executable.
+
+if constexpr(condition)
+
+the expression condition must be a const condition and it should be possible
+to be evaluate it at compile time
+
+can be be used in template and non template function
+only the block that follow the true condition is evaluated the else block become discarded statement
+//ie the statement cannot invalid or calling the function which is not their
+
+note the discarded statement must be still a valid statement
+
+if constexpr can be used only inside the function not outside
+
+it should be consider as the subsitutite of preprocessor 
+
+===================
+template <typename T>
+void Print(const T &value)
+{
+   std::cout << value <<endl;
+}
+int main()
+{
+    int value{3};
+	print(value); //3
+	print(&value); //print the address
+}
+============
+template <typename T>
+void Print(const T &value)
+{
+   std::cout << value <<endl;
+}
+int main()
+{
+    int value{3};
+	int arr[]={1,2,3}
+	print(value); //3
+	print(&value); //print the address
+	print(arr);//print the address
+}
+
+===========================
+template <typename T>
+void Print(const T &value)
+{
+   if(std::is_pointer_v<T>) 
+   {
+		std::cout << *value <<std::endl;
+   }
+   else if(std::is_array_v<T>)
+   {
+		for (auto v : value)
+		{
+			std::cout << v <<std::endl;
+		}
+   }
+   else
+   {
+		std::cout << value <<std::endl;
+   }
+}
+int main()
+{
+    int value{3};
+	int arr[]={1,2,3}
+	print(value); //will give the compiler error for the *value
+	print(&value); //will give compiler error for array
+	print(arr);//no error
+}
+//above error happens since compiler will evaluate all the statements.
+//each statement in the condition block is valid for the array type
+
+===========================
+#include <type_traits>
+
+template <typename T>
+void Print(const T &value)
+{
+   if constexpr (std::is_pointer_v<T>) 
+   {
+		std::cout << *value <<std::endl;
+   }
+   else if constexpr (std::is_array_v<T>)
+   {
+		for (auto v : value)
+		{
+			std::cout << v <<std::endl;
+		}
+   }
+   else
+   {
+		std::cout << value <<std::endl;
+   }
+}
+int main()
+{
+    int value{3};
+	int arr[]={1,2,3}
+	print(value);  //3 
+	print(&value); //addess
+	print(arr); //1 2 3
+}
+===========================
+convert the number to string?
+std::string ToString(T value)
+{
+   if constexpr(std::is_arithmatic_v<T>) {
+	return std::to_string(value);
+	}else {
+	  return std::string(value);
+	}
+}
+
+int value{3};
+auto s = ToString(value); //if there is constexpr we get the 
+//error string(3) gives error
+cout << s;
+=======================
+void checkmode()
+{
+ if constexpr (sizeof(void *)==4)
+ {
+	std::cout << "32 bit mode" <<std::endl;
+ }
+ else if constexpr (sizeof(void *)==8)
+ {
+	std::cout << "64 bit mode" <<std::endl;
+ }
+ else
+ {
+	std::cout << "mode is unknown" <<std::endl;
+ }
+
+checkmode();
+
+if there is no constexpr you will find the code for if else if and else
+if there is constexpr you will find the code only for the true statement
+================================
+function pointer:
+
+template <typename T , int size>
+void Sort( T (&arr)[siz]) {
+   for (int i = 0; i<size-1; ++i) {
+		for(int j = 0; j<size-1; ++j) {
+		{
+			 if(arr[j] >arr[j+1])
+			{
+				T temp = arr [j]; //swap by value
+				//or T temp = std::move(arr[j]);//move is not strictly necessary for primitive data type
+				arr[j] = arr[j+1];
+				arr[j+1] = temp;
+			}
+		}
+	}
+}
+
+int main()
+{
+    int arr[]{8,7,6,5,4,3,2,1};
+	for (const auto &x : arr)
+	{
+		cout << " " << x << " ";
+	}
+	std::cout <<std::endl;
+	Sort(arr);
+	for (const auto &x : arr)
+	{
+		cout << " " << x << " ";
+	}
+	std::cout <<std::endl;
+	return 0;
+}
+// the above program will work only asceding order
+//program will not work raw c style string as it will compare the address.
+//std::string arr[]{"apple", "banana", "cherry", "date"};
+===========================================
+using function pointer:
+using Comparator  = bool (*)(int,int)
+template <typename T , int size>
+you can replace the above 2 lines into single line
+template <typename T , int size, typename Comparator>
+============================
+using Comparator  = bool (*)(int,int)
+template <typename T , int size>
+void Sort( T (&arr)[size], Comparator comp) {
+   for (int i = 0; i<size-1; ++i) {
+		for(int j = 0; j<size-1; ++j) {
+		{
+			 if(comp(arr[j],arr[j+1])
+			{
+				T temp = arr [j]; //swap by value
+				//or T temp = std::move(arr[j]);//move is not strictly necessary for primitive data type
+				arr[j] = arr[j+1];
+				arr[j+1] = temp;
+			}
+		}
+	}
+}
+
+//predicate
+bool Comp(int x, int y)
+{
+    return x>y;
+}
+
+bool dComp(int x, int y)
+{
+    return x<y;
+}
+
+int main()
+{
+    int arr[]{8,7,6,5,4,3,2,1};
+	for (const auto &x : arr)
+	{
+		cout << " " << x << " ";
+	}
+	std::cout <<std::endl;
+	Sort(arr, comp);
+	for (const auto &x : arr)
+	{
+		cout << " " << x << " ";
+	}
+	std::cout <<std::endl;
+	Sort(arr, dcomp);
+	return 0;
+}
+======================================
+function object or functor:
+Object with overloaded function call operator
+call to overload function call operator resembles a global function call
+can be used as a callback instead of function pointer
+more efficient than function pointer
+usually implemented as struct
+
+function pointer is dynamic in nature. difficult to optimize
+function is static and needs to know at compile time.inline function call.
+
+
+function object make the comp2 function comparision inline
+//function object has the callback is inlined will be faster.
+// it can have the state can store state between different invoction
+//function object is passed as the callback
+struct Comp2 {
+    bool operator()(int x, int y) {
+      return x>y
+    }
+};
+
+comp2 obj;
+//member function call
+obj(1,2); //internally resolved as obj.operator()(3,5);
+
+ 
+template <typename T , int size, typename Comparator>
+void Sort( T (&arr)[size], Comparator comp) {
+   for (int i = 0; i<size-1; ++i) {
+		for(int j = 0; j<size-1; ++j) {
+		{
+			 if(comp(arr[j],arr[j+1])
+			{
+				T temp = arr [j]; //swap by value
+				//or T temp = std::move(arr[j]);//move is not strictly necessary for primitive data type
+				arr[j] = arr[j+1];
+				arr[j+1] = temp;
+			}
+		}
+	}
+}
+int main()
+{
+    int arr[]{8,7,6,5,4,3,2,1};
+	for (const auto &x : arr)
+	{
+		cout << " " << x << " ";
+	}
+	std::cout <<std::endl;
+	Sort(arr, comp2);//class name
+	for (const auto &x : arr)
+	{
+		cout << " " << x << " ";
+	}
+	std::cout <<std::endl;
+	Sort(arr, dcomp);
+	return 0;
+}
+ =======================================
+ #include <iostream>
+#include <memory> // For std::unique_ptr
+
+// Define a function object (functor)
+class Adder {
+public:
+    Adder(int value) : value_(value) {}
+    
+    // Overload the function call operator
+    int operator()(int input) const {
+        return input + value_;
+    }
+    
+private:
+    int value_;
+};
+
+int main() {
+    // Create a function object dynamically using new
+    Adder* adder = new Adder(10);
+    
+    // Use the function object
+    int result = (*adder)(5); // Calls adder.operator()(5)
+    std::cout << "Result: " << result << std::endl;
+    
+    // Clean up the dynamically allocated memory
+    delete adder;
+    
+    return 0;
+}
+=============================================
+=======================================
+//sort is template instantiated at compile time
+// but this expression if(comp(arr[j],arr[j+1]) it cannot be inlined.
+//function pointer cannot be optimized by the compiler
+//function pointer point to global function. they dont have state
+//
+In C++, function callbacks are a way to pass functions 
+(or function-like objects) as arguments to other functions.
+ This technique is useful for customizing behavior or handling events.
+Here’s a step-by-step example to illustrate how to use
+ function callbacks in C++:
+ 
+#include <iostream>
+#include <functional> // For std::function
+
+// Define a function that takes a callback function as a parameter
+void process(int value, void (*callback)(int)) {
+    // Perform some processing (in this case, just a simple increment)
+    int result = value + 10;
+    
+    // Call the callback function with the result
+    callback(result);
+}
+
+// A callback function that prints the result
+void printResult(int result) {
+    std::cout << "Result: " << result << std::endl;
+}
+
+int main() {
+    int value = 5;
+    
+    // Call the process function and pass printResult as the callback
+    process(value, printResult);
+    
+    return 0;
+}
+============
+#include <iostream>
+#include <functional> // For std::function
+
+// Define a function that takes a callback function as a parameter
+void process(int value, std::function<void(int)> callback) {
+    // Perform some processing (in this case, just a simple increment)
+    int result = value + 10;
+    
+    // Call the callback function with the result
+    callback(result);
+}
+
+int main() {
+    int value = 5;
+    
+    // Define a lambda function to be used as a callback
+    auto printResult = [](int result) {
+        std::cout << "Result: " << result << std::endl;
+    };
+    
+    // Call the process function and pass the lambda as the callback
+    process(value, printResult);
+    
+    return 0;
+}
+==========================================
+callback function object:
+object of class or structure that has the function call operator overloaded in it.
+===========================
+Lamda Expression:
+defines an anonymous function object
+Syntactic shortcut or a function object no need class or structure and overload the 
+function calling operator.
+can be passed as an argument
+can accept parameters and returns value
+replace function object
+behaves like a normal function when invoked
+typically encapsulate a few lines of code
+you can use auto to provide an explicit name
+
+lamda introducer=>[capture list](<arg> optional) <mutable/optional> <exceptional specification/optional> -> <returntype> ==> trailling return type 
+{
+  lammda body
+}
+
+//compiler create the class and overload the function call operator in it;
+//function operator has the implementation of the function body of lamda epression
+//
+int main()
+{
+//below is the annonymous function object;
+[]()
+{
+	std::cout <<"viswa";
+}(); //() will call the annonmous function object
+
+//fn is the name to the lamda expression. fn is the function object
+auto fn =[]()
+{
+	std::cout <<"viswa";
+};
+
+fn();
+
+std::cout <<typeid(fn).name() <<std::endl; //class <lamda_123...>
+
+}
+
+//if the lamda expression is going to return the same type of the 
+argument or the retun type is void no need to speify the return type 
+//it become optional
+//if we dont specify the return type when the return type is not 
+matching with the argument type then it will not compile.
+
+auto sum =[](int x, int y)->int
+{
+ // return 12.12f;//compiler error if no return type is specified
+ //return type need not be same type as the return data type
+  return (x+y);
+}
+
+sum(1,4) //5
+
+==============
+template <typename T?
+struct umnamed {
+//we cannot keep the function argument name as auto
+ T operator()(T x, T y) const {
+    return (x+y)
+ }
+}
+
+unamed <int> n;
+n(4,1);//5
+
+the same behaviour can be achevied in lamda usin generic lamda
+//return type is detected based on the return statement
+auto sum =[](auto x, auto y)noexcept(false)
+{
+  return (x+y);
+}
+========================================
+
+#include <iostream>
+
+int main() {
+    // Lambda with implicit return type deduction
+    auto sum = [](auto x, auto y) {
+        return x + y; // Return type is deduced based on x + y
+    };
+
+    std::cout << sum(5, 10) << std::endl; // Uses int + int, returns int
+    std::cout << sum(5.5, 10.5) << std::endl; // Uses double + double, returns double
+
+    return 0;
+}
+===============================================
+
+======================
+type conversion operator
+===
+no error below since int+float => float
+int main() {
+    // Lambda with an explicit return type
+    auto sum = [](int x, float y) {
+        return (x) + y; // Ensures the return type is float
+    };
+
+    // Call the lambda
+    float result = sum(1, 4.10f);
+    std::cout << "Result: " << result << std::endl;
+
+    return 0;
+}
+5.1
+====
+template <typename T , int size, typename Comparator>
+void Sort( T (&arr)[size], Comparator comp) {
+   for (int i = 0; i<size-1; ++i) {
+		for(int j = 0; j<size-1; ++j) {
+		{
+			 if(comp(arr[j],arr[j+1])
+			{
+				T temp = arr [j]; //swap by value
+				//or T temp = std::move(arr[j]);//move is not strictly necessary for primitive data type
+				arr[j] = arr[j+1];
+				arr[j+1] = temp;
+			}
+		}
+	}
+}
+
+int main()
+{
+    int arr[]{8,7,6,5,4,3,2,1};
+	for (const auto &x : arr)
+	{
+		cout << " " << x << " ";
+	}
+	std::cout <<std::endl;
+	//here we avoided the structire or function
+	Sort(arr, [](auto x, auto y){
+	return x >y
+	}
+	);
+	
+	auto cmp1 = [](auto x, auto y){
+	return x >y
+	};
+	//reuse the lamda function
+	Sort(arr, cmp1);
+	for (const auto &x : arr)
+	{
+		cout << " " << x << " ";
+	}
+	std::cout <<std::endl;
+	Sort(arr, dcomp);
+	return 0;
+}
+===============================
+print all the elements of the array
+template<typename T, int size, typename callback>
+void ForEach(T(&arr)[size],callback operation) {
+    for(int i= 0; i<size;i++)
+	{
+	    operation(arr[i]);;
+	}
+}
+int arr[]{1,2,3,4,5,6};
+
+ForEach(arr,[](auto x) {
+   std::cout <<x << " ";
+   });
+//1 2 3 4 5
+===========================
+add the offset to each element of the array
+template<typename T, int size, typename callback>
+void ForEach(T(&arr)[size],callback operation) {
+    for(int i= 0; i<size;i++)
+	{
+	   operation(arr[i]);
+	}
+}
+int arr[]{1,2,3,4,5,6};
+int offset = 5;
+//[offset: //capture by value]
+ForEach(arr,[offset](auto &x) {
+   x += offset; //if the offset name is not their in the capture list
+   //then it is not accessable
+   //offset inside the lamda is the copy of the outside lamda.
+   //it is not the same as the outside lamda
+   //if you capture by value the ofset value cannot be modified
+   //offset++; //error
+   });
+   
+ForEach(arr,[](auto &x) {
+   std::cout <<x << " ";
+   });
+
+/6 7 8 9 10 11
+=========================
+template <typename T, std::size_t size, typename comparator>
+void ForEach(T(&arr)[size],callback operation) {
+    for(int i= 0; i<size;i++)
+	{
+	    operation(arr[i]);;
+	}
+}
+int arr[]{1,2,3,4,5,6};
+//[offset: //capture by value]
+ForEach(arr,[offset](auto &x) {
+   x += offset; //if the offset name is not their in the capture list
+   //then it is not accessable
+   //offset inside the lamda is the copy of the outside lamda.
+   //it is not the same as the outside lamda
+   //if you capture by value the ofset value cannot be modified
+   //offset++; //error
+   });
+   
+coresponding struct
+template <typename T>
+struct _Unamed {
+   int oofset;
+		__unamed(int off):offset(off){
+   }
+	void operator()(T &x) const {
+		x+=offset;
+		++offset;
+	}
+}
+	
+_Unamed n(3);
+n(3); //const member function cannot modify the member variable
+//offset create the member variable
+=== 
+template <typename T, std::size_t size, typename comparator>
+void ForEach(T(&arr)[size],callback operation) {
+    for(int i= 0; i<size;i++)
+	{
+	    operation(arr[i]);;
+	}
+}
+to remove the const for the member function 
+int arr[]{1,2,3,4,5,6};
+int offset =0;
+ForEach(arr,[offset](auto &x)mutable {
+	x += offset; //if the offset name is not their in the capture list
+	offset++; //no error
+});
+std::cout <<offset <<std::endl; //0
+====
+coresponding struct
+template <typename T>
+struct _Unamed {
+   int oofset;
+		__unamed(int off):offset(off){
+   }
+	void operator()(T &x)  {
+		x+=offset;
+		++offset;
+	}
+}
+
+1 3 5 7 9 11
+=========================
+template <typename T, std::size_t size, typename comparator>
+void ForEach(T (&arr)[size], comparator operation) {
+    for (std::size_t i = 0; i < size; ++i) {
+        operation(arr[i]);
+    }
+}
+sum of the elements of the array
+int arr[]{1,2,3,4,5,6};
+int sum =0;
+//capture the element by reference so that sum changes inside the lamda will be refelected outside 
+//lamda function.// capture by reference will not have mutable
+ForEach(arr,[&sum](auto &x) {
+	sum += x
+});
+std::cout << sum; //21
+=======================================
+template <typename T>
+T add(T x, T y) {
+    return x + y;
+}
+
+auto add(auto x, auto y) {
+    return x + y;
+}
+=====================
+#include <iostream>
+
+// Updated ForEach function template
+template <typename T, std::size_t size, typename Callable>
+void ForEach(T (&arr)[size], Callable operation) {
+    for (std::size_t i = 0; i < size; ++i) {
+        operation(arr[i]);
+    }
+}
+
+int main() {
+    int arr[]{1, 2, 3, 4, 5, 6};
+    int sum = 0;
+
+    // Capture sum by reference so that changes inside the lambda are reflected outside
+    ForEach(arr, [&sum](auto &x) {
+        sum += x; // Adds each element to sum
+    });
+
+    std::cout << sum << std::endl; // Outputs 21
+
+    return 0;
+}
+==============================
+ForEach(arr, [&sum, offset](auto &x) {
+}
+//sum is captured by reference
+//ofset is captured by value
+Please not 
+capture list can capture the variable declared before the lamda expression and not after the 
+lamda.
+
+if you want to capture the particular vriable by reference
+//except offset all other variables are captured by the value
+ForEach(arr, [=, &offset](auto &x) {
+}
+
+ForEach(arr, [&, offset](auto &x) {
+}
+
+[var]" capture var by value
+[=] : Capture all enclosing scope variable by value
+[&var] : capture var by reference
+[this]: Capture this (captures all member variable]
+[&]: capture all enclosing scope variable by reference
+[=, &var] : all local vraiable captured by value except var which is captured by reference
+global variable and local and global static variables are captured by default
+and changes made inside the landa will refelected outside 
+
+======
+if you need to capture all the enclosing variable by reference then you can use
+ForEach(arr, [&](auto &x) {
+}
+if you need to capture all the enclosing variable by value then you can use
+ForEach(arr, [=](auto &x) {
+}
+=======================================
+#include <iostream>
+#include <vector>
+#include <algorithm> // For std::for_each
+
+#include <iostream>
+#include <vector>
+#include <algorithm> // For std::for_each
+
+// Template function for std::vector
+template <typename Callable>
+void ForEach(std::vector<int>& arr, Callable func) {
+    std::for_each(arr.begin(), arr.end(), func);
+}
+
+int main() {
+    int offset = 0;
+    std::vector<int> arr = {1, 2, 3, 4, 5};
+
+    // Capture offset by value, but modify only the copy inside the lambda
+    ForEach(arr, [offset](auto &x) mutable {
+        x += offset; // Modifies the copy of offset within the lambda
+        offset++;    // Modifies the copy of offset within the lambda
+    });
+
+    std::cout << offset << std::endl; // Prints 0, because `offset` is captured by value
+    std::for_each(arr.begin(), arr.end(), [](int x){std::cout << x;});// 1 3 5 7 9
+    return 0;
+}
+======================================
+lamda function has to captured by rvalue or const reference
+void ForEach(const std::vector<int>& arr, const std::function<void(int)> &func) {
+    for (int element : arr) {
+        func(element);
+    }
+}
+
+int main() {
+    int offset = 0;
+    std::vector<int> arr = {1, 2, 3, 4, 5};
+
+    ForEach(arr, [offset](int element) mutable {
+        std::cout << element + offset++ << " "; // Accessing offset here would modify the copy
+    });
+
+    std::cout << std::endl;
+    return 0;
+}
+============================================
+nt globalVar = 100;
+
+void example() {
+    auto lambda = [g = globalVar]() { // Capture the global variable explicitly
+        std::cout << "Captured globalVar: " << g << std::endl;
+    };
+
+    lambda(); // Outputs: Captured globalVar: 100
+}
+==========================
+int globalVar = 100;
+
+void example() {
+    auto lambda = []() {
+        std::cout << "Accessing globalVar: " << globalVar << std::endl;
+    };
+
+    lambda(); // Outputs: Accessing globalVar: 100
+}
+
+int main() {
+    example();
+    return 0;
+}
+===============================
+#include <iostream>
+
+void example() {
+    int localVar = 42; // Variable in the function scope
+
+    {
+        int x = 100; // Variable in a nested block
+
+        {
+            // Lambda capturing both localVar and x
+            auto lambda = [localVar, x]() {
+                std::cout << "Captured localVar: " << localVar << ", x: " << x << std::endl;
+                //42 100
+            };
+
+            lambda(); // Outputs: Captured localVar: 42, x: 100
+        }
+    }
+}
+
+int main() {
+    example();
+    return 0;
+}
+==================================================
+#include <iostream>
+
+void example() {
+    int localVar = 42;
+
+    auto lambdaByValue = [localVar]() {
+        std::cout << "Captured localVar by value: " << localVar << std::endl;
+    };
+
+    auto lambdaByReference = [&localVar]() {
+        std::cout << "Captured localVar by reference: " << localVar << std::endl;
+    };
+
+    lambdaByValue(); // Outputs: Captured localVar by value: 42
+    lambdaByReference(); // Outputs: Captured localVar by reference: 42
+
+    localVar = 100;
+    lambdaByReference(); // Outputs: Captured localVar by reference: 100
+}
+
+int main() {
+    example();
+    return 0;
+}
+==========
+#include <iostream>
+
+int globalVar = 100;
+
+void example() {
+    auto lambda = []() {
+        std::cout << "Accessing globalVar: " << globalVar << std::endl;
+    };
+
+    lambda(); // Outputs: Accessing globalVar: 100
+
+    globalVar = 200;
+    lambda(); // Outputs: Accessing globalVar: 200
+}
+
+int main() {
+    example();
+    return 0;
+}
+=====================
+#include <iostream>
+
+void example() {
+    auto lambda = []() {
+        static int staticVar = 0; // Initialized only once
+        std::cout << "Static variable: " << staticVar << std::endl;
+        ++staticVar;
+    };
+
+    lambda(); // Outputs: Static variable: 0
+    lambda(); // Outputs: Static variable: 1
+    lambda(); // Outputs: Static variable: 2
+}
+
+int main() {
+    example();
+    return 0;
+}
+======================
+void example() {
+    static int staticVar = 0; // Initialized only once
+    auto lambda = []() {
+        
+        std::cout << "Static variable: " << staticVar << std::endl;
+        ++staticVar;
+    };
+
+    lambda(); // Outputs: Static variable: 0
+    lambda(); // Outputs: Static variable: 1
+    lambda(); // Outputs: Static variable: 2
+}
+======================================
+lamda function inside the class and need to capture the member variable
+we need to use the this.
+//we cannot capture the individual member variable
+
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm> // For std::for_each
+
+// Template function for processing arrays with a callable
+template <typename T, std::size_t size, typename Callable>
+void ForEach(T (&arr)[size], Callable func) {
+    std::for_each(arr, arr + size, func);
+}
+
+class Product {
+    std::string m_name;
+    float m_price;
+
+public:
+    Product(const std::string &n, float p) : m_name(n), m_price(p) { }
+
+    void AssignFinalPrice() {
+        float baseprice = m_price; // Corrected variable name
+        float taxes[] = {12, 5, 3}; // Array of taxes
+
+        // Capture baseprice by value and this pointer
+        ForEach(taxes, [baseprice, this](float tax) {
+            float taxedprice = baseprice * tax / 100;
+            m_price += taxedprice; // Modify m_price based on tax
+        });
+    }
+
+    float GetPrice() const { // Added const qualifier as this method does not modify the object
+        return m_price;
+    }
+};
+
+int main() {
+    Product p{"watch", 100}; // Corrected class name and constructor call
+
+    p.AssignFinalPrice(); // Apply taxes to the product price
+
+    std::cout << p.GetPrice() << std::endl; // Output the final price
+
+    return 0;
+}
+
+//120
+===============================
+lamda inside another lamda
+
+[](int x) {
+	x *=2;
+	[](int x) {
+		std::cout << x <<std::endl;
+	}(x);
+}(5);
+======================
+lamda function can decompose to function pointer
+//it cannot take the capture list or argument
+atexit([]() { std::cout <<"viswa"<<std::endl; });
+===========
+// Define the lambda to be registered with atexit
+//type conversion operator convert the lamda to function pointer if there
+//is no capture list 
+void registerLambda() {
+//here lamda is decomposed to a function pointer as long the capture list is empty
+    atexit([]() { std::cout << "Program is exiting." << std::endl; });
+}
+
+int main() {
+    // Register the lambda with atexit
+    registerLambda();
+
+    std::cout << "Program is running." << std::endl;
+
+    return 0;
+}
+Program is running.
+Program is exiting.
+======================================
+type conversion of lamda function to funtion pointer
+#include <iostream>
+
+// Define a function pointer type
+using FuncPtr = void(*)(int);
+
+int main() {
+    // Lambda with no captures and matching the signature of FuncPtr
+    auto lambda = [](int x) { std::cout << "Value: " << x << std::endl; };
+
+    // Convert lambda to function pointer
+    FuncPtr func = lambda;
+
+    // Call the function through the pointer
+    func(42); // Outputs: Value: 42
+
+    return 0;
+}
+==================================
+#include <iostream>
+using FuncPtr = void(*)(int);
+int main() {
+    int capturedValue = 5;
+
+    // Lambda with captures
+    auto lambda = [capturedValue](int x) { std::cout << "Captured: " << capturedValue << ", Value: " << x << std::endl; };
+
+    // This will result in a compilation error:
+    // FuncPtr func = lambda; // Error: Cannot convert lambda with captures to function pointer
+
+    return 0;
+}
+==========================
+#include <iostream>
+#include <functional>
+
+int main() {
+    int a = 10;
+    int b = 20;
+
+    // Lambda with captures
+    std::function<void()> func = [a, &b]() {
+        std::cout << "a: " << a << ", b: " << b << std::endl;
+    };
+
+    func(); // Outputs: a: 10, b: 20
+    b = 30;
+    func(); // Outputs: a: 10, b: 30
+
+    return 0;
+}
+==================================
+genERALIZED LAMDA CAPTURE:
+THIS FEATURES ALLOW THE CREATION OF NEW VARIABLE IN THE CAPTURE CLAUSE
+THE TYPE OF THESE VARIABLE ISDEDUCTED FROM THE TYPE PRODUCED BY THE EXPRESSION
+CONSEQUENTLY THESE VARIABLES MUST ALWAYS BE INITIALIZED
+IF THE INITIALIZER EXPRESSION IS A VARIABLE THE NEW VARIABLE CAN HAVE THE SAME
+OR DIFFERENT NAME.
+TO CREATE A REFERENCE YOU HAVE TO USE OPERATOR & BEFORE THE VARIABLE NAME
+[VAR=EXPRESSION](ARGS)
+[&VAR=EXPRESSION](ARGS)
+
+int x{5}
+auto f  =[x](int arg) {
+  return x+arg;
+}
+f(10);
+=========
+generlaized lamda capture
+int x{5}
+auto f  =[y=x](int arg) {
+  return y+arg;
+}
+f(5); //10
+=======
+#include <fstream>
+std::ofstream out("file.txt")
+auto write  =[out](int arg) { //will not work since out is not copyable
+  out<<x;
+}
+
+std::ofstream out("file.txt")
+auto write  =[&out)](int arg)  { 
+  out<<x;
+}
+===============
+//since we cannot change the out it has to be mutable
+// non copyable so move it
+auto write  =[out=std::move(out)](int arg) mutable { 
+  out<<x;
+}
+//we cannot use out tha lamda
+=======================
+#include <iostream>
+#include <fstream>
+
+int main() {
+    std::ofstream out("file.txt");
+    
+    if (!out) {
+        std::cerr << "Error opening file" << std::endl;
+        return 1;
+    }
+
+    // Corrected lambda to write to the file stream
+    auto write = [&out](int arg) {
+        out << arg; // Use 'arg' instead of 'x'
+    };
+
+    // Example usage
+    write(42); // Write the integer 42 to the file
+
+    out.close(); // Explicitly close the file (not strictly necessary as it will be closed when going out of scope)
+    return 0;
+}
+//same way we can use for the unique_ptr
+=========================
+#include <iostream>
+#include <vector>
+#include <utility> // For std::pair
+#include <algorithm> // For std::for_each
+
+// 1. Max Function
+auto maxLambda = [](auto a, auto b) {
+    return (a > b) ? a : b;
+};
+
+struct MaxFunctor {
+    template <typename T>
+    T operator()(T a, T b) const {
+        return (a > b) ? a : b;
+    }
+};
+
+
+// 3. Less Function
+
+// 4. MinMax Function
+auto minMaxLambda = [](auto begin, auto end) {
+    if (begin == end) {
+        throw std::runtime_error("Range is empty");
+    }
+    
+    auto minElem = *begin;
+    auto maxElem = *begin;
+
+    for (auto it = begin; it != end; ++it) {
+        if (*it < minElem) minElem = *it;
+        if (*it > maxElem) maxElem = *it;
+    }
+    
+    return std::make_pair(minElem, maxElem);
+};
+
+struct MinMaxFunctor {
+    template <typename Iter>
+    std::pair<typename std::iterator_traits<Iter>::value_type, typename std::iterator_traits<Iter>::value_type>
+    operator()(Iter begin, Iter end) const {
+        if (begin == end) {
+            throw std::runtime_error("Range is empty");
+        }
+
+        using T = typename std::iterator_traits<Iter>::value_type;
+        T minElem = *begin;
+        T maxElem = *begin;
+
+        for (auto it = begin; it != end; ++it) {
+            if (*it < minElem) minElem = *it;
+            if (*it > maxElem) maxElem = *it;
+        }
+
+        return std::make_pair(minElem, maxElem);
+    }
+};
+
+int main() {
+    // Test Max
+    
+    int a = 5, b = 10;
+    std::cout << "Max (Lambda): " << maxLambda(a, b) << std::endl;
+    MaxFunctor maxFunctor;
+    std::cout << "Max (Functor): " << maxFunctor(a, b) << std::endl;
+
+    // Test MinMax
+    std::vector<int> numbers = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
+    
+    auto [minValLambda, maxValLambda] = minMaxLambda(numbers.begin(), numbers.end());
+    std::cout << "MinMax (Lambda): Min = " << minValLambda << ", Max = " << maxValLambda << std::endl;
+    
+    MinMaxFunctor minMaxFunctor;
+    auto [minValFunctor, maxValFunctor] = minMaxFunctor(numbers.begin(), numbers.end());
+    std::cout << "MinMax (Functor): Min = " << minValFunctor << ", Max = " << maxValFunctor << std::endl;
+
+    return 0;
+}
+Max (Lambda): 10
+Max (Functor): 10
+MinMax (Lambda): Min = 1, Max = 9
+MinMax (Functor): Min = 1, Max = 9
+=============================================
+typename std::iterator_traits<Iter>::value_type
+std::iterator_traits: This is a template class in the C++ 
+Standard Template Library (STL) that provides a uniform interface to the properties
+ of iterators.
+Iter: This is a placeholder for any iterator type.
+value_type: This is a member type of std::iterator_traits<Iter> that represents 
+the type of the elements pointed to by the iterator Iter.
+=======
+
+template <typename Iter>
+auto sum(Iter begin, Iter end)  {
+    using value_type = typename std::iterator_traits<Iter>::value_type;
+    return std::accumulate(begin, end, value_type{});
+}
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+    
+    int result = sum(numbers.begin(), numbers.end());
+    std::cout << "Sum: " << result << std::endl;
+
+    return 0;
+}
+=================
+#include <iostream>
+#include <vector>
+#include <list>
+#include <iterator> // For std::iterator_traits
+#include <typeinfo> // For typeid
+
+// Function to print elements and their type
+template <typename Iter>
+void printElements(Iter begin, Iter end) {
+    using ValueType = typename std::iterator_traits<Iter>::value_type;
+
+    std::cout << "Elements:" << std::endl;
+    for (auto it = begin; it != end; ++it) {
+        std::cout << *it << " (Type: " << typeid(ValueType).name() << ")" << std::endl;
+    }
+}
+
+int main() {
+    // Using std::vector<int>
+    std::vector<int> vec = {1, 2, 3, 4, 5};
+    std::cout << "Vector:" << std::endl;
+    printElements(vec.begin(), vec.end());
+
+    return 0;
+}
+ector:
+Elements:
+1 (Type: i)
+2 (Type: i)
+3 (Type: i)
+4 (Type: i)
+5 (Type: i)
+=======================
+prefer the function pointer over the function object.
+============
+class Singleton {
+public:
+    // Static method to access the single instance
+    static Singleton& getInstance() {
+        static Singleton instance; // Guaranteed to be destroyed
+        return instance;           // Instantiated on first use
+    }
+
+    // Delete copy constructor and copy assignment operator
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+
+    // Delete move constructor and move assignment operator
+    Singleton(Singleton&&) = delete;
+    Singleton& operator=(Singleton&&) = delete;
+
+private:
+    // Private constructor to prevent instantiation
+    Singleton() {}
+};
+
+int main() {
+    // Accessing the Singleton instance
+    Singleton& instance1 = Singleton::getInstance();
+    Singleton& instance2 = Singleton::getInstance();
+
+    // instance1 and instance2 are the same instance
+
+    return 0;
+}
+
+// Initialize the static mutex
+std::mutex Singleton::mutex_;
+===========================
+#include <iostream>
+#include <memory>
+
+class MyClass {
+public:
+    MyClass(int value) : value_(value) {}
+
+    void display() const {
+        std::cout << "Value: " << value_ << std::endl;
+    }
+
+private:
+    int value_;
+};
+
+class Manager {
+public:
+    void create() {
+        // Create a shared_ptr instance and store it in a weak_ptr
+        shared_ptr_ = std::make_shared<MyClass>(42);
+        weak_ptr_ = shared_ptr_;
+    }
+
+    void access() {
+        // Explicitly specify the type of the shared_ptr
+        std::shared_ptr<MyClass> sp = weak_ptr_.lock(); // Check if the object is still alive
+        if (sp) { // Check if sp is not nullptr
+            sp->display();
+        } else {
+            std::cout << "Object has been destroyed" << std::endl;
+        }
+    }
+
+private:
+    std::shared_ptr<MyClass> shared_ptr_;
+    std::weak_ptr<MyClass> weak_ptr_;
+};
+
+int main() {
+    Manager manager;
+    manager.create();
+
+    // Access the object
+    manager.access();
+
+    // Let shared_ptr go out of scope by destroying manager
+    {
+        Manager anotherManager = manager;
+        anotherManager.access();
+    }
+
+    // Try accessing again
+    manager.access();
+
+    return 0;
+}
+
+=============================================================
+std::function
+general purpose function wrapper
+can store and invoke and target that can be invokded with operator()
+stored object is called targettarget can be invoked with the same syntax through std::function object
+invocation without a target throws std::bad_function_call exception
+
+it is calss function template
+std::function<function signature> object = {callable}
+
+std::function can hold the address of the function or function object;
+#include <functional>
+int square(int);
+int *alloc(size_byte);
+//f1 hold the address of square
+std::function<int(int)> f1=square; f1(3);
+std::function<int*(size_t)> f2 =alloc; f2(1024);
+std::function<bool(int)> f3=[](int x){
+  retun x %2 == 0;
+  }
+
+//if f3 has the target. it will return true;
+if (f3)
+{
+	f3(3);
+}
+===========
+#include <functional>
+int Square(int x)
+{
+   return x*x;
+}
+
+int cube(int x)
+{
+   return x*x*x;
+}
+
+try{
+   //here square and cube is the target
+   //if the function is not initialized in the target
+   // we will get the bad function call
+   std::function<int(int)> f1 = square;
+   if (f1) {
+		cout << f1(2); //4
+   }
+   f1 =cube;
+   cout<f1(3); //9
+   }
+   catch(const std::exception &ex)
+   {
+   }
+}
+=======================
+struct Max {
+	int operator()(int x, int y) const {
+		return (x+y)
+	}
+}
+Max m;
+std::function<int(in,int) f2 = m;
+f2(3,4);
+==============
+std::function<bool(int) f2 = [](int x) {return x%2 == 0 ;};
+cout << f3(4);
+===
+
+int main() {
+    int y = 42; // Example variable for capturing
+
+    // Declare a std::function that matches the lambda signature
+    std::function<int(int)> f2 = [y](int x) {
+        return (y+x) ; // Lambda to check if x is even
+    };
+
+    // Use the std::function
+    std::cout << std::boolalpha; // To print bool as true/false
+    std::cout << "f2(10): " << f2(0) << std::endl; // Should print true
+    std::cout << "f2(15): " << f2(0) << std::endl; // Should print false
+
+    return 0;
+}
+===========================================
+what problem it solves?
+int add(int x, int y)
+{
+   return x+y;
+}
+
+int operation(int x, int y, std::function<int(int,int)>callback) {
+	return callback(x,y);
+}
+
+function<int(int,int)> f1 = Add;
+operation(3,5,f1);
+operation(3,5,[](int x, int y){ return x+y;});
+============
+bind-1:
+=======
+wrapper that can bind some arguments to a given function
+the arguments to that target function are represented using placeholders or directly bound to specific values
+returns the function object
+
+std::bind(callable,arg1,arg2,...argN)
+
+int square(int)
+void print(const char*);
+//3 is bound as an argumnet to the square function.
+//returns function object which takes zero argument
+auto f1 = std::bind(square,3);
+ f1();
+
+//returns function object which takes one argument
+auto f2=bond(print,_1); 
+f2("hello");
+=================
+int subtract(int x, int y)
+{
+  return(x-y);
+}
+
+function<int(int,int)> a = std::bind(subtract,std::placeholders::_1,std::placeholders::_2);
+a(3,4); // -1 
+function<int(int,int)> a = std::bind(subtract,std::placeholders::_2,std::placeholders::_1);
+a(3,4); //1
+
+using namespace std::placeholders;
+auto a = std::bind(subtract,_1,_2);
+a(3,4); // -1 
+=======================
+auto a = std::bind(subtract,10,12);
+a(); //2
+
+auto a = std::bind(subtract,_1,12);
+a(20); //8
+=====
+struct GreaterThan {
+   bool operator()(int x,int y) const {
+		return x > y;
+   }
+}
+
+auto gt = std::bind(GreaterThan{},_1,_2);
+gt(12,14); //14
+=============
+int operation(int x, int y, std::function<int(int,int)> callback)
+{
+    return callback(x,y)
+}
+
+int accumulate(int x, int y, int z)
+{
+   return x+y+z;
+}
+
+//cout <<operation(8,5, accumulate) ;// error since accumulate requires 3 argument
+auto acc= std::bind(accumulate,_1,_2,0);
+cout <<operation(8,5, acc) ; //now no error 13
+====================================
+bind is not familar because we can implement the same functionality using lamda
+
+auto f = std::bind(subtract,_1,5)
+
+auto f = [](int x) {
+   return suntract(x,5);
+}
+auto && preserve the reference and const
+auto f = [](auto && x) {
+   return suntract(std::forward<decltype(x)>x,5);
+}
+============
+//forwarding is important for user defined types .
+//binder will preserve constantness of the argument and the references of the 
+//argument ie lvalue or rvalue
+auto gt = std::bind(GreaterThan{},_1,_2)
+
+auto gt =[](int x,int y) {
+   return GreaterThan{}(x,y);
+}
+
+To preserve the reference and const you cal=n also below but it work only in c++20
+//C++20 template feature
+auto gt =[]<typename T>(T&& x,T&& y) {
+   return GreaterThan{}(std::forward<T>(x),std::forward<T>(y));
+}
+
+auto acc = std::bind(Accumulate,_1,_2,0);
+
+aut acc = [](int x, int y) {
+   return accumulate(x,y,0)
+}   
+To preserve the reference and const you cal=n also below but it work only in c++20
+//C++20 template feature
+//T&&preserverve the refference and constantness
+aut acc = []<typename T>(T&& x, T&& y) {
+   return accumulate(std::forward<T>x,std::forward<T>y,0)
+} 
+
+auto&& (Universal Reference or Forwarding Reference): It is used in template code 
+to perfectly forward arguments while preserving their value category (whether 
+they are lvalues or rvalues).
+=============
+#include <iostream>
+#include <utility> // For std::forward
+
+void process(int& value) {
+    std::cout << "Processing lvalue: " << value << std::endl;
+}
+
+void process(const int& value) {
+    std::cout << "Processing const lvalue: " << value << std::endl;
+}
+
+template<typename T>
+void forwarder(T&& value) {
+    process(std::forward<T>(value));
+}
+
+int main() {
+    int x = 10;
+    const int y = 20;
+
+    forwarder(x);  // T deduces to int&, std::forward<int&>(value) => int&
+    forwarder(y);  // T deduces to const int&, std::forward<const int&>(value) => const int&
+
+    return 0;
+}
+
+=============================
+#include <iostream>
+#include <utility> // For std::forward
+
+// Function that takes an lvalue reference
+void process(int& value) {
+    std::cout << "Processing lvalue: " << value << std::endl;
+}
+
+// Function that takes an rvalue reference
+void process(int&& value) {
+    std::cout << "Processing rvalue: " << value << std::endl;
+}
+
+// Template function using auto&&
+template<typename T>
+void forwarder(T&& value) {
+    // Forward the value to the appropriate process function
+    process(std::forward<T>(value));
+}
+
+int main() {
+    int x = 10;
+
+    // Pass an lvalue
+    forwarder(x); // This will call process(int&)
+
+    // Pass an rvalue
+    forwarder(20); // This will call process(int&&)
+
+    return 0;
+}
+==================================================================
+#include <iostream>
+
+class ABC {
+public:
+      // Member function to print the array
+    void print() const {
+        for (int i = 0; i < 5; ++i) {
+            std::cout << abc[i] << ' ';
+        }
+        std::cout << std::endl;
+    }
+
+    int abc[5];
+};
+
+int main() {
+    // Create an instance of ABC using the array
+    ABC obj{1, 2, 34, 5, 6};
+
+    // Call the print function to display the values
+    obj.print();
+
+    return 0;
+}
+
+// 1 2 34 5 6
+This will not work when the array is in private section.
+=============================================
+#include <iostream>
+#include <functional>
+
+// External function
+void externalFunction(int x) {
+    std::cout << "External function called with value: " << x << std::endl;
+}
+
+int main() {
+    int value = 10;
+
+    // Lambda function that captures 'value' and calls the external function
+    auto lambda = [value]() {
+        externalFunction(value);  // Call the external function //10
+    };
+
+    // Invoke the lambda function
+    lambda(); //10
+
+    // Lambda with a parameter and calling an external function with the parameter
+    auto lambdaWithParam = [](int x) {
+        externalFunction(x);  // Call the external function
+    };
+
+    // Invoke the lambda with a parameter
+    lambdaWithParam(20); //20
+
+    return 0;
+}
+========================================
+#include <iostream>
+#include <unistd.h>  // For access()
+
+int main() {
+    const char* file_path = "/lcc/data/avahi-daemon.conf";
+
+    if (access(file_path, F_OK) != -1) {
+        std::cout << "The file exists." << std::endl;
+    } else {
+        std::cout << "The file does not exist." << std::endl;
+    }
+
+    return 0;
+}
+========================================
+#include <iostream>
+#include <filesystem>
+
+int main() {
+    std::filesystem::path file_path = "/lcc/data/avahi-daemon.conf";
+
+    if (std::filesystem::exists(file_path)) {
+        std::cout << "The file exists." << std::endl;
+    } else {
+        std::cout << "The file does not exist." << std::endl;
+    }
+
+    return 0;
+}
+
+====================================
+Mediator design pattern:
+The Mediator Pattern is a behavioral design pattern that defines 
+an object that encapsulates how a set of objects interact. By centralizing the communication 
+between objects, it reduces the complexity of interactions and decouples the objects, 
+making the system easier to maintain and extend.
+
+#include <iostream>
+#include <vector>
+#include <string>
+
+// Forward declaration
+class Colleague;
+
+// Mediator interface
+class Mediator {
+public:
+    virtual void send(const std::string& message, Colleague* colleague) = 0;
+};
+
+// Colleague base class
+//user
+class Colleague {
+protected:
+    Mediator* mediator;
+public:
+    Colleague(Mediator* med) : mediator(med) {}
+    virtual void receive(const std::string& message) = 0;
+    virtual void send(const std::string& message) {
+        mediator->send(message, this);
+    }
+};
+
+// Concrete Colleague
+class ConcreteColleague : public Colleague {
+public:
+    ConcreteColleague(Mediator* med) : Colleague(med) {}
+    void receive(const std::string& message) override {
+        std::cout << "Received: " << message << std::endl;
+    }
+};
+
+// Concrete Mediator
+class ConcreteMediator : public Mediator {
+private:
+    std::vector<Colleague*> colleagues;
+public:
+    void addColleague(Colleague* colleague) {
+        colleagues.push_back(colleague);
+    }
+
+    void send(const std::string& message, Colleague* sender) override {
+        for (auto* colleague : colleagues) {
+            if (colleague != sender) {
+                colleague->receive(message);
+            }
+        }
+    }
+};
+
+// Main function
+int main() {
+    ConcreteMediator mediator;
+
+    ConcreteColleague colleague1(&mediator);
+    ConcreteColleague colleague2(&mediator);
+    ConcreteColleague colleague3(&mediator);
+
+    mediator.addColleague(&colleague1);
+    mediator.addColleague(&colleague2);
+    mediator.addColleague(&colleague3);
+
+    colleague1.send("Hello, World!");
+    colleague2.send("Hi there!");
+
+    return 0;
+}
+
+Received: Hello, World!
+Received: Hello, World!
+Received: Hi there!
+Received: Hi there!
+===========================================
+ the collegeue can be any decives , and it can have the check whether the message is intended for it or not.
+=================================================
+Copy Elision:
+When std::unique_ptr<int> is returned from factory(), the compiler can optimize the process by eliminating the
+ copy or move of the std::unique_ptr object. Instead of creating a temporary object and then moving or copying
+ it to the caller, the compiler directly constructs the std::unique_ptr<int> in the location where it will be 
+ used.
+ 
+// Factory function that returns a unique_ptr<int>
+auto factory() -> std::unique_ptr<int> { // this is optional -> std::unique_ptr<int>
+    return std::make_unique<int>(10);
+}
+
+int main() {
+    // Create a unique_ptr<int> using the factory function
+    auto ptr = factory(); // ptr is a std::unique_ptr<int>
+    
+    // Output the value managed by the unique_ptr
+    std::cout << "Value: " << *ptr << std::endl; // Output: Value: 10
+    
+    // The unique_ptr will automatically clean up the allocated memory when it goes out of scope
+    
+    return 0;
+}
+==========================
+#include <iostream>
+#include <iomanip> // For std::hex, std::showbase, std::uppercase
+
+int main() {
+    int number = 255; // Example number
+
+    // Print number in decimal
+    std::cout << "Decimal: " << number << std::endl; //255
+
+    // Print number in hexadecimal
+    std::cout << "Hexadecimal: " << std::hex << number << std::endl; //ff 
+
+    // Print number in hexadecimal with base and uppercase
+    std::cout << "Hexadecimal with base and uppercase: " 
+              << std::hex << std::showbase << std::uppercase << number << std::endl; //0xFF
+              
+     std::cout << "Decimal: " << number << std::endl; //0xFF
+    std::cout << std::dec; 
+    std::cout << "Decimal: " << number << std::endl; /255
+    
+    return 0;
+}
+================================
+    // Print hexadecimal with padding
+    std::cout << "Hexadecimal with padding: " 
+              << std::hex << std::setw(8) << std::setfill('0') << number << std::endl; //00000XFF
+===============================
+//////
+// Factory function that returns a unique_ptr<int>
+auto factory() -> std::unique_ptr<int> {
+    auto s = std::make_unique<int>(10);
+    return s;
+}
+=============================
+#include <iostream>
+#include <memory> // For std::unique_ptr
+#include <string> // For std::string
+
+int main() {
+    // Create a unique_ptr to manage a dynamically allocated string
+    std::unique_ptr<std::string> strPtr = std::make_unique<std::string>("Hello, Unique Pointer!");
+
+    // Access the string using the unique_ptr
+    std::cout << *strPtr << std::endl;
+
+    // No need to explicitly delete the string; unique_ptr will handle it
+
+    // Unique pointer transfers ownership using std::move
+    std::unique_ptr<std::string> newStrPtr = std::move(strPtr);
+
+    // Check if the original unique_ptr is now null
+    if (!strPtr) {
+        std::cout << "strPtr is now null." << std::endl;
+    }
+
+    // Access the string using the new unique_ptr
+    std::cout << *newStrPtr << std::endl;
+
+    // No need to explicitly delete the string; unique_ptr will handle it
+    return 0;
+}
+
+Hello, Unique Pointer!
+strPtr is now null.
+Hello, Unique Pointer!
+===============================
+
+int main() {
+    std::string s;
+
+    // Print the string using std::printf
+    std::printf("hi %s\n", s.c_str());
+
+    printf("hello");
+    return 0;
+}
+
+hi 
+hello
+===========================
+#include <stdio.h>
+
+// Function to be called if the condition is false
+void some_statement() {
+    printf("Condition is false, executing some statement.\n");
+}
+
+int main() {
+    int variable = 1; // Change this value to test different cases
+    
+    switch (variable) {
+        case 1:
+            printf("Variable is 1.\n");
+            
+            // Conditional logic inside the case
+            if (1 + 1 == 2) {  // Replace with an actual condition
+                printf("Condition is true, breaking out of the case.\n");
+                break;  // Exit the case block
+            }
+            
+            // This statement executes only if the condition is false
+            some_statement();
+            break;  // Exit the switch block
+
+        case 2:
+            printf("Variable is 2.\n");
+            break;
+
+        case 3:
+            printf("Variable is 3.\n");
+            break;
+
+        default:
+            printf("Variable does not match any case.\n");
+            break;
+    }
+
+    return 0;
+}
+/tmp/3r0XhTdcKZ.o
+Variable is 1.
+Condition is true, breaking out of the case
+==============================

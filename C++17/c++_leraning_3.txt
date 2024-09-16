@@ -1,0 +1,5506 @@
+string:
+#include <iostream>
+int main()
+{
+const int a { 5 }; //uniform initialization (also known as brace-enclosed initializer)
+const int b { 5 }.
+int sum = a + b;
+std::cout << "sum of " << a << "& "  <<b << " is " << sum <<std::endl; //stream insertion
+return 0; // program executed successfully.
+}
+
+-std=c++11 //compiler flag;
+Use meaningful variable names (e.g., num1 and num2 instead of a and b).
+
+//stringstream maintain internall string buffer;
+//string stream has 3 classes
+//stringstream class provide appropriate overloaded operator for iunsertion and extraction
+//need the sstream
+
+==============
+int main() {
+    std::stringstream ss;
+
+    // Set initial content
+    ss.str("abc");
+    std::cout << "Initial content: " << ss.str() << std::endl; //abc
+
+    // Replace content with new content
+    ss.str("viswa"); //old content will erased and viswa will be placed
+    std::cout << "Replaced content: " << ss.str() << std::endl; //viswa
+
+    return 0;
+}
+===========================
+int main() {
+    std::stringstream ss; // provide insertion and extraction
+    std::istringstream is; // provide only extraction
+    std::ostringstream os; // provide only insertion // write 
+
+    int a { 5 };
+    int b { 5 };
+    int sum = a + b;
+
+    // Insert initial data into the stringstream
+    ss << "sum of " << a << "& " << b << " is " << sum << std::endl;
+    // Output the initial contents of the stringstream
+    std::cout << ss.str(); //sum of 5& 5 is 10
+
+    // Retrieve current content of stringstream
+    std::string currentContent = ss.str() + "hi ";
+    // Append new content
+    currentContent += " Additional content.";
+    // Set the updated content back to stringstream
+    ss.str(currentContent);
+
+    // Output the contents of the stringstream again, including the appended content
+    std::cout << ss.str(); //sum of 5& 5 is 10
+						   // in next line hi Additional content.
+
+    return 0;
+}
+//hi is printed in the next line because orignal string has \n or endl;
+sum of 5& 5 is 10
+sum of 5& 5 is 10
+hi Additional content.
+=================================
+converting number to string
+int num = 42;
+std::stringstream ss;
+ss << num;
+std::string str = ss.str(); // str will be "42"
+===========================================
+ss.clear(); // Clear error flags
+ss.str(""); // Reset content
+============================================
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int sumCSV(const std::string& csv) {
+    std::stringstream ss(csv);
+    std::string token;
+    int sum = 0;
+
+    while (std::getline(ss, token, ',')) {
+        try {
+            sum += std::stoi(token);
+        } catch (const std::invalid_argument& e) {
+            std::cerr << "Invalid argument: " << token << " is not a valid integer.\n";
+            ss.clear(); // Clear the error state
+            continue; // Skip this token and continue with the next
+        } catch (const std::out_of_range& e) {
+            std::cerr << "Out of range error: " << token << " is too large.\n";
+            ss.clear(); // Clear the error state
+            continue; // Skip this token and continue with the next
+        }
+    }
+
+    return sum;
+}
+
+int main() {
+    std::string csv = "10,20,abc,30,40";
+    int result = sumCSV(csv);
+    std::cout << "Sum of CSV values: " << result << std::endl;
+
+    return 0;
+}
+Invalid argument: abc is not a valid integer.
+Sum of CSV values: 100
+================================================
+int main() {
+   std::stringstream ss;
+ss << "Hello, ";
+ss << "World!"; // Appends to the current content
+    // Output the contents of the stringstream again, including the appended content
+    std::cout << ss.str();
+
+    return 0;
+}
+//Hello World
+======================
+pass the complete buffer as the string// Function to read the entire file content into a string
+std::string readFile(const std::string& filePath) {
+    std::ifstream file(filePath);
+    if (!file) {
+        throw std::runtime_error("Could not open file");
+    }
+    
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+	file.close();
+    return buffer.str();
+}
+============================================
+#include <sstream>
+int main()
+{
+std::stringstream ss; //provide insertion and extraction
+std::istringstream is; //provide only extraction
+std::ostringstream os; //provide only insertion //write 
+
+int a { 5 };
+int b { 5 };
+int sum = a + b;
+ss  << "sum of " << a << "& "  <<b << " is " << sum <<std::endl;
+std::cout << ss.str();
+//ss.str(""); //to clear the content
+//how to append the content to ss 
+return 0;
+}
+=========
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    // Original content
+    std::string originalContent = "Line1\nLine2\nLine3";
+
+    // Step 1: Read the content using std::istringstream
+    std::istringstream inputStream(originalContent);
+    std::ostringstream outputStream;
+    std::string line;
+
+    // Step 2: Process the content
+    while (std::getline(inputStream, line)) {
+        // For demonstration, we will append " - Updated" to each line
+        outputStream << line << " - Updated\n";
+    }
+
+    // Step 3: Get the updated content from std::ostringstream
+    std::string updatedContent = outputStream.str();
+
+    // Output the updated content
+    std::cout << "Updated Content:\n" << updatedContent << std::endl;
+
+    return 0;
+}
+Updated Content:
+Line1 - Updated
+Line2 - Updated
+Line3 - Updated
+===================================
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    std::string data = "123 4.56 Hello World";
+
+    std::istringstream stream(data);
+    int intValue;
+    double doubleValue;
+    std::string stringValue1, stringValue2;
+
+    stream >> intValue >> doubleValue;
+    stream >> stringValue1 >> stringValue2;
+
+    std::cout << "Integer: " << intValue << std::endl;
+    std::cout << "Double: " << doubleValue << std::endl;
+    std::cout << "String 1: " << stringValue1 << std::endl;
+    std::cout << "String 2: " << stringValue2 << std::endl;
+
+    return 0;
+}
+Integer: 123
+Double: 4.56
+String 1: Hello
+String 2: World
+============================================
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    std::string csvData = "John,Doe,30,Developer,hi";
+
+    std::istringstream stream(csvData);
+    std::string firstName, lastName, ageStr, occupation;
+
+    std::getline(stream, firstName, ',');
+	// stream >> firstName; this idea will not work out as it will read the complete string into the firstname ie John,Doe,30,Developer into the 
+	//firstname
+    std::getline(stream, lastName, ',');
+    std::getline(stream, ageStr, ',');
+    std::getline(stream, occupation); //note no , so all the remaining charcters are put into the coupatopn
+
+    int age = std::stoi(ageStr);
+
+    std::cout << "First Name: " << firstName << std::endl;
+    std::cout << "Last Name: " << lastName << std::endl;
+    std::cout << "Age: " << age << std::endl;
+    std::cout << "Occupation: " << occupation << std::endl; 
+
+    return 0;
+}
+First Name: John
+Last Name: Doe
+Age: 30
+Occupation: Developer,hi
+===================================
+std::string input = "42 3.14159 Hello";
+
+    std::istringstream stream(input);
+    int integer;
+    double floatingPoint;
+    std::string text;
+
+    stream >> integer >> floatingPoint >> text;
+=========================================s
+extracting data with custom delimiter
+std::string data = "apple;banana;cherry";
+
+    std::istringstream stream(data);
+    std::string item;
+
+    while (std::getline(stream, item, ';')) {
+        std::cout << "Item: " << item << std::endl;
+    }
+//cherry can have ; not musts
+Item: apple
+Item: banana
+Item: cherry
+========================================
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    std::string data = "123 not-a-number";
+
+    std::istringstream stream(data);
+    int number;
+
+    stream >> number; //number value is 123
+    
+    if (stream >> number) {
+        std::cout << "Number: " << number << std::endl;
+    } else {
+        std::cout << "Failed to extract a number" << number << std::endl; //0
+    }
+    
+    if (stream.fail())
+    {
+         std::cout << "Failed to extract a number***" << std::endl;
+    }
+    return 0;
+}
+Failed to extract a number0
+Failed to extract a number***
+==============================================
+read till the specified character
+std::getline(stream, firstName, ',')
+
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    std::string csvData = "John,Doe,30,Developer,Viswa,R,40,Developer";
+
+    // Create an input string stream with the CSV data
+    std::istringstream stream(csvData);
+
+    std::string firstName, lastName, ageStr, occupation;
+    char delimiter;
+
+    // Loop to extract multiple records from the CSV data
+    while (std::getline(stream, firstName, ',') &&
+           std::getline(stream, lastName, ',') &&
+           std::getline(stream, ageStr, ',') &&
+           std::getline(stream, occupation,',')) {
+        // Output the extracted values for the current record
+        std::cout << "First Name: " << firstName << std::endl;
+        std::cout << "Last Name: " << lastName << std::endl;
+        std::cout << "Age: " << ageStr << std::endl;
+        std::cout << "Occupation: " << occupation << std::endl;
+        std::cout << "------------------------" << std::endl;
+    }
+
+    return 0;
+}
+First Name: John
+Last Name: Doe
+Age: 30
+Occupation: Developer
+------------------------
+First Name: Viswa
+Last Name: R
+Age: 40
+Occupation: Developer
+------------------------
+====================================================
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    std::string data = "Hello World!";
+    std::stringstream ss(data);
+
+    char ch;
+
+    // Read characters until the end of the stream
+    while (ss >> ch) {
+        std::cout << "Read character: " << ch << std::endl;
+
+        // Check what the next character will be
+        int nextChar = ss.peek(); //can read only one character
+        if (nextChar != EOF) {
+            std::cout << "Next character: " << static_cast<char>(nextChar) << std::endl;
+        } else {
+            std::cout << "No more characters to read." << std::endl;
+        }
+    }
+
+    return 0;
+}
+ead character: H
+Next character: e
+Read character: e
+Next character: l
+Read character: l
+Next character: l
+Read character: l
+Next character: o
+Read character: o
+Next character:  
+Read character: W
+Next character: o
+Read character: o
+Next character: r
+Read character: r
+Next character: l
+Read character: l
+Next character: d
+Read character: d
+Next character: !
+Read character: !
+No more characters to read.
+==================================================
+int main() {
+    std::stringstream ss("Hello, world!");
+
+    char buffer[6]; // Buffer to hold 5 characters plus null terminator
+
+    ss.read(buffer, 5); // Read 5 characters
+    buffer[5] = '\0';  // Null-terminate the buffer //Hello
+
+    std::cout << "Read characters: " << buffer << std::endl;
+
+    return 0;
+}
+Hello
+======================================================
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    // Initialize the stringstream with "hello"
+    std::istringstream ss("hello");
+    ss.str("world"); //overwrite the hello
+    // Read from the stream
+    std::string word;
+    ss >> word;
+    std::cout << "Initial content: " << word << std::endl; // Outputs: hello
+
+    // Change the content of the stream to "world"
+    ss.str("world1");
+
+    // Clear any error flags and reset the stream's state
+    ss.clear();
+
+    // Read from the updated stream
+    ss >> word;
+    std::cout << "Updated content: " << word << std::endl; // Outputs: world
+
+    return 0;
+}
+
+world
+world1
+=========================================
+void logMessage(const std::string& severity, const std::string& message) {
+    std::stringstream ss;
+    std::time_t now = std::time(nullptr); //return current time
+    ss << std::asctime(std::localtime(&now)) << " [" << severity << "] " << message;
+    std::cout << ss.str() << std::endl;
+}
+
+int main() {
+    logMessage("INFO", "This is an informational message.");
+    return 0;
+}
+===================================================================
+auto ssum << ss.str();
+//sum is string
+//ss is stringstream
+=============================
+to_string is overloaded for all primitive types return string object
+to_string internally uses the string stream
+#include <iostream>
+#include <string>
+
+int main() {
+    int intValue = 42;
+    double doubleValue = 3.14159;
+    float floatValue = 2.718f;
+
+    // Convert numerical values to strings
+    std::string intStr = std::to_string(intValue);
+    std::string doubleStr = std::to_string(doubleValue);
+    std::string floatStr = std::to_string(floatValue);
+
+    // Output the results
+    std::cout << "Integer as string: " << intStr << std::endl; // Outputs: 42
+    std::cout << "Double as string: " << doubleStr << std::endl; // Outputs: 3.141590
+    std::cout << "Float as string: " << floatStr << std::endl; // Outputs: 2.718000
+
+    return 0;
+}
+Integer as string: 42
+Double as string: 3.141590
+Float as string: 2.718000
+==========================================
+#include <iostream>
+#include <sstream>
+#include <iomanip> // For std::setprecision
+
+int main() {
+    double value = 3.14159265358979;
+    int precision = 2;
+
+    // Create an ostringstream object
+    std::ostringstream oss;
+
+    // Set the precision and format
+    oss << std::fixed << std::setprecision(precision) << value;
+
+    // Convert the ostringstream to a string
+    std::string formattedValue = oss.str();
+
+    // Output the result
+    std::cout << "Formatted value with precision " << precision << ": " << formattedValue << std::endl;
+
+    std::cout << 12.34567;
+    return 0;
+}
+Formatted value with precision 2: 3.14
+12.3457
+=======================
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+
+int main() {
+    double value = 3.14159265358979;
+
+    // Save the current state of std::cout
+    std::streambuf* old_buf = std::cout.rdbuf();
+    std::ostringstream temp_oss;
+    temp_oss.copyfmt(std::cout);
+
+    // Set precision globally
+    std::cout << std::fixed << std::setprecision(4);
+    std::cout << "Globally formatted value with precision 4: " << value << std::endl;
+     std::cout << 12.34567899;
+    // Reset precision to default
+    std::cout.copyfmt(temp_oss);
+    std::cout << "Default precision: " << value << std::endl;
+
+    return 0;
+}
+Globally formatted value with precision 4: 3.1416
+12.3457Default precision: 3.14159
+==================================
+#include <iostream>
+#include <iomanip>
+
+int main() {
+    int value = 255;
+
+    // Hexadecimal format
+    std::cout << std::hex << value << std::endl;
+
+    // Octal format
+    std::cout << value << std::endl;
+   std::cout << std::oct << value << std::endl;
+    // Decimal format
+    std::cout << std::dec << value << std::endl;
+	//reset to the default precision 4
+std::cout << "Fixed-point notation: " << std::fixed << std::setprecision(4);
+
+    return 0;
+}
+ff
+ff
+377
+255
+============================
+reset to the default precision 4
+std::cout << "Fixed-point notation: " << std::fixed << std::setprecision(4);
+================
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+    std::string data = "1 2 3 4 5";
+    int a;
+    std::istringstream is; //or std::stringstream is
+    is.str(data);
+
+    // Loop to read integers from the string stream
+    while (!is.fail()) { // (is >> a) //or !is.eof()
+        is >> a;
+        std::cout << a << " ";
+    }
+
+    std::cout << std::endl;
+
+    return 0;
+}
+//1 2 3 4 5 5 //last 2 5 comes only if you use eof
+//End of Stream: After reading 5, the stream reaches the end, and the next attempt 
+to read fails. However, the !is.fail() condition still evaluates to true, and the 
+is >> a statement might attempt to read again, leading to an erroneous state where the loop prints the last successfully read number again.
+=========================================
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string data = "1234";
+    try {
+        int number = std::stoi(data);
+        std::cout << "The integer is: " << number << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cout << "Invalid argument: " << e.what() << std::endl;
+    } catch (const std::out_of_range& e) {
+        std::cout << "Out of range: " << e.what() << std::endl;
+    }
+    return 0;
+}
+//1234
+===============================================
+ std::string data = "1234 viswa hi";
+    try {
+        int number = std::stoi(data);
+        std::cout << "The integer is: " << number << std::endl; //1234
+    }
+	===========================
+	#include <iostream>
+#include <string>
+
+int main() {
+    std::string data = "viswa 12345 hi";
+    try {
+        int number = std::stoi(data);
+        std::cout << "The integer is: " << number << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cout << "Invalid argument: " << e.what() << std::endl;
+    } catch (const std::out_of_range& e) {
+        std::cout << "Out of range: " << e.what() << std::endl;
+    }
+    return 0;
+}
+Invalid argument: stoi
+===================================================
+string function to perform the case insesitive search:
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <cctype>
+
+// Case-insensitive comparison function
+bool caseInsensitiveCompare(char a, char b) {
+    return std::tolower(a) == std::tolower(b);
+}
+
+// Case-insensitive search function
+size_t findCaseInsensitive(const std::string& haystack, const std::string& needle) {
+    auto it = std::search(
+        haystack.begin(), haystack.end(),
+        needle.begin(), needle.end(),
+        caseInsensitiveCompare
+    );
+
+    if (it != haystack.end()) {
+        return it - haystack.begin();
+    } else {
+        return std::string::npos;
+    }
+}
+
+int main() {
+    std::string str = "Hello, World!";
+    std::string substr = "world";
+
+    // Case-insensitive search
+    size_t pos = findCaseInsensitive(str, substr);
+
+    if (pos != std::string::npos) {
+        std::cout << "Found '" << substr << "' at position " << pos << std::endl;
+    } else {
+        std::cout << "Substring not found" << std::endl;
+    }
+
+    return 0;
+}
+==================================
+string function to persorm the case sesitive search:
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string str = "Hello, World!";
+    std::string substr = "World";
+
+    // Case-sensitive search
+    size_t pos = str.find(substr);
+
+    if (pos != std::string::npos) {
+        std::cout << "Found '" << substr << "' at position " << pos << std::endl;
+    } else {
+        std::cout << "Substring not found" << std::endl;
+    }
+
+    return 0;
+}
+================================================
+User defined Literal:
+user defined literal is the value that appears directly in the code.
+value is fixed or constant
+c++ support different type of literals (integer, floating , boolean, character , string
+some of these literal can be modified through prefix or suffix.
+unsigned integer: 14u,
+62l,9.2f, L"viswa"
+c++11 allow the user to create their own suffix can be applied to integer, floating, boolean and string literal
+Crateing the custom literal provides syntactic shortcuts and increase type safety.
+
+Temperature temp{82.12} //farenheit or celsius?
+Temperature temp{82.12_F} //Use custom literal to convert
+
+syntax:
+<return type> operator ""_<literal(<argument>)
+
+operator "" : literal operator function
+return type : can be any type including void
+_<literal>: always starts with _followed by name.
+//literal can be more than one character also
+Note: literal argumner can be
+
+unsigned long long
+long double
+char, wchar_t,
+char16_t,char32_t
+const char*
+
+if you pass any other argument it will complain error?
+user defined literal reduce the posibility of error
+
+literal without underscore are reservered for the standard library (erorr or warning will appears)
+you cannot redfine the meaning of the buildin literal suffix (erorr or warning will appears)
+literal operator function cannot be member function
+=================
+#include <iostream>
+
+// Define a type to represent meters
+struct Meters {
+    int value;
+    explicit constexpr Meters(int v) : value(v) {}
+};
+
+// Define the user-defined literal operator for meters
+constexpr Meters operator"" _m(unsigned long long int value) {
+    return Meters(static_cast<int>(value));
+}
+
+int main() {
+    // Use the user-defined literal
+    Meters distance = 100_m; // or  Meters distance {100_m };
+    std::cout << "Distance: " << distance.value << " meters" << std::endl;
+
+    return 0;
+}
+Distance: 100 meters
+==============================
+user defined lieral taking char* and size; 
+char* needs the size elase compiler will give error:
+#include <iostream>
+#include <string>
+
+// Define the user-defined literal operator for creating std::string
+std::string operator"" _s(const char* str, std::size_t) {
+    return std::string(str);
+}
+
+int main() {
+    // Use the user-defined literal
+    std::string myString = "Hello, world!"_s;
+    std::cout << myString << std::endl;
+
+    return 0;
+}
+
+=============================================
+literal type returning the void 
+#include <iostream>
+
+// Define a user-defined literal operator that logs a message
+void operator"" _log(const char* str) {
+    std::cout << "Log: " << str << std::endl;
+}
+
+int main() {
+    // Use the user-defined literal for logging
+    "This is a log message"_log;
+
+    return 0;
+}
+==========================
+constexpr:
+represent an expression that is constnt evaluated at compile time
+can be applied to variable declaration or function
+may increase the performance f the code as the computation is done at compile time
+function that retuen the value that can be computed at compiled time can be constantexpr and that function must accept
+literal
+
+int getnumber() {
+   return 10;
+}
+
+constexpr int getnumber1() {
+   return 10;
+}
+
+int main()
+{
+   constexpr int i =10; //value of i is computed at compile time
+   int aa[i]
+   
+   const int j = 5; //evaluated at compile time
+   int arr1[j]
+
+   const int h = getnumber(); //initialization h is deferred till runtime
+   //int arr1[h]; //cannot be used here
+   constexpr int i =getnumber(); //error
+   constexpr int i =getnumber1();
+   
+   int x  = getnumber1(); //behave like normal function compute at runtime.
+   
+   return 0;
+}
+
+expression on thr right hand side needs to constexpr
+
+constexpr int add (int x, int y)
+{
+    return (x+y);
+}
+
+constexpr int j = add(3,5); //argumnet has to compile time constant
+================
+constexpr function needs be a single line ie only return statement
+===================
+#include <iostream>
+
+constexpr int add(int x, int y) {
+    return x + y;
+}
+
+int main() {
+    constexpr int x = 5;
+    constexpr int y = 10;
+    constexpr int j = add(x, y); // j is evaluated at compile time
+
+    std::cout << "The sum of " << x << " and " << y << " is " << j << std::endl;
+    return 0;
+}
+
+if any of the argument is nonconstecpr it will give the error since j is constexpr
+error will come constexpr int add(constexpr int x,constexpr int y) {
+================================
+no error since j is not constepr
+constexpr int add( int x, int y) {
+    return x + y;
+}
+
+int main() {
+    constexpr int x = 5;
+     int y = 10;
+     int j = add(x, y); // j is evaluated at compile time
+
+    std::cout << "The sum of " << x << " and " << y << " is " << j << std::endl;
+    return 0;
+}
+====================
+constexpr function needs be a single line ie only return statement
+constexpr int Max(int x,int y)
+{
+   return x>y ? x:y; //will work
+}
+
+constexpr int Max(int x,int y) //error in c++11 since the constexpr have only one return statement
+{
+	if x>y 
+	{
+		return (x);
+	}
+	else
+	{
+		return y;
+	}
+}
+
+in c++14:
+ the above function will not give any error
+
+If a constexpr function is defined in a source (.cpp) file, it will not be available for 
+compile-time evaluation in other translation units, which limits its usefulness and potential optimizations. 
+all the constepr function are implicity inline so it is always declared in the header file.
+===================
+below code wirks in c++14:
+constexpr int add(int x, int y) {
+    int z = 10; // Local variable
+    return x + y + z;
+}
+
+int main() {
+    constexpr int x = 5;
+    constexpr int y = 10;
+    constexpr int j = add(x, y); // j is evaluated at compile time
+
+    std::cout << "The sum of " << x << " and " << y << " is " << j << std::endl;
+    return 0;
+}
+================================
+cons vs const expr:
+initialization of a const variable can be deferrd until runtime
+constexpr variable must be initialized at compile time
+all constexpr are const but not the other way round
+use const keyword to indicates the value cannot be modified
+const epr: evaluate at the compile time
+==================================
+error we cannot have the const delclartion and definition. we hcan have only the const definitiom.
+below program gives error:
+#include <iostream>
+
+constexpr int add(int x, int y);
+
+int main() {
+    constexpr int x = 5;
+    constexpr int y = 10;
+    constexpr int j = add(x, y); // j is evaluated at compile time
+
+    std::cout << "The sum of " << x << " and " << y << " is " << j << std::endl;
+    return 0;
+}
+
+constexpr int add(int x, int y) {
+    int z = 10; // Local variable
+    return x + y + z;
+}
+=================================================================
+initializer list:
+int x { 0}
+float  y {12.12f}
+int arr[5]{1,2,3,4,5};
+std":string s {"hello" }
+
+#include <initializer_list>
+//initializer list is class template. you need to specify the type of element it is going to store
+//
+std::initalizer_list<int> data = {1,2,3,4,5 };
+auto data = {1,2,3,4,5 }; //initializer_list
+//initializer_list is used in container class (holds the object of other class)
+
+=========================================
+overload the [] operator
+assert will runtime error
+
+#include <iostream>
+#include <cassert>
+
+class Bag
+{
+    int x[10];
+    int size{0}; //or int size {}
+
+public:
+    void add(int value)
+    {
+        assert(size < 10);
+        x[size++] = value;
+    }
+
+    void removeelement()
+    {
+        if (size > 0)
+            --size;
+    }
+
+    int getsize() const
+    {
+        return size;
+    }
+
+    int operator[](int index) const
+    {
+        assert(index >= 0 && index < size); // Check for valid index
+        return x[index];
+    }
+};
+
+int main()
+{
+    Bag obj;
+    obj.add(1);
+    obj.add(2);
+
+    for (int i = 0; i < obj.getsize(); ++i)
+    {
+        std::cout << obj[i] << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+//1 2
+// if you add more element ie > 10
+a.out: main.cpp:12: void Bag::add(int): Assertion `size < 10' failed.
+===========================
+int arr[]{1, 2, 3}
+=============================
+purpose of the initializer list is define the user defined object similar to the 
+array initialization.
+#include <iostream>
+#include <cassert>
+
+class Bag
+{
+    int x[10];
+    int size{0}; //or int size {}
+
+public:
+    Bag(std::initializer_list<int> data)
+    {
+        assert(data.size() < 10);
+        auto it =data.begin();
+        while (it != data.end())
+        {
+            assert(size < 10);
+            add(*it);
+            it++;
+        }
+    }
+    void add(int value)
+    {
+        assert(size < 10);
+        x[size++] = value;
+    }
+
+    void removeelement()
+    {
+        if (size > 0)
+            --size;
+    }
+
+    int getsize() const
+    {
+        return size;
+    }
+
+    int operator[](int index) const
+    {
+        assert(index >= 0 && index < size); // Check for valid index
+        return x[index];
+    }
+};
+
+int main()
+{
+    Bag obj {1,2,3,4,5};
+    
+    for (int i = 0; i < obj.getsize(); ++i)
+    {
+        std::cout << obj[i] << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+//1 2 3 4 5
+==========================
+#include <initializer_list>
+#include <vector>
+#include <iostream>
+
+class MyClass {
+public:
+    MyClass(std::initializer_list<int> list) {
+        for (auto elem : list) {
+            std::cout << elem << " ";
+        }
+    }
+};
+
+int main() {
+    MyClass obj{1, 2, 3, 4, 5};
+    return 0;
+}
+//1 2 3 4 5
+==================================
+std::initializer_list<int> value{1, 2, 3, 4, 5};
+std::initializer_list<int> value = {1, 2, 3, 4, 5};
+auto value = {1,2,3,4,5}
+//auto value{1,2,3,4,5}; //error he auto keyword in C++
+// is used for type inference, and it cannot directly infer an initializer_list
+===================================
+vector <int>
+auto value = std::vector<int>{1, 2, 3, 4, 5};
+=================================
+// a(x) or a{x}
+variable and vector using initializer 
+#include <vector>
+#include <iostream>
+
+class MyClass {
+public:
+    int a;
+    double b;
+    std::vector<int> vec;
+
+    MyClass(int x, double y, std::initializer_list<int> init_list) : a(x), b{y}, vec{init_list} {}
+};
+
+int main() {
+    MyClass obj{5, 3.14, {1, 2, 3, 4, 5}};
+    
+    std::cout << "a: " << obj.a << ", b: " << obj.b << "\nvec: ";
+    for (int v : obj.vec) {
+        std::cout << v << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+a: 5, b: 3.14
+vec: 1 2 3 4 5
+=================
+initializer list for class , structire
+#include <iostream>
+#include <string>
+#include <array>
+
+struct Point {
+    int x;
+    int y;
+};
+
+struct Person {
+    std::string name;
+    int age;
+};
+
+class Rectangle {
+    public:
+    int width;
+    int height;
+    Rectangle(int x=0, int y=0): width{x}, height{y}
+    {
+        
+    }
+};
+
+int main() {
+    // Initializing a struct
+    Point p = {1, 2};
+    std::cout << "Point: (" << p.x << ", " << p.y << ")" << std::endl;
+
+    // Initializing a struct with fewer initializers
+    Person person = {"Alice"};
+    std::cout << "Person: " << person.name << ", " << person.age << std::endl; // person.age is default-initialized to 0
+
+    // Initializing an array
+    std::array<int, 3> arr = {1, 2, 3};
+    std::cout << "Array: ";
+    for (int n : arr) {
+        std::cout << n << " ";
+    }
+    std::cout << std::endl;
+
+    // Initializing a class
+    Rectangle r = {3, 4};
+    std::cout << "Rectangle: " << r.width << "x" << r.height << std::endl;
+
+   Rectangle r1(13, 14);
+    std::cout << "Rectangle: " << r1.width << "x" << r1.height << std::endl;
+    
+    return 0;
+}
+===============================================
+{} list of element automatically creates the initalizer list
+
+#include <iostream>
+#include <initializer_list>
+
+// Function to print elements of an initializer list
+void print(std::initializer_list<int> ilist) {
+    for (auto it = ilist.begin(); it != ilist.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+	
+	//using range based for loop
+	for (auto x: ilist)
+	{
+	    cout << x;
+	}
+	
+}
+
+int main() {
+    // Printing a list of integers
+    print({1, 2, 3, 4, 5});
+    return 0;
+}
+===================
+argument parameter can be auto in c++20
+#include <iostream>
+#include <vector>
+#include <initializer_list>
+
+// Function to print elements of an initializer list
+void print(auto ilist) {
+    for (auto it = ilist.begin(); it != ilist.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+	
+	//using range based for loop
+	for (auto x: ilist)
+	{
+	    cout << x;
+	}
+}
+
+int main() {
+    // Printing a list of integers
+    print(std::vector<int>{1,2,3,4});
+    return 0;
+}
+==================
+how ever the same program is not working for the 
+void print(auto ilist) //error auto can not detect
+{
+}
+print({1,2,3,4});
+======================
+	//using range based for loop
+	for (auto x: {1,2,3,4})
+	{
+	    cout << x;
+	}
+================================================================
+initializer_list
+light weight proxy object that represent an array of objects.
+it provide access to the element through the iterator
+<initializer_list>
+==================
+Dynamic Array:
+int arr[10]; //list of number . It can store 10 numbers
+//it cannot increase automatically
+//we need to create the dynamic array if the size is going to be increased
+//memory is allocated in heap
+int *ptr=new int[10];
+for (int i=0;i<10;i++)
+{
+   ptr[i] =i;
+}
+//we cannot increase the above allocated memory 
+//we need to create the new memory and copy the old element
+//free the old memory
+//so we go for vector
+#include <vector>
+vector is class template ie it can store any type of object.
+std::vector<int> data {1,2,3,45}
+//available at compile time {1,2,3,45}
+data.push_back(4); //runtime;
+for (int i=0;i<10;i++) {
+data.push_back(i); //add the element in the end
+}
+
+//vector elemets are stored in continous memory location
+//access the element
+//size give the number of element
+for (int i=0;i<data.size();i++) {
+ cout<< data[i]; //list the elemnts one by one
+  data[i] +=1 //modify the element
+}
+
+//range based for loop
+for (auto x:data) {
+  std::cout << x;
+  x +=1 will not change the element in data
+}
+
+//range based for loop
+auto it = data.begin()
+for (;it!=data.end();it++) {
+  std::cout << *it;
+  *it +=1;//change the element in data
+}
+// --it; //allowed
+//it =it+3; //allowed
+//delete the elements
+auto it=data.begin();
+data.erase(it); //needs the position //erase the first element
+
+//insert the elements at specifi position
+auto it = data.begin();
+data.insert(it,100); //insert 100 into the 0th position
+
+auto it = data.begin()+5 ;
+data.insert(it,500); //insert 500 into the 5th position
+============================================
+vector of 2d dyamic array
+#include <iostream>
+#include <vector>
+
+int main() {
+    // Step 1: Create a 3x5 matrix initialized to zero
+    std::vector<std::vector<int>> matrix(3, std::vector<int>(5, 0));
+
+    // Step 2: Print the initial matrix
+    std::cout << "Initial matrix (all zeros):" << std::endl;
+    for (const auto& row : matrix) {
+        for (const auto& elem : row) {
+            std::cout << elem << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    // Step 3: Initialize the matrix with specific values (12, 3, 4, ..., 15)
+    int values[] = {12, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    int index = 0;
+
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 5; ++j) {
+            matrix[i][j] = values[index++];
+        }
+    }
+
+    // Step 4: Print the updated matrix
+    std::cout << "Updated matrix with specific values:" << std::endl;
+    for (const auto& row : matrix) {
+        for (const auto& elem : row) {
+            std::cout << elem << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+======================================================================
+//1 2 3 4 5 6 78 
+//5 is present in 4th position
+#include <algorithm>
+to find whether the given element is present or not
+auto it = std::find(vec.begin(), vec.end(), 5);
+if (it != vec.end()) {
+    std::cout << "Element " << element << " is present in the vector." << std::endl;
+	int position = std::distance(vec.begin(), it); //gives number of element between the two position //4
+} else {
+    std::cout << "Element " << element << " is not present in the vector." << std::endl;
+}
+==========================================================
+Unions in c++:
+gives the ability to represent all the members in the same memory
+save space
+there is no way to know which type it holds
+nested types with non-default constructor deletes the default constructor of the union.
+cannot assign objects of user defined types directly to a union member.
+user-defined types are not destroyed implicitly
+cannot have a base class
+cannot drive from a union
+union cannot contain virtual function
+==================
+this accepted as long the struct dont have constrcutor and destructor
+
+struct MyClass {
+
+};
+
+union MyUnion {
+    int i;
+    MyClass mc;
+};
+
+int main() {
+    MyUnion u; // Error: default constructor of MyUnion is deleted
+}
+================================
+#include <iostream>
+
+struct MyClass {
+    int value; // Store the value
+
+    MyClass(int x) : value(x) {
+        std::cout << "MyClass constructor called with value: " << x << std::endl;
+    }
+
+    ~MyClass() {
+        std::cout << "MyClass destructor called" << std::endl;
+    }
+
+    int getValue() const {
+        return value;
+    }
+};
+
+union MyUnion {
+    int i;
+    MyClass mc;
+
+    MyUnion() {
+       
+    }
+
+    ~MyUnion() {
+        // Destructor should be empty because we don't know which member is active.
+        // Proper cleanup should be done manually in the code.
+    }
+};
+
+int main() {
+    MyUnion u;
+
+
+    // Construct the non-trivial member
+    new (&u.mc) MyClass(10); // Placement new to construct MyClass
+
+    // Print the value
+    std::cout << "The value in MyClass is: " << u.mc.getValue() << std::endl;
+
+    // Explicitly calling the destructor
+    u.mc.~MyClass();
+
+    return 0;
+}
+The value in MyClass is: 10
+MyClass destructor called
+==========================================
+
+when the mystruct has the constructor then the union also need to have the constructot
+===
+when mystruct has the destructor then the union also need to have the destructor.
+#include <iostream>
+
+struct MyClass {
+    ~MyClass() {
+        std::cout << "MyClass destructor called" << std::endl;
+    }
+};
+
+union MyUnion {
+    int i;
+    MyClass mc;
+    ~MyUnion()
+    {
+        
+    }
+};
+
+int main() {
+    MyUnion u;
+    new(&u.mc) MyClass();
+    u.mc.~MyClass(); // Explicitly calling the destructor
+}
+=====================================
+size of the union is equal to the size of the largest member 
+union test
+{
+//members are public
+   int x;
+   char c;
+   //here we cannot initizlie 2 members
+   //test() : x {10},a {'s'}
+   test(): ch {'a'} {
+     std::cout << __FUNCTION__ <<std::endl;
+   }
+   ~test() {
+		std::cout << __FUNCTION__ <<std::endl;
+   }
+}
+
+int main()
+{
+     test t;
+	 cout << t.ch; //active meber here is ch //a
+	 t.x =100;
+	 cout << t.x ; //active member here is x //0
+	return 0;
+}
+
+sizeof(test) => 4
+sizeof the double is 8
+//all the member in the union will have the samemory address
+==========================================================
+string view is reference to the original string.
+string view doesnot hold the memory
+#include <iostream>
+#include <string>
+#include <string_view>
+
+void printView(std::string_view sv) {
+    std::cout << sv << std::endl;
+}
+
+int main() {
+    std::string str = "Hello, world!";
+    std::string_view sv(str);
+
+    // Safe to print
+    printView(sv);
+
+    // Modifying the original string (valid as long as it doesn't invalidate the view)
+    str[7] = 'W'; // you can change the individual character  but not the complete memory
+	//like str ="Viswa";
+
+    // Still safe to print since only content is changed, not the size or memory location
+    printView(sv);
+
+    return 0;
+}
+================
+#include <iostream>
+#include <string_view>
+
+void printSubstring(std::string_view sv) {
+    std::cout << sv << std::endl;
+}
+
+int main() {
+    std::string str = "Hello, world!";
+    printSubstring(str.substr(0, 5)); // Cleaner and safer
+    return 0;
+}
+================================
+string_view sv =str1;
+sv.substr(start, length)
+#include <iostream>
+#include <string_view>
+
+void printSubstring(std::string_view sv, size_t start, size_t length) {
+    std::cout << sv.substr(start, length) << std::endl; //World
+}
+
+int main() {
+    std::string str = "Hello, world!";
+    printSubstring(str, 7, 5); // Prints: world
+    return 0;
+}
+====
+const char* cstr = "Hello, C-style string!";
+    std::string_view sv(cstr, std::strlen(cstr));
+==============
+#include <iostream>
+#include <string_view>
+
+std::string_view getView(std::string& str) {
+    return std::string_view(str);
+}
+
+int main() {
+    std::string str = "Hello, world!";
+    auto sv = getView(str);
+    std::cout << sv << std::endl; // Prints: Hello, world!
+    return 0;
+}
+//abive program has no issues since the argument is passed as reference.
+//string_view cannot return the local variable
+================
+#include <iostream>
+#include <thread>
+#include <future>
+#include <chrono>
+
+// Function to perform a time-consuming task
+int doTask(int n) {
+    std::this_thread::sleep_for(std::chrono::seconds(n)); // Simulate a task taking n seconds
+    return n * n; // Return the square of n
+}
+
+int main() {
+    std::cout << "Starting async task..." << std::endl;
+
+    // Launch the async task
+    std::future<int> result = std::async(std::launch::async, doTask, 5);
+
+    // Do some other work while the task is running
+    for (int i = 0; i < 3; ++i) {
+        std::cout << "Main thread working..." << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+
+    // Get the result from the async task
+    int value = result.get();
+
+    std::cout << "Async task completed with result: " << value << std::endl;
+
+    return 0;
+}
+===============================================
+#include <iostream>
+#include <thread>
+#include <vector>
+
+// Function to be executed by each thread
+void worker(int id) {
+    std::cout << "Thread " << id << " is starting..." << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(2)); // Simulate work
+    std::cout << "Thread " << id << " has finished." << std::endl;
+}
+
+int main() {
+    const int numThreads = 4;
+    std::vector<std::thread> threads;
+
+    // Create and start threads
+    for (int i = 0; i < numThreads; ++i) {
+        threads.push_back(std::thread(worker, i));
+    }
+
+    // Wait for all threads to complete
+    for (auto& th : threads) {
+        th.join();
+    }
+
+    std::cout << "All threads have finished." << std::endl;
+
+    return 0;
+}
+==============================================
+Union-2
+=========
+union test
+{
+   A a;
+   B b;
+}
+A and B class has the user defined constructor ie no defulat constructor 
+is inserted by the compiler so the union test default constructor and destructor is deleted
+test t;
+
+if the A and B has the user defined constructor and destructor then union also need to 
+have the user defined constructor and destructor. we cannot add the default keywor.
+======================================================
+#include <iostream>
+
+class ABC {
+public:
+    int x, y;
+    
+    // Constructor
+    ABC(int a, int b) : x(a), y(b) {
+        std::cout << "ABC constructor called with values: " << x << " and " << y << std::endl;
+    }
+};
+
+int main() {
+    // Using list initialization to call the constructor
+    ABC obj{1, 2}; // Calls ABC(1, 2)
+
+    std::cout << "Object initialized with values: x = " << obj.x << ", y = " << obj.y << std::endl;
+    
+    return 0;
+}
+==============================================
+class ABC
+{
+    public:
+    ABC() {}
+};
+union test 
+{
+     ABC obj;
+    //test() = default; //error
+    //~test() = default; //error
+    test() {}
+   // ~test(){} //if the ABC has the destructor then it necessary to have the destrutor here
+};
+
+int main() {
+    test t;
+	//t.abc =  ABC{}; //error since abc doest not exits
+	//assignment can be used only when the instance is already created
+    //placement new only initialize the memory and it doesnot allocate the 
+    //memory. in this case union has already allocated the memory for the 
+	//largest member variable.
+	
+	new (&t.abc)(argument if any in the constructor)
+	new (&t.abc){argument if any in the constructor}
+	t.a.~ABC(); //manually call the destructor of the abc
+    return 0;
+}
+//variant union is used to know which member of the union is initialized and 
+it is typesafe.
+===============================================
+Yes, C++ provides a default destructor for classes if you don't define one yourself. This default 
+destructor performs a shallow cleanup of the object. 
+Here's how it works:
+
+Default Destructor: The compiler automatically generates a destructor 
+for your class if you don't define one. This destructor will call the destructors of all member
+objects and base classes.
+
+Shallow Cleanup: The default destructor does not release dynamically allocated memory or perform any custom cleanup; it only destroys the object's member variables and base classes.
+
+=======
+class abc
+{
+};
+union test 
+{
+     abc obj;
+    test() = default;
+    ~test() = default;
+};
+
+int main() {
+    test t;
+    return 0;
+}
+====================
+#include <iostream>
+#include <string>
+
+class Book {
+public:
+    std::string bookName;
+    std::string authorName;
+    double price;
+
+    Book(std::string bn, std::string an, double p)
+        : bookName(bn), authorName(an), price(p) {}
+
+    bool operator==(const Book &other) const {
+        return bookName == other.bookName && authorName == other.authorName && price == other.price;
+    }
+};
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+class Library {
+private:
+    std::vector<Book> books;
+    std::vector<int> counts;
+
+public:
+    void addBook(const Book& book) {
+        auto it = std::find(books.begin(), books.end(), book);
+        if (it != books.end()) {
+            int index = std::distance(books.begin(), it);
+            if (counts[index] < 2) {
+                counts[index]++;
+                std::cout << "Book added: " << book.bookName << " by " << book.authorName << std::endl;
+            } else {
+                std::cout << "Book already exists twice in the library: " << book.bookName << std::endl;
+            }
+        } else {
+            books.push_back(book);
+            counts.push_back(1);
+            std::cout << "Book added: " << book.bookName << " by " << book.authorName << std::endl;
+        }
+    }
+
+    void displayBooks() const {
+        for (size_t i = 0; i < books.size(); ++i) {
+            std::cout << books[i].bookName << " by " << books[i].authorName
+                      << ", Price: " << books[i].price << ", Count: " << counts[i] << std::endl;
+        }
+    }
+};
+
+int main() {
+    Library library;
+    
+    Book book1("The Great Gatsby", "F. Scott Fitzgerald", 10.99);
+    Book book2("To Kill a Mockingbird", "Harper Lee", 7.99);
+    Book book3("1984", "George Orwell", 8.99);
+    Book book4("The Great Gatsby", "F. Scott Fitzgerald", 10.99);
+
+    library.addBook(book1);
+    library.addBook(book2);
+    library.addBook(book3);
+    library.addBook(book4);  // Adding the same book again
+    library.addBook(book4);  // Trying to add the same book a third time
+
+    library.displayBooks();
+
+    return 0;
+}
+===================================================
+using map:
+#include <iostream>
+#include <string>
+
+class Book {
+public:
+    std::string bookName;
+    std::string authorName;
+    double price;
+
+    Book(std::string bn, std::string an, double p)
+        : bookName(bn), authorName(an), price(p) {}
+
+    bool operator==(const Book &other) const {
+        return bookName == other.bookName && authorName == other.authorName && price == other.price;
+    }
+};
+
+#include <iostream>
+#include <string>
+#include <map>
+
+class Library {
+private:
+    struct BookDetails {
+        Book book;
+        int count;
+    };
+    std::map<std::string, BookDetails> books;
+
+public:
+    void addBook(const Book& book) {
+        auto it = books.find(book.bookName);
+        
+        if (it != books.end()) {
+            if (it->second.count < 2) {
+                it->second.count++;
+                std::cout << "Book added: " << book.bookName << " by " << book.authorName << std::endl;
+            } else {
+                std::cout << "Book already exists twice in the library: " << book.bookName << std::endl;
+            }
+        } else {
+            books[book.bookName] = {book, 1};
+            std::cout << "Book added: " << book.bookName << " by " << book.authorName << std::endl;
+        }
+    }
+
+    void displayBooks() const {
+        for (const auto& pair : books) {
+            const auto& bookDetails = pair.second;
+            std::cout << bookDetails.book.bookName << " by " << bookDetails.book.authorName
+                      << ", Price: " << bookDetails.book.price << ", Count: " << bookDetails.count << std::endl;
+        }
+    }
+};
+
+int main() {
+    Library library;
+    
+    Book book1("The Great Gatsby", "F. Scott Fitzgerald", 10.99);
+    Book book2("To Kill a Mockingbird", "Harper Lee", 7.99);
+    Book book3("1984", "George Orwell", 8.99);
+    Book book4("The Great Gatsby", "F. Scott Fitzgerald", 10.99);
+
+    library.addBook(book1);
+    library.addBook(book2);
+    library.addBook(book3);
+    library.addBook(book4);  // Adding the same book again
+    library.addBook(book4);  // Trying to add the same book a third time
+
+    library.displayBooks();
+
+    return 0;
+}
+===========================================
+#include <iostream>
+#include <map>
+
+int main() {
+    // Create a map of integers to strings
+    std::map<int, std::string> myMap;
+    myMap[1] = "one";
+    myMap[2] = "two";
+    myMap[3] = "three";
+    myMap[4] = "four";
+
+    // Key to search for
+    int key = 2;
+
+    // Use equal_range to find the range of elements with the specified key
+    auto range = myMap.equal_range(key);
+
+    // Check if the range is not empty
+    if (range.first != range.second) {
+        std::cout << "Elements with key " << key << ":" << std::endl;
+        for (auto it = range.first; it != range.second; ++it) {
+            std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
+             std::cout << "Key: " << range.second->first << ", Value: " << range.second->second << std::endl;
+        }
+    } else {
+        std::cout << "No elements found with key " << key << std::endl;
+    }
+
+    // Try a key that does not exist in the map
+    key = 5;
+    range = myMap.equal_range(key);
+
+    if (range.first != range.second) {
+        std::cout << "Elements with key " << key << ":" << std::endl;
+        for (auto it = range.first; it != range.second; ++it) {
+            std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
+        }
+    } else {
+        std::cout << "No elements found with key " << key << std::endl;
+    }
+
+    return 0;
+}
+Elements with key 2:
+Key: 2, Value: two
+Key: 3, Value: three
+No elements found with key 5
+=======================================================
+#include <iostream>
+#include <map>
+
+int main() {
+    // Create a multimap of integers to strings
+    std::multimap<int, std::string> myMultimap;
+    myMultimap.insert(std::make_pair(1, "one"));
+    myMultimap.insert(std::make_pair(2, "two"));
+    myMultimap.insert(std::make_pair(2, "dos"));
+    myMultimap.insert(std::make_pair(3, "three"));
+    myMultimap.insert(std::make_pair(4, "four"));
+    myMultimap.insert(std::make_pair(4, "quatro"));
+
+    // Key to search for
+    int key = 2;
+
+    // Use equal_range to find the range of elements with the specified key
+    auto range = myMultimap.equal_range(key);
+
+    // Check if the range is not empty
+    if (range.first != range.second) {
+        std::cout << "Elements with key " << key << ":" << std::endl;
+        for (auto it = range.first; it != range.second; ++it) {
+            std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
+        }
+    } else {
+        std::cout << "No elements found with key " << key << std::endl;
+    }
+
+    // Try a key that does not exist in the multimap
+    key = 5;
+    range = myMultimap.equal_range(key);
+
+    if (range.first != range.second) {
+        std::cout << "Elements with key " << key << ":" << std::endl;
+        for (auto it = range.first; it != range.second; ++it) {
+            std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
+        }
+    } else {
+        std::cout << "No elements found with key " << key << std::endl;
+    }
+
+    return 0;
+}
+Elements with key 2:
+Key: 2, Value: two
+Key: 2, Value: dos
+No elements found with key 5
+============================================================
+#include <iostream>
+#include <set>
+
+class MyClass {
+public:
+    int x;
+    int y;
+
+    MyClass(int a, int b) : x(a), y(b) {}
+
+    bool operator<(const MyClass& other) const {
+        // Custom ordering: prioritize x, then y
+        if (x != other.x) {
+            return x < other.x;
+        }
+        return y < other.y;
+    }
+};
+
+int main() {
+    std::set<MyClass> mySet;
+    mySet.insert(MyClass(3, 4));
+    mySet.insert(MyClass(1, 2));
+    mySet.insert(MyClass(2, 3));
+
+    for (const auto& elem : mySet) {
+        std::cout << "MyClass(" << elem.x << ", " << elem.y << ")" << std::endl;
+    }
+
+    return 0;
+}
+===================================
+std::set<int> set1 = {1, 2, 3};
+std::set<int> set2 = {1, 2, 3};
+
+set1==set2 compariusion is allwed
+=====================================
+overloading of < and ==
+#include <iostream>
+#include <set>
+#include <map>
+#include <string>
+
+class Person {
+public:
+    std::string name;
+    int age;
+
+    Person(const std::string& name, int age) : name(name), age(age) {}
+
+    // Define operator< for sorting in set/map
+    bool operator<(const Person& other) const {
+        return name < other.name || (name == other.name && age < other.age);
+    }
+
+    // Define operator== for comparing equality
+    bool operator==(const Person& other) const {
+        return name == other.name && age == other.age;
+    }
+};
+
+int main() {
+    std::set<Person> peopleSet;
+    peopleSet.insert(Person("Alice", 30));sd
+    peopleSet.insert(Person("Bob", 25));
+
+    std::map<Person, std::string> peopleMap;
+    peopleMap[Person("Alice", 30)] = "Engineer";
+    peopleMap[Person("Bob", 25)] = "Designer";
+
+    // Compare two sets
+    std::set<Person> anotherSet = peopleSet;
+    if (peopleSet == anotherSet) {
+        std::cout << "Sets are equal" << std::endl;
+    }
+
+    // Compare two maps
+    std::map<Person, std::string> anotherMap = peopleMap;
+    if (peopleMap == anotherMap) {
+        std::cout << "Maps are equal" << std::endl;
+    }
+
+    return 0;
+}
+==========================================================
+#include <iostream>
+#include <map>
+#include <string>
+#include <utility> // for std::pair
+
+int main() {
+    // Define a map with a pair as the key and a pair as the value
+    std::map<std::pair<std::string, std::string>, std::pair<int, double>> bookMap;
+
+    // Insert elements into the map
+    bookMap[{"Author1", "Book1"}] = {2, 19.99};
+    bookMap[{"Author2", "Book2"}] = {1, 29.99};
+    bookMap[{"Author3", "Book3"}] = {3, 39.99};
+
+    // Accessing elements in the map
+    for (const auto& entry : bookMap) {
+        const auto& key = entry.first;
+        const auto& value = entry.second;
+
+        std::cout << "Author: " << key.first << ", Book: " << key.second
+                  << ", Count: " << value.first << ", Price: $" << value.second << std::endl;
+    }
+
+    // Access a specific element
+    auto it = bookMap.find({"Author1", "Book1"});
+    if (it != bookMap.end()) {
+        const auto& key = it->first;
+        const auto& value = it->second;
+        std::cout << "\nSpecific Access:\nAuthor: " << key.first << ", Book: " << key.second
+                  << ", Count: " << value.first << ", Price: $" << value.second << std::endl;
+    }
+
+    return 0;
+}
+====
+auto it = bookMap.find({"Author3", "Book3"});
+if (it != bookMap.end()) {
+    it->second.first += 1; // Increment the count
+}
+=================================================================
+enum allow only specifi range of value
+scoped enum:
+scoped enum increase the readability of the code
+scoped enum dont pollute the global namespace with enumarator name
+scoped enum use int as the underlying type which improve
+ portability across different c++ compiler.
+ 
+std::string may be faster than the raw string in certain
+operation expecially the size calculation because it caches the
+the length of the string
+
+stream that uses a string buffer as the underlying stream and 
+allow operation to be performed through overload << and >> operators.
+============
+if the sunstring viswa is found replace with #
+char *substring = "viswa"
+auto pos = str.find(substring)
+if (pos != std::string::npos)
+{
+   for (int i=0;i<strlen(substring);i++) {
+       str[i++] = '#'
+   }
+}   
+========================
+Object oriented programing:
+system is made up of objects
+object is instance of class
+class and object are related
+collaboration between objects defines the behaviour of the  system
+====
+Compoistion:
+object composed in another object
+represent has -a relation
+reuse the behaviour
+
+class Car {
+   Engine m_engine;
+pulic:
+   void accelerate() {
+      m_Engine.intake()'
+	}
+};
+=================
+inheritance:
+   is - a relationship
+class inherits the features of another class
+
+class Animal //base class
+{
+   void eat()
+   void speak()
+   void run()
+}
+//sheep and dog are the child class
+//sheep and dog  dont need to have the eat, speak and run function
+class sheep:public Animal{};
+
+class dog:public Animal{};
+
+int main()
+{
+    dog d;
+	d.speak(); //will call the base class function
+	sheep s;
+	s.eat(); //will call the base class function
+}
+================
+class Animal //base class
+{
+   void eat() {}
+   void speak()
+   void run()
+}
+
+class sheep:public Animal{};
+
+class dog:public Animal{
+	void speak() {
+	 cout << "bark";
+	 }
+}
+
+int main()
+{
+    dog d;
+	d.eat(); //will call the base class function since dog class dont have eat function redfined
+	d.speak(); //will call the bark class function
+	sheep s;
+	s.eat();////will call the base class function
+}
+
+when the child class reimplement the base class function, then the redfined function will hide the 
+parent or base class function definition.
+=============================================================================
+Inheritance and access modifier:
+
+class Base
+{
+    private:
+	 MemberA ==> inaccessible outside the class. accessable only inside the class
+	public:
+	  MemberB ==> accesable outside the class
+	protected:
+	  MemberC; ==> accessable inside the class and in the child class.
+};
+
+class Base
+{
+}
+class child : public Base {
+/* private member of the Base class cannot be accessed here
+// public member of base class become public meber of child class
+//protected meber of base class become protected member
+}
+
+class child : private Base {
+/* private member of the Base class cannot be accessed here
+// public member of base class become private meber of child class
+//protected meber of base class become private member
+}
+
+class child : protected Base {
+/* private member of the Base class cannot be accessed here
+// public member of base class become protected meber of child class
+//protected meber of base class become protected member
+}
+
+if the child is class the defualt access specifier is private.
+if the child is struct then the default access specifier is the public.
+// it doesnt matter whether the base is class or struct
+class child:base{}; //private here since child is classs
+===========
+#include <iostream>
+
+// Base class
+class abc {
+public:
+    void show() {
+        std::cout << "Base class abc function called" << std::endl;
+    }
+};
+
+// Derived struct
+struct st : public abc {
+    // No additional members or functions
+};
+
+int main() {
+    st obj;
+    obj.show(); // Calling the base class function
+    //#include <iostream>
+
+// Base class
+class abc {
+public:
+    void show() {
+        std::cout << "Base class abc function called" << std::endl;
+    }
+};
+
+// Derived struct
+struct st : public abc {
+    // No additional members or functions
+};
+
+int main() {
+    st obj;
+    obj.show(); // Calling the base class function
+    // Base class abc function called
+    return 0;
+}
+
+    return 0;
+}
+==========================================
+Object Construction:
+
+Constructors executes from base to child
+destructor executes from child to base
+base data member will be a part of child object
+
+class ABC{
+  private:
+   int x;
+   int y;
+}
+
+class B: public ABC{
+  private:
+   int xX;
+   int yY;
+}
+
+when the object for the class B is created it will have
+
+x
+y
+xX
+yY
+but remeber the x and Y cannot be accessed by the class B object.
+=================
+Accout is parent class
+getter function of the class needs to have the const keyword
+
+class account {
+	 std::string m_accountname
+
+	 int m_accountnamber;
+	 static int AccountNGenerator;
+protected:
+    	 float m_Balance; //child class needs to for calculation of interest.
+public:
+//not account number is not the part of the constructor argument
+   account(string accountername, flaot balance){
+       m_accountnamber = ++AccountNGenerator;
+   }
+   ~account();
+   
+   const std::stringaccountname()const; //name will not be modified heance the 
+   //return type is also consts
+   float GetBalance() const;
+   
+   void withdraw(flaot withdarwalamount)
+   {
+       amount -=withdarwalamount
+   }
+   /* accumulate interest will be empty in the parent class since the
+   interest will vary for different account type and it has to be implemented in the 
+   child class and not in the parent class */
+   void accumulateInterest() {
+   }
+   
+ };  
+   int account::AccountNGenerator = 0;
+ =================
+class saving : public account {
+   flaot m_rate;
+public:
+   saving(string accountholdername, float amount, float rate) :
+   account(accountholdername,amount),m_rate(rate){
+   }
+ 
+ 
+ void accumulateInterest() {
+ }
+==================== 
+we can call the base class function from the derived class function
+class animal
+{
+   public:
+      void eat() { cout <<"eat grass" ; }
+	  void run() { cout << "run fast" ; }
+}
+class cow:public animal {
+   public:
+      void eat() { 
+	    cout <<"eat palants" ;
+		animal::eat(); //parent class name is nedded since it eat is also their in child
+		//if the animal keyword is removed above in eat it will become recursive call to
+		//child class eat
+	   run(); //no parent class scope	
+	}
+}
+
+cow c;
+c.eat();// eat plant ; eat grass; run fast;
+
+=======================================
+c++11 inheriting constructor?
+
+checking class is inheritated from account
+
+class checking :public account
+{
+}
+
+checking(string name, float balance):account(name,balance)
+{
+}
+
+in c++ 3 members are not inheritated
+constructor
+destructor 
+assignement operator
+
+ie is why we implemented the constructor in checking class
+
+c++11 inheriting constructor: avoid the implementation of constructor in checking class  just to invoke the parent class
+constructor.
+
+class checking 
+{
+   public :
+    // checking(string name, float balance)
+	using Account:Account; //all the parent class constructor are inheritated
+	in the child class
+	===
+	checking c("viswa", 10);
+	======================
+all the base class constructor are inheritated in the child class using c++ class inheritance 
+#include <iostream>
+
+// Base class
+class abc {
+public:
+    // Different constructors
+    abc() {
+        std::cout << "Default constructor of abc called" << std::endl;
+    }
+
+    abc(int x) {
+        std::cout << "Parameterized constructor of abc with int called: " << x << std::endl;
+    }
+
+    abc(int x, int y) {
+        std::cout << "Parameterized constructor of abc with two ints called: " << x << ", " << y << std::endl;
+    }
+};
+
+// Derived class
+class child : public abc {
+public:
+    // Inherit constructors from the base class
+    using abc::abc;
+};
+
+int main() {
+    // Creating objects of the derived class
+    child obj1;          // Calls default constructor of abc
+    child obj2(10);      // Calls parameterized constructor of abc with one int
+    child obj3(10, 20);  // Calls parameterized constructor of abc with two ints
+
+    return 0;
+}
+=======================
+how to restrict the class constructor inheritance:
+#include <iostream>
+
+// Base class
+class abc {
+public:
+    // Different constructors
+    abc() {
+        std::cout << "Default constructor of abc called" << std::endl;
+    }
+
+    abc(int x) {
+        std::cout << "Parameterized constructor of abc with int called: " << x << std::endl;
+    }
+
+    abc(int x, int y) {
+        std::cout << "Parameterized constructor of abc with two ints called: " << x << ", " << y << std::endl;
+    }
+};
+
+// Derived class
+class child : public abc {
+public:
+    // Only allow the parameterized constructor of abc with one int
+    using abc::abc; // This inherits all constructors
+
+    // Delete the constructors you do not want to allow
+    child() = delete;
+    child(int x, int y) = delete;
+};
+
+int main() {
+    // child obj1;           // Error: default constructor is deleted
+    child obj2(10);        // Calls parameterized constructor of abc with one int
+    // child obj3(10, 20);   // Error: constructor with two ints is deleted
+
+    return 0;
+}
+=================================================================================
+#include <iostream>
+
+// Base class
+class Animal {
+public:
+    // Declare virtual functions
+     void eat() {
+        std::cout << "Animal is eating" << std::endl;
+    }
+
+     void run() {
+        std::cout << "Animal is running" << std::endl;
+    }
+
+     void sound() {
+        std::cout << "Animal makes a sound" << std::endl;
+    }
+
+    // Virtual destructor
+     ~Animal() = default;
+};
+
+// Derived class
+class Dog : public Animal {
+public:
+    int x;
+    // Override virtual functions
+    void eat()  {
+        std::cout << "Dog is eating" << std::endl;
+    }
+
+    void run()  {
+        std::cout << "Dog is running" << std::endl;
+    }
+
+    void sound()  {
+        std::cout << "Dog barks" << std::endl;
+    }
+};
+
+int main() {
+    Dog myDog;
+    Animal* ptr = &myDog;
+    // ptr->x =100; //error class animal has no meber of x
+    // Call functions using the base class pointer
+    ptr->eat();
+    ptr->run();
+    ptr->sound();
+
+    return 0;
+}
+Animal is eating
+Animal is running
+Animal makes a sound
+=========================================================
+virtual keword indicates that this function overriden in the child class
+#include <iostream>
+
+// Base class
+class Animal {
+public:
+    // Declare virtual functions
+    virtual void eat() {
+        std::cout << "Animal is eating" << std::endl;
+    }
+
+    virtual void run() {
+        std::cout << "Animal is running" << std::endl;
+    }
+
+    virtual void sound() {
+        std::cout << "Animal makes a sound" << std::endl;
+    }
+
+    // Virtual destructor
+    virtual ~Animal() = default;
+};
+
+// Derived class
+class Dog : public Animal {
+public:
+    int x;
+    // Override virtual functions
+    void eat() override {
+        std::cout << "Dog is eating" << std::endl;
+    }
+
+    void run() override {
+        std::cout << "Dog is running" << std::endl;
+    }
+
+    void sound() override {
+        std::cout << "Dog barks" << std::endl;
+    }
+    
+    void legs() {
+        std::cout <<"4 legs" <<std::endl;
+    }
+};
+
+int main() {
+    Dog myDog;
+    Animal* ptr = &myDog;
+    // ptr -> x =100; //error animal class dont have the x .not allowed
+    //ptr->legs(); //error animal class dont have legs
+    // Call functions using the base class pointer
+    ptr->eat();
+    ptr->run();
+    ptr->sound();
+
+    return 0;
+}
+Dog is eating
+Dog is running
+Dog barks
+====================================
+if the function is not overriden in the child class then the base class function will be called example:
+compiler will come to know which function is called during the runtime and not at the compile time.
+
+#include <iostream>
+
+// Base class
+class Animal {
+public:
+    // Declare virtual functions
+    virtual void eat() {
+        std::cout << "Animal is eating" << std::endl;
+    }
+
+    virtual void run() {
+        std::cout << "Animal is running" << std::endl;
+    }
+
+    virtual void sound() {
+        std::cout << "Animal makes a sound" << std::endl;
+    }
+
+    // Virtual destructor
+    virtual ~Animal() = default;
+};
+
+// Derived class
+class Dog : public Animal {
+public:
+    int x;
+    // Override virtual functions
+    void eat() override {
+        std::cout << "Dog is eating" << std::endl;
+    }
+
+    void run() override {
+        std::cout << "Dog is running" << std::endl;
+    }
+    
+    void legs() {
+        std::cout <<"4 legs" <<std::endl;
+    }
+};
+
+int main() {
+    Dog myDog;
+    Animal* ptr = &myDog;
+    // ptr -> x =100; //error animal class dont have the x .not allowed
+    //ptr->legs(); //error animal class dont have legs
+    // Call functions using the base class pointer
+    ptr->eat();
+    ptr->run();
+    ptr->sound();
+
+    return 0;
+}
+
+Dog is eating
+Dog is running
+Animal makes a sound
+================================================
+#include <iostream>
+#include <map>
+#include <string>
+
+// User class
+class User {
+public:
+    std::string name;
+    int age;
+
+    User(std::string n, int a) : name(n), age(a) {}
+
+    // Print function for demonstration
+    void print() const {
+        std::cout << "Name: " << name << ", Age: " << age << std::endl;
+    }
+};
+
+// External functor for comparison
+struct CompareUsers {
+    bool operator()(const User& u1, const User& u2) const {
+        return u1.age < u2.age; // Comparison based on age
+    }
+};
+
+int main() {
+    std::map<User, std::string, CompareUsers> userMap;
+    
+    userMap[User("Alice", 30)] = "Alice's data";
+    userMap[User("Bob", 25)] = "Bob's data";
+    userMap[User("Charlie", 35)] = "Charlie's data";
+
+    for (const auto& pair : userMap) {
+        pair.first.print();
+        std::cout << "Data: " << pair.second << std::endl;
+    }
+
+    return 0;
+}
+Name: Bob, Age: 25
+Data: Bob's data
+Name: Alice, Age: 30
+Data: Alice's data
+Name: Charlie, Age: 35
+Data: Charlie's data
+=============================================
+#include <iostream>
+#include <map>
+#include <string>
+
+// User class with internal functor
+class User {
+public:
+    std::string name;
+    int age;
+
+    User(std::string n, int a) : name(n), age(a) {}
+
+    // Print function for demonstration
+    void print() const {
+        std::cout << "Name: " << name << ", Age: " << age << std::endl;
+    }
+
+    // Internal functor for comparison
+    struct Compare {
+        bool operator()(const User& u1, const User& u2) const {
+            if ((u1.age == u2.age) && (u1.name == u2.name))
+            {
+              return false; //if you return true here then 2 lists if same key will be maintained
+            }
+            return u1.age < u2.age; // Comparison based on age
+        }
+    };
+};
+
+int main() {
+    std::map<User, std::string, User::Compare> userMap;
+    
+    userMap[User("Alice", 30)] = "Alice's data";
+    userMap[User("Bob", 25)] = "Bob's data";
+    userMap[User("Bob", 25)] = "vBob's data";
+    userMap[User("Charlie", 35)] = "Charlie's data";
+
+    for (const auto& pair : userMap) {
+        pair.first.print();
+        std::cout << "Data: " << pair.second << std::endl;
+    }
+
+    return 0;
+}
+Name: Bob, Age: 25
+Data: vBob's data
+Name: Alice, Age: 30
+Data: Alice's data
+Name: Charlie, Age: 35
+Data: Charlie's data
+==========================================
+===========
+Polymorphism:
+function overloading, operator overloading and template are example for compile time polymorphism
+runtime polymorphism or dynamic binding-> implemented through virtual mechanism
+compiler inserts code to invoke the correct function at runtime
+automatically generated by the compiler when the member function has the vitual keyword prefix (such function
+are called polymorphic function)
+called throgh the base class pointer or base class reference
+
+vtable and Vptr
+
+vtable contain the address of the virtual function.
+non virtual function will not appear in the virtual table.
+virtual pointer 
+starting address of the vitual table is stored virtual pointer.
+
+compiler create the array of function pointer
+
+account virtual table
+&account::accumulateInterest //it is the vitula function in account
+&account::withdraw //it is the vitula function in account
+&account::GetInterestrate //it is the vitula function in account
+
+Account 
+virtual pointer --> will have address of the virtual table ir first address of their
+virtual function.
+
+if class is derived from the base clas which has the virtual function1,2,3
+then the base class vtable has the address of 3 virtual function
+derived class also has the vtable since since it is derived from the class containing the 
+virtual function.
+
+derived class virtual table also has the address of 3 virtual function. if the derived class is overriden then its overriden  virtual functionm 
+address will be placed in the derived class vtable else the parent class virtual function address (function ie is no overriden in the derived class)
+placed in the derived vtable. There will only one vprt ie allocated for the base class. Derived inherite the vptr from the bse class.
+
+compiler will initialize the vptr to the vtable in the constructor.
+
+each class has it own vtable.
+
+parent *p = new child();
+in child constrcutor the vptr is pointed to vtable of the child vtable
+===========
+64 bit platform:
+partent and child has no data member and has only virtual function.
+sizeof(parent) =>8 bytes since it has only one vptr
+sizeof(child) => 8 bytes since it has  the vptr of class A inheritated.
+
+base pointer can point any of its child class but point to remember is we need to add virtual destructor.
+base class destructor needs to be virtual.
+
+base *ptr = new child object;
+
+delete ptr; will call only the parent class destructor and not the child class destructor if the parent class
+destructor is not marked as virtual.
+
+
+Internal of the Vptr:
+=======================
+ if you want the user to prevent the class from being derived from it you can mark it as final.
+ 
+final keyword:
+ 
+ class zip final {
+ }
+ 
+ class FastZip:public zip { //compilation error you cannot derive from the final base class
+ }
+ 
+ ===
+override make the check for the return type, argument type and number of argument.
+to avoid the bugs 
+if the signature are not the same but you used overide in the derived class virtual function, 
+then the compiler will give error saying it is not does not override the base class function.
+override will work only for the virtual function. if the base class function is not virtual they compiler will give error.
+
+class Base {
+public:
+    virtual void func(int a) {
+        std::cout << "Base::func(int a)" << std::endl;
+    }
+
+};
+
+class Derived : public Base {
+public:
+    
+    void func(double a)  {
+        std::cout << "Derived::func(int a)" << std::endl;
+    }
+
+};
+
+int main() {
+    Base* basePtr = new Derived();
+    basePtr->func(10.10);          // Calls Derived::func(int)
+
+    delete basePtr;
+    return 0;
+}
+
+Base::func(int a)
+==================
+class Base {
+public:
+    virtual void func(int a) {
+        std::cout << "Base::func(int a)" << std::endl;
+    }
+
+};
+
+class Derived : public Base {
+public:
+    virtual void func(int a) override {
+    //or void func(int a) override {
+        std::cout << "Derived::func(int a)" << std::endl;
+    }
+
+};
+
+int main() {
+    Base* basePtr = new Derived();
+    basePtr->func(10.10);          // Calls Derived::func(int)
+
+    delete basePtr;
+    return 0;
+}
+
+Derived::func(int a)
+====================================
+#include <iostream>
+
+class Base {
+public:
+    // Virtual function
+    virtual void display() {
+        std::cout << "Base display" << std::endl;
+    }
+
+    // Virtual function marked as final
+    virtual void show() final {
+        std::cout << "Base show (final)" << std::endl;
+    }
+};
+
+class Derived : public Base {
+public:
+    // Correctly overrides display()
+    void display() override {
+        std::cout << "Derived display" << std::endl;
+    }
+
+    // Attempt to override show() will cause a compilation error
+    // void show() override {
+    //     std::cout << "Derived show" << std::endl;
+    // }
+};
+
+class FurtherDerived : public Derived {
+public:
+    // Correctly overrides display()
+    void display() override {
+        std::cout << "FurtherDerived display" << std::endl;
+    }
+
+    // Attempt to override show() will also cause a compilation error
+    // void show() override {
+    //     std::cout << "FurtherDerived show" << std::endl;
+    // }
+};
+
+int main() {
+    Base* basePtr = new Derived();
+    basePtr->display(); // Calls Derived::display()
+    basePtr->show();    // Calls Base::show()
+
+    Base* fdPtr = new FurtherDerived();
+    fdPtr->display(); // Calls FurtherDerived::display()
+    fdPtr->show();    // Calls Base::show() since FurtherDerived cannot override it
+
+    delete basePtr;
+    delete fdPtr;
+
+    return 0;
+}
+============================================
+virtual function can be overide and final in the same line
+override say it override the base class function. final says it cannot be used child 2 class
+
+#include <iostream>
+
+class Base {
+public:
+    // Virtual function
+    virtual void display() {
+        std::cout << "Base display" << std::endl;
+    }
+
+    // Virtual function
+    virtual void show() {
+        std::cout << "Base show" << std::endl;
+    }
+};
+
+class Derived : public Base {
+public:
+    // Correctly overrides display()
+    void display() override {
+        std::cout << "Derived display" << std::endl;
+    }
+
+    // Correctly overrides show() and marks it as final
+    void show() override final {
+        std::cout << "Derived show (final)" << std::endl;
+    }
+};
+
+class FurtherDerived : public Derived {
+public:
+    // Correctly overrides display()
+    void display() override {
+        std::cout << "FurtherDerived display" << std::endl;
+    }
+
+    // Attempt to override show() will cause a compilation error
+    // void show() override {
+    //     std::cout << "FurtherDerived show" << std::endl;
+    // }
+};
+
+int main() {
+    Base* basePtr = new Derived();
+    basePtr->display(); // Calls Derived::display()
+    basePtr->show();    // Calls Derived::show()
+
+    Base* fdPtr = new FurtherDerived();
+    fdPtr->display(); // Calls FurtherDerived::display()
+    fdPtr->show();    // Calls Derived::show() since FurtherDerived cannot override it
+
+    delete basePtr;
+    delete fdPtr;
+
+    return 0;
+}
+
+Derived display
+Derived show (final)
+FurtherDerived display
+Derived show (final)
+
+===========================
+Yes, the override specifier in C++ ensures that the function is correctly overriding a virtual function from 
+the base class. This includes checking the return type. If the return type of the overriding function does not
+ match the return type of the virtual function it
+ is supposed to override (except in the case of covariant return types), the compiler will generate an error. 
+==============
+new circle(*this) ==> will call the copy constructor the circle class?
+
+#include <iostream>
+#include <string>
+
+// Base class
+class Shape {
+public:
+    Shape(const std::string& name) : name(name) {}
+    
+    // Copy constructor
+    Shape(const Shape& other) : name(other.name) {
+        std::cout << "Shape copy constructor called" << std::endl;
+    }
+
+    virtual Shape* clone() const {
+        std::cout << "Cloning a Shape" << std::endl;
+        return new Shape(*this); // Use the copy constructor
+    }
+
+    virtual void draw() const {
+        std::cout << "Drawing a Shape: " << name << std::endl;
+    }
+
+    virtual ~Shape() = default;
+
+protected:
+    std::string name;
+};
+
+// Derived class
+class Circle : public Shape {
+public:
+    Circle(const std::string& name, double radius) : Shape(name), radius(radius) {}
+
+    // Copy constructor
+    Circle(const Circle& other) : Shape(other), radius(other.radius) {
+        std::cout << "Circle copy constructor called" << std::endl;
+    }
+
+    Circle* clone() const override { // Covariant return type
+        std::cout << "Cloning a Circle" << std::endl;
+        return new Circle(*this); // Use the copy constructor
+    }
+
+    void draw() const override {
+        std::cout << "Drawing a Circle: " << name << " with radius " << radius << std::endl;
+    }
+
+private:
+    double radius;
+};
+
+int main() {
+    Shape* shape = new Circle("MyCircle", 5.0);
+    Shape* clonedShape = shape->clone(); // Calls Circle's clone
+
+    shape->draw();
+    clonedShape->draw();
+
+    delete shape;
+    delete clonedShape;
+
+    return 0;
+}
+Cloning a Circle
+Shape copy constructor called
+Circle copy constructor called
+Drawing a Circle: MyCircle with radius 5
+Drawing a Circle: MyCircle with radius 5
+======================================
+command design pattern: specially when you need to decouple the sender of a request from its receiver and encapsulate requests as objects. 
+When you want to decouple the object that invokes the operation from the one that knows how to perform it. This allows for more flexible 
+and reusable code.
+Use Cases:
+When you need to parameterize objects with operations.
+When you want to support undo and redo operations.
+When you want to keep a history of requests.
+When you need to queue or log requests.
+
+#include <iostream>
+#include <memory>
+#include <stack>
+
+// Command Interface
+class Command {
+public:
+    virtual ~Command() {}
+    virtual void execute() = 0;
+    virtual void undo() = 0;
+};
+
+// Receiver
+class Light {
+public:
+    void on() {
+        std::cout << "The light is on" << std::endl;
+        state = "on";
+    }
+
+    void off() {
+        std::cout << "The light is off" << std::endl;
+        state = "off";
+    }
+
+    std::string getState() const {
+        return state;
+    }
+
+private:
+    std::string state;
+};
+
+// Concrete Command to turn the light on
+class LightOnCommand : public Command {
+public:
+    LightOnCommand(Light& light) : light(light) {}
+
+    void execute() override {
+        light.on();
+    }
+
+    void undo() override {
+        light.off();
+    }
+
+private:
+    Light& light;
+};
+
+// Concrete Command to turn the light off
+class LightOffCommand : public Command {
+public:
+    LightOffCommand(Light& light) : light(light) {}
+
+    void execute() override {
+        light.off();
+    }
+
+    void undo() override {
+        light.on();
+    }
+
+private:
+    Light& light;
+};
+
+// Invoker
+class RemoteControl {
+public:
+    void setCommand(std::unique_ptr<Command> command) {
+        this->command = std::move(command);
+    }
+
+    void pressButton() {
+        if (command) {
+            command->execute();
+            command_history.push(std::move(command));
+        }
+    }
+
+    void pressUndoButton() {
+        if (!command_history.empty()) {
+            command_history.top()->undo();
+            command_history.pop();
+        } else {
+            std::cout << "No commands to undo" << std::endl;
+        }
+    }
+
+private:
+    std::unique_ptr<Command> command;
+    std::stack<std::unique_ptr<Command>> command_history;
+};
+
+// Client code
+int main() {
+    Light livingRoomLight;
+    RemoteControl remoteControl;
+
+    // Turn the light on
+    std::unique_ptr<Command> lightOn = std::make_unique<LightOnCommand>(livingRoomLight);
+    remoteControl.setCommand(std::move(lightOn));
+    remoteControl.pressButton();  // Output: The light is on
+
+    // Turn the light off
+    std::unique_ptr<Command> lightOff = std::make_unique<LightOffCommand>(livingRoomLight);
+    remoteControl.setCommand(std::move(lightOff));
+    remoteControl.pressButton();  // Output: The light is off
+
+    // Undo the last action (turn the light back on)
+    remoteControl.pressUndoButton();  // Output: The light is on
+
+    // Undo the last action (turn the light off again)
+    remoteControl.pressUndoButton();  // Output: The light is off
+
+    // Try to undo when no more commands are available
+    remoteControl.pressUndoButton();  // Output: No commands to undo
+
+    return 0;
+}
+====================================
+Strategy Design Pattern
+Define a family of algorithms, encapsulate each one, and make them interchangeable. 
+Strategy lets the algorithm vary independently from clients that use it.
+Use Cases:
+
+When you have multiple algorithms for a specific task and want to decide which one to use at runtime.
+When you want to avoid using conditional statements for selecting an algorithm.
+When you need to make the algorithm easily interchangeable.
+// Strategy Interface
+class Strategy {
+public:
+    virtual ~Strategy() {}
+    virtual void execute() = 0;
+};
+
+// Concrete Strategy A
+class ConcreteStrategyA : public Strategy {
+public:
+    void execute() override { std::cout << "Strategy A executed" << std::endl; }
+};
+
+// Concrete Strategy B
+class ConcreteStrategyB : public Strategy {
+public:
+    void execute() override { std::cout << "Strategy B executed" << std::endl; }
+};
+
+// Context
+class Context {
+public:
+    void setStrategy(std::unique_ptr<Strategy> strategy) { this->strategy = std::move(strategy); }
+    void executeStrategy() { if (strategy) strategy->execute(); }
+private:
+    std::unique_ptr<Strategy> strategy;
+};
+
+int main() {
+    Context context;
+    std::unique_ptr<Strategy> strategyA = std::make_unique<ConcreteStrategyA>();
+    context.setStrategy(std::move(strategyA));
+    context.executeStrategy();  // Output: Strategy A executed
+
+    std::unique_ptr<Strategy> strategyB = std::make_unique<ConcreteStrategyB>();
+    context.setStrategy(std::move(strategyB));
+    context.executeStrategy();  // Output: Strategy B executed
+
+    return 0;
+}
+==============================================================
+calss member as the reference:
+#include <iostream>
+
+class Engine {
+public:
+    void start() {
+        std::cout << "Engine started." << std::endl;
+    }
+};
+
+class Car {
+public:
+    // Constructor that initializes the engine reference
+    Car(Engine& eng) : engine(eng) {}
+
+    // Function to start the car's engine
+    void startEngine() {
+        engine.start();
+    }
+
+private:
+    Engine& engine;  // Reference to an Engine object
+};
+
+int main() {
+    Engine myEngine;
+    Car myCar(myEngine);
+
+    myCar.startEngine();  // Output: Engine started.
+
+    return 0;
+}
+Engine started.
+
+If the original Engine object goes out of scope and is destroyed, any reference to that object will become a dangling reference.
+=============================================
+#include <iostream>
+#include <memory>
+
+class Engine {
+public:
+    void start() {
+        std::cout << "Engine started." << std::endl;
+    }
+
+    ~Engine() {
+        std::cout << "Engine destroyed." << std::endl;
+    }
+};
+
+class Car {
+public:
+    // Constructor that initializes the engine with a unique pointer
+    Car(std::unique_ptr<Engine> eng) : engine(std::move(eng)) {}
+
+    // Function to start the car's engine
+    void startEngine() {
+        if (engine) {
+            engine->start();
+        } else {
+            std::cout << "No engine to start." << std::endl;
+        }
+    }
+
+private:
+    std::unique_ptr<Engine> engine;  // Unique pointer to an Engine object
+};
+
+void createAndDestroyEngine() {
+    auto myEngine = std::make_unique<Engine>();
+    Car myCar(std::move(myEngine));  // Transfer ownership to Car object
+
+    // myEngine is now null and ownership is with myCar
+    myCar.startEngine();
+    if (!myEngine) {
+        std::cout << "myEngine is null after move." << std::endl;
+    }
+    // myEngine goes out of scope here, but it no longer owns the Engine object
+}
+
+int main() {
+    createAndDestroyEngine();
+    // myCar now has a valid engine because of unique ownership
+    return 0;
+}
+
+Engine started.
+myEngine is null after move.
+Engine destroyed.
+
+=================================
+Object Slicing: (to avoid the memory corruption done by the compiler)
+
+Upcasting:
+Child class address is assigned to the base class pointer.
+parent *ptr = &childclassobject;
+base class needs to be pointer or reference for the upcasting.
+
+child class contain its attribute and its base class attribute
+
+parent object = childclassobject; (object slicing);
+deliberatly removes the child class atrribute to fit into the baseclass object.
+
+or passing the child class object to a function which accept the base class object.
+
+How to avoid the object slicing?
+either use the pointer or reference.
+
+we cannot assign the basepointer to child class pointer;
+//upcasting doesn't need any intervention but downcasting needs the
+casting ie  static_cast
+
+childclass cobj;
+parent*pptr= &cobj;
+childclass* cptr = pptr;;///error 
+//downcasting
+downcast the base class pointer to the child class pointer
+childclass* cptr = static_cast<cgildclass*> pptr;
+===============
+downcasting using the dynamic_casting:
+Parent* p = new Child();
+    
+    Child* c = dynamic_cast<Child*>(p); // Safe downcast using dynamic_cast
+    if (c != nullptr) {
+        c->display(); // This will call Child's display function
+    } else {
+        std::cout << "Failed to downcast." << std::endl;
+    }
+===============
+downcasting using the static_cast:
+static_cast does not perform runtime type checking, so it should be used when 
+you are sure of the types involved. It can be unsafe if used incorrectly
+===========================================
+we cannot assign the base class object to the deriveclass object unless the constructor takes the parent class object
+class Parent {
+public:
+    int x;
+    Parent() : x(0) {}
+};
+
+class Child : public Parent {
+public:
+    int y;
+    Child() : y(1) {}
+};
+
+int main() {
+    Parent parent;
+    // Child child = parent; // This will cause a compilation error
+    return 0;
+}
+================================================
+he constructor Child(Parent parent) takes a Parent object by value
+std::move(parent): pass by rvalue
+
+
+
+#include <iostream>
+
+class Parent {
+public:
+    int x;
+    Parent() : x(0) {}
+    Parent(int x) : x(x) {}
+
+    // Copy constructor
+    Parent(const Parent& other) : x(other.x) {
+        std::cout << "Copy constructor called\n";
+    }
+
+    // Move constructor
+    Parent(Parent&& other) noexcept : x(other.x) {
+        std::cout << "Move constructor called\n";
+        other.x = 0; // Optional: Invalidate the moved-from object
+    }
+};
+
+class Child : public Parent {
+public:
+    int y;
+    Child() : y(1) {}
+
+    // Constructor that takes a Parent object by value
+    Child(Parent parent) : Parent(parent), y(0) {
+        std::cout << "Child constructor with Parent by value called\n";
+    }
+};
+
+int main() {
+    Parent parent(5); // Create a Parent object with x = 5
+    Child child(std::move(parent)); // Use the move constructor to create a temporary Parent object
+
+    std::cout << "Child x: " << child.x << ", Child y: " << child.y << std::endl;
+    return 0;
+}
+Move constructor called //Parent parent 
+Copy constructor called //Parent(partent)
+Child constructor with Parent by value called
+Child x: 5, Child y: 0
+===============================================
+#include <iostream>
+
+class Parent {
+public:
+    int x;
+    Parent() : x(0) {}
+    Parent(int x) : x(x) {}
+
+    // Copy constructor
+    Parent(const Parent& other) : x(other.x) {
+        std::cout << "Copy constructor called\n";
+    }
+
+    // Move constructor
+    Parent(Parent&& other) noexcept : x(other.x) {
+        std::cout << "Move constructor called\n";
+        other.x = 0; // Optional: Invalidate the moved-from object
+    }
+};
+
+class Child : public Parent {
+public:
+    int y;
+    Child() : y(1) {}
+
+    // Constructor that takes a Parent object by value
+    Child(Parent &&parent) : Parent(std::move(parent)), y(0) {
+        std::cout << "Child constructor with Parent by value called\n";
+    }
+};
+
+int main() {
+    Parent parent(5); // Create a Parent object with x = 5
+    Child child(std::move(parent)); // Use the move constructor to create a temporary Parent object
+
+    std::cout << "Child x: " << child.x << ", Child y: " << child.y << std::endl;
+    return 0;
+}
+//Parent &&parent = std::move(parent) ;//will not call the move constructor
+Move constructor called //Parent(std::move(parent))
+Child constructor with Parent by value called
+Child x: 5, Child y: 0
+================================================
+
+when the function takes the argument as & or && reference it will not call the construction
+
+MyClass local_obj = std::move(obj); // call the move constructor
+MyClass local_obj = (obj); //call the conpy constrcutor
+======================
+typeid opertaor:
+typeid return s the object of typeinfo class
+make the decision based on the decesion the object pointing to.
+
+RTTI:
+
+conside a scenerio we have 2 virtual function base class.
+class child derived from the base class has 2 additional non virtual function.
+
+base *baseptr = &derivedclassobject;
+now using the base pointer we cannot access the derived class function.
+
+so what we will do
+derivedclassptr *childpt = baseptr;
+
+now using child pter we can access the derived class specific function.
+
+#include <typeinfo>
+int i{};
+float f{};
+
+const std::type_info &ti = typeid(f);
+cout <<ti.name() <<std::endl; //float
+//type.name for class will give the output as class followed by <name>
+
+baseclass *ptr =&derivedclassobject;
+
+const std::type_info &ti = typeid(ptr);
+cout <<ti.name() <<std::endl; //class baseclass
+
+baseclass *ptr =&derivedclassobject;
+
+const std::type_info &ti = typeid(*ptr);
+cout <<ti.name() <<std::endl; //class derivedclass
+
+when you use type id for the non polymorphic class the information is gathered at
+compile time.
+
+when you use type id for the polymorphic class the information is gathered at
+runtime.
+
+baseclass *ptr = new derivedclass()
+const std::type_info &ti = typeid(*ptr);
+cout <<ti.name() <<std::endl; //class derivedclass
+if (ti == typeid(derivedclassname)
+{
+    derivedclass* dptr = static_cast<derivedclass*> (ptr)
+	dptr=>derivedclasssclassspecififunction()
+}
+==================================================
+behaviour of typeid when the class is non polymorphic:
+#include <iostream>
+#include <typeinfo> // For std::type_info and typeid
+
+// Base class with virtual functions
+class Base {
+public:
+     ~Base() = default; // Virtual destructor for RTTI
+     void show() const { std::cout << "Base class show function" << std::endl; }
+};
+
+// Derived class with additional functionality
+class Derived : public Base {
+public:
+    void show() const  { std::cout << "Derived class show function" << std::endl; }
+    void derivedClassSpecificFunction() {
+        std::cout << "Derived class specific function called" << std::endl;
+    }
+};
+
+int main() {
+    Base* ptr = new Derived(); // Create a Derived object and assign to Base pointer
+
+    // Call show and doSomething to demonstrate polymorphism
+    ptr->show();
+
+    // Get the type_info of the object pointed to by ptr
+    const std::type_info& ti = typeid(*ptr); //hold only the base class function name as it does have the virtual function./p0
+
+    std::cout << "Type info name: " << ti.name() << std::endl; // Output the type name
+
+    if (ti == typeid(Derived)) { // Check if the type matches Derived
+        Derived* dptr = static_cast<Derived*>(ptr); // Cast the base pointer to derived pointer
+        dptr->derivedClassSpecificFunction(); // Call Derived class specific function
+
+        // Demonstrate calling the overridden functions
+        dptr->show();
+    } else {
+        std::cout << "Pointer does not point to Derived class instance" << std::endl;
+    }
+
+    delete ptr; // Clean up allocated memory
+    return 0;
+}
+
+Base class show function
+Type info name: 4Base
+Pointer does not point to Derived class instance
+================================================
+typeid for polymorphic:
+
+#include <iostream>
+#include <typeinfo> // For std::type_info and typeid
+
+// Base class with virtual functions
+class Base {
+public:
+    virtual ~Base() = default; // Virtual destructor for RTTI
+     void show() const { std::cout << "Base class show function" << std::endl; }
+};
+
+// Derived class with additional functionality
+class Derived : public Base {
+public:
+    void show() const  { std::cout << "Derived class show function" << std::endl; }
+    void derivedClassSpecificFunction() {
+        std::cout << "Derived class specific function called" << std::endl;
+    }
+};
+
+int main() {
+    Base* ptr = new Derived(); // Create a Derived object and assign to Base pointer
+
+    // Call show and doSomething to demonstrate polymorphism
+    ptr->show();
+
+    // Get the type_info of the object pointed to by ptr
+    const std::type_info& ti = typeid(*ptr); //hold the derived class function name
+
+    std::cout << "Type info name: " << ti.name() << std::endl; // Output the type name
+
+    if (ti == typeid(Derived)) { // Check if the type matches Derived
+        Derived* dptr = static_cast<Derived*>(ptr); // Cast the base pointer to derived pointer
+        dptr->derivedClassSpecificFunction(); // Call Derived class specific function
+
+        // Demonstrate calling the overridden functions
+        dptr->show();
+    } else {
+        std::cout << "Pointer does not point to Derived class instance" << std::endl;
+    }
+
+    delete ptr; // Clean up allocated memory
+    return 0;
+}
+
+Base class show function
+Type info name: 7Derived
+Derived class specific function called
+Derived class show function
+
+==========================================================================
+
+dynamic_cast (polymorphic class)
+
+to overcome
+baseclass *ptr = new derivedclass()
+const std::type_info &ti = typeid(*ptr);
+cout <<ti.name() <<std::endl; //class derivedclass
+if (ti == typeid(derivedclassname)
+{
+    derivedclass* dptr = static_cast<derivedclass*> (ptr)
+	dptr=>derivedclasssclassspecififunction()
+}
+
+if the dynmic_cast is not correct it will return NULL;
+
+baseclass *ptr = new derivedclass();
+derivedclass* dptr = dynamic_cast<derivedclass*> (ptr)
+if (dptr != nullptr)
+{
+    
+	dptr=>derivedclasssclassspecififunction();
+}
+
+
+dynamic_cast using reference
+baseclass &ptr = derivedclassbject;
+try {
+derivedclass & dptr = dynamic_cast<derivedclass&> (ptr)
+dptr=>derivedclasssclassspecififunction();
+}
+
+catch (std::exception &ex)
+{
+    cout << ex.what(); //bad dynamic_cast
+	
+}
+==========================
+#include <iostream>
+
+class Parent {
+public:
+    int x;
+    Parent() : x(0) {}
+    Parent(int x) : x(x) {}
+    virtual ~Parent() = default;
+
+    virtual void show() const {
+        std::cout << "Parent class show function" << std::endl;
+    }
+};
+
+class Derived : public Parent {
+public:
+    int y;
+    Derived(int x, int y) : Parent(x), y(y) {}
+
+    void show() const override {
+        std::cout << "Derived class show function" << std::endl;
+    }
+
+    void derivedClassSpecificFunction() {
+        std::cout << "Derived class specific function called" << std::endl;
+    }
+};
+
+int main() {
+    Derived* derivedPtr = new Derived(10, 20); // Dynamically allocate a Derived object
+    Derived& derivedRef = *derivedPtr; // Create a reference to the dynamically allocated object
+
+    // Use the reference to call functions
+    derivedRef.show();
+    derivedRef.derivedClassSpecificFunction();
+
+    // Clean up
+    delete derivedPtr; // Remember to delete the dynamically allocated object
+    return 0;
+}
+
+Derived class show function
+Derived class specific function called
+========================================
+
+#include <iostream>
+#include <typeinfo>
+#include <exception>
+
+class Base {
+public:
+    virtual ~Base() = default; // Virtual destructor for polymorphic behavior
+    virtual void show() const {
+        std::cout << "Base class show function" << std::endl;
+    }
+};
+
+class Derived : public Base {
+public:
+    void show() const override {
+        std::cout << "Derived class show function" << std::endl;
+    }
+    void derivedClassSpecificFunction() {
+        std::cout << "Derived class specific function called" << std::endl;
+    }
+};
+
+int main() {
+    Base* basePtr ;//= new Derived(); // Polymorphic behavior
+    Base* basePtr2 = new Base(); // Another Base object
+
+    // Correct use of dynamic_cast
+    if (Derived* derivedPtr = dynamic_cast<Derived*>(basePtr)) {
+        derivedPtr->show();
+        derivedPtr->derivedClassSpecificFunction();
+    } else {
+        std::cout << "basePtr is not pointing to a Derived object" << std::endl;
+    }
+
+    // Incorrect use of dynamic_cast
+    try {
+        Derived& derivedRef = dynamic_cast<Derived&>(*basePtr2);
+        derivedRef.show();
+        derivedRef.derivedClassSpecificFunction();
+    }
+    catch (const std::exception & e) {
+        std::cout << "Exception caught: " << e.what() << std::endl;
+    }
+	//or 
+    catch (const std::bad_cast& e) {
+        std::cout << "Exception caught: " << e.what() << std::endl;
+    }
+
+    delete basePtr;
+    delete basePtr2;
+
+    return 0;
+}
+
+// catch (const std::exception & e) base exception to catch all the exception
+basePtr is not pointing to a Derived object
+Exception caught: std::bad_cast
+========
+it should be written in reverse ie 
+
+catch (const std::bad_cast& e) {
+	std::cout << "Exception caught: " << e.what() << std::endl;
+}
+
+catch (const std::exception & e) {
+	std::cout << "Exception caught: " << e.what() << std::endl;
+}
+=====================================
+typeid and dynamic_cast has the additional information stored in the object
+compiler add extra information to the polymorphic classes to the vtable.
+type_info object is stored along with the vtable in the compilation.
+avoid using the typeid and dynamic_cast;
+
+Virtual Table (vtable):
+
+Each polymorphic class (a class with at least one virtual function) has a vtable associated with it. 
+The vtable is essentially an array of pointers to virtual functions of the class.
+
+The first entry in the vtable often points to the type_info object of the class.
+This allows runtime type identification mechanisms, such as dynamic_cast and typeid, to access type information.
+===========================================================
+class Base {
+public:
+    virtual ~Base() = default; // Virtual destructor for polymorphic behavior
+    virtual void show() const {
+        std::cout << "Base class show function" << std::endl;
+    }
+};
+
++---------------------------+
+| Pointer to Base type_info |
++---------------------------+
+| Pointer to Base::show()   |
++---------------------------+
+| Pointer to Base::~Base()  |
++---------------------------+
+RTTI and vtable: The vtable contains type information (type_info) pointers, supporting RTTI features like dynamic 
+casting and type identification.
+====================================================================
+Abstract class:
+
+class document{
+   virtual void serialize(float version) //default behaviour
+   {
+   }
+}
+class xml:public document
+{
+}
+
+document *pptr = new xml();
+pptr-> serialize(1.1f); //here it call the document serializer
+
+a. document serializer is not forcing the child class to override the 
+function in the above example.
+b. xml needs to call the xml serialize
+
+class document{
+   //below line guranteed the each child has their own implementation
+   virtual void serialize(float version)  = 0; //pure virtual function
+class xml:public document
+{
+   virtual void serialize(float version) override 
+   {
+   }
+}
+
+child class to provide the implementation of serialize()
+abstract class needs to have one pure virtual function
+abstract class cannot be instantiated
+when the child class is not implementating the serialize then the child clss also become abstract
+we can create the pointer or reference from the abstract class
+abstract class can contain virtual, non virtual function, data .
+
+interface contain only pure virtual function. 
+
+pure virtual function usually dont have implementation. but it can
+have the implementation.
+cannot be invoked except derived class if defined
+
+pure virtual function dont have entry in the vtable
+
+
+class Base {
+public:
+    virtual void show() const = 0; // Pure virtual function
+
+    // Providing an implementation for the pure virtual function
+    virtual void display() const {
+        std::cout << "Base class display function implementation" << std::endl;
+    }
+
+    virtual ~Base() = default; // Virtual destructor for polymorphic behavior
+};
+
++---------------------------+
+| Pointer to Base type_info |
++---------------------------+
+| nullptr (for show())      | <-- Pure virtual function has a vtable entry
++---------------------------+
+| Pointer to Base::display()|
++---------------------------+
+| Pointer to Base::~Base()  |
++---------------------------+
+
+===================================================
+
+#include <iostream>
+
+class Base {
+public:
+    // Pure virtual function with an implementation
+    virtual void show() const = 0;
+
+    // Virtual destructor
+    virtual ~Base() = default;
+};
+
+// Implementation of the pure virtual function
+void Base::show() const {
+    std::cout << "Base class show function implementation" << std::endl;
+}
+
+class Derived : public Base {
+public:
+    // Overriding the pure virtual function
+    void show() const override {
+        std::cout << "Derived class show function" << std::endl;
+
+        // Explicitly calling the base class implementation
+        Base::show();
+    }
+};
+
+int main() {
+    Derived derived;
+    Base* basePtr = &derived;
+
+    basePtr->show(); // Calls Derived::show() which in turn calls Base::show()
+    basePtr->Base::show(); //call the base class function
+   // Base* basePtr1 = new Base(); //abstract cannot have object
+
+    return 0;
+}
+
+Derived class show function
+Base class show function implementation
+Base class show function implementation
+======================================================
+multiple diamon inheritance:
+
+C++ allows inheritance from more than one class simultanously knw as multiple inheritance
+allow the class to reuse / override the behaviour of multiple classes.
+Multiple inheritance can lead to diamond inhertance
+class inherit form the common parent forma a diamond shapre
+
+
+passing cout and cin as the argument:
+#include <iostream>
+
+void processInputOutput(std::istream& inputStream, std::ostream& outputStream) {
+    std::string name;
+    int age;
+
+    // Read input
+    outputStream << "Enter your name: ";
+    inputStream >> name;
+    outputStream << "Enter your age: ";
+    inputStream >> age;
+
+    // Output results
+    outputStream << "Name: " << name << ", Age: " << age << std::endl;
+}
+
+int main() {
+    processInputOutput(std::cin, std::cout); // Pass std::cin and std::cout
+
+    return 0;
+}
+
+==========================
+#include <iostream>
+
+class Logger {
+public:
+    // Constructor initializes the reference member variable
+    Logger(std::ostream& outStream) : out(outStream) {}
+
+    // Member function that uses the reference
+    void log(const std::string& message) {
+        out << message << std::endl;
+    }
+
+private:
+    std::ostream& out; // Reference to an output stream
+};
+
+int main() {
+    Logger logger(std::cout); // Initialize Logger with std::cout
+
+    logger.log("This is a log message."); // Outputs to std::cout
+
+    return 0;
+}
+This is a log message.
+=====================================
+diamond problem is solved by virtual inheritance:
+virtual inheritance ensure there is only one base class instance in the grand child object.
+virtual inheritance expect the default constructor in the base class if the no base class constructor specific is mention in the 
+grand child. 
+The Diamond Problem in C++ arises in the context of multiple inheritance, where a class inherits from two classes that both inherit 
+from a common base class. This can create ambiguity and redundancy issues, particularly with member variables and functions.
+
+when the class is inheritated using vitual inheriatnce, the grandchild can call the base class functionelse there will be ambuguity
+when the class is derived virtually from the parent class. it has the virtual base pointer refering to the single instance of the base class
+The virtual base class pointer is used to manage the single instance of a virtual base class in virtual inheritance scenarios.
+
+#include <iostream>
+
+#include<iostream>
+using namespace std;
+
+class A
+{
+public:
+A() { cout << "A's constructor called" << endl; }
+};
+
+class B
+{
+public:
+B() { cout << "B's constructor called" << endl; }
+};
+
+class C: public B, public A // Note the order
+{
+public:
+C() { cout << "C's constructor called" << endl; }
+};
+
+int main()
+{
+	C c;
+	return 0;
+}
+B's constructor called
+A's constructor called
+C's constructor called
+===============================================
+#include<iostream>
+using namespace std;
+class Person {
+// Data members of person 
+public:
+	Person(int x) { cout << "Person::Person(int ) called" << endl; }
+	~Person() { cout << "destrcutor of person called" << endl; }
+};
+
+class Faculty : public Person {
+// data members of Faculty
+public:
+	Faculty(int x):Person(x) {
+	cout<<"Faculty::Faculty(int ) called"<< endl;
+	}
+	~Faculty() { cout << "destrcutor of Faculty called" << endl; }
+};
+
+class Student : public Person {
+// data members of Student
+public:
+	Student(int x):Person(x) {
+		cout<<"Student::Student(int ) called"<< endl;
+	}
+   ~Student() { cout << "destrcutor of Student called" << endl; }
+};
+
+class TA : public Faculty, public Student {
+public:
+	TA(int x):Student(x), Faculty(x) {
+		cout<<"TA::TA(int ) called"<< endl;
+	}
+	~TA() { cout << "destrcutor of TA called" << endl; }
+};
+
+int main() {
+	TA ta1(30);
+}
+Person::Person(int ) called
+Faculty::Faculty(int ) called
+Person::Person(int ) called
+Student::Student(int ) called
+TA::TA(int ) called
+destrcutor of TA called
+destrcutor of Student called
+destrcutor of person called
+destrcutor of Faculty called
+destrcutor of person called
+=============================================
+#include<iostream>
+using namespace std;
+class Person {
+// Data members of person 
+public:
+	Person(int x) { cout << "Person::Person(int ) called" << endl; }
+	 Person()     { cout << "Person::Person() called" << endl;   }
+	~Person() { cout << "destrcutor of person called" << endl; }
+};
+
+class Faculty : virtual public Person {
+// data members of Faculty
+public:
+	Faculty(int x):Person(x) {
+	cout<<"Faculty::Faculty(int ) called"<< endl;
+	}
+	~Faculty() { cout << "destrcutor of Faculty called" << endl; }
+};
+
+class Student : virtual public Person {
+// data members of Student
+public:
+	Student(int x):Person(x) {
+		cout<<"Student::Student(int ) called"<< endl;
+	}
+   ~Student() { cout << "destrcutor of Student called" << endl; }
+};
+
+class TA : public Faculty, public Student {
+public:
+	TA(int x):Student(x), Faculty(x) {
+		cout<<"TA::TA(int ) called"<< endl;
+	}
+	~TA() { cout << "destrcutor of TA called" << endl; }
+};
+
+int main() {
+	TA ta1(30);
+}
+
+Person::Person() called
+Faculty::Faculty(int ) called
+Student::Student(int ) called
+TA::TA(int ) called
+destrcutor of TA called
+destrcutor of Student called
+destrcutor of Faculty called
+destrcutor of person called
+====================================================	
+//not the person(int constructior is called first eventhough itis called last)
+//person construtor is called only once
+// or TA(int x):Person(x), Student(x), Faculty(x) {
+//or TA(int x): Student(x), Faculty(x), Person(x) {
+//finally the grandchild class constructor is called
+#include<iostream>
+using namespace std;
+class Person {
+// Data members of person 
+public:
+	Person(int x) { cout << "Person::Person(int ) called" << endl; }
+	~Person() { cout << "destrcutor of person called" << endl; }
+};
+
+class Faculty : virtual public Person {
+// data members of Faculty
+public:
+	Faculty(int x):Person(x) {
+	cout<<"Faculty::Faculty(int ) called"<< endl;
+	}
+	~Faculty() { cout << "destrcutor of Faculty called" << endl; }
+}; //has the single virtual base pointer points to single person
+
+class Student : virtual public Person {
+// data members of Student
+public:
+	Student(int x):Person(x) {
+		cout<<"Student::Student(int ) called"<< endl;
+	}
+   ~Student() { cout << "destrcutor of Student called" << endl; }
+}; //has the single virtual base pointer points to single person
+
+class TA : public Faculty, public Student {
+public:
+	TA(int x):Student(x), Faculty(x),Person(x) { //or TA(int x):Person(x), Student(x), Faculty(x)
+		cout<<"TA::TA(int ) called"<< endl;
+	}
+	~TA() { cout << "destrcutor of TA called" << endl; }
+}; //has the 2 virtual base pointer points to single person
+
+int main() {
+	TA ta1(30);
+    cout << "Size of Person: " << sizeof(Person) << endl; //1 
+    cout << "Size of Faculty: " << sizeof(Faculty) << endl; //8 
+    cout << "Size of Student: " << sizeof(Student) << endl; //8 
+    cout << "Size of TA: " << sizeof(TA) << endl; //16
+}
+Person::Person(int ) called
+Faculty::Faculty(int ) called
+Student::Student(int ) called
+TA::TA(int ) called
+destrcutor of TA called
+destrcutor of Student called
+destrcutor of Faculty called
+destrcutor of person called
+====================================================		
+#include<iostream>
+using namespace std;
+class Person {
+// Data members of person 
+public:
+	void function()
+	{
+	    std::cout << "print viswa"<<std::endl;
+	}
+};
+
+class Faculty :  public Person {
+// data members of Faculty
+public:
+};
+
+class Student :  public Person {
+// data members of Student
+public:
+};
+
+class TA : public Faculty, public Student {
+public:
+};
+
+int main() {
+	TA ta1();
+	//ta1.function(); //ambiguity
+	 cout << "Size of Person: " << sizeof(Person) << endl; //1 
+    cout << "Size of Faculty: " << sizeof(Faculty) << endl; //1
+    cout << "Size of Student: " << sizeof(Student) << endl; //1
+    cout << "Size of TA: " << sizeof(TA) << endl; //2
+}
+===============================================
+//TA ta1();// not recomended to use ()
+#include<iostream>
+using namespace std;
+class Person {
+// Data members of person 
+public:
+	void function()
+	{
+	    std::cout << "print viswa"<<std::endl;
+	}
+};
+
+class Faculty :  virtual public Person {
+// data members of Faculty
+public:
+};
+
+class Student : virtual public Person {
+// data members of Student
+public:
+};
+
+class TA : public Faculty, public Student {
+public:
+};
+
+int main() {
+	TA ta1();// not recomented to use () for the default constructor
+	//ta1.function(); //ambiguit
+	 cout << "Size of Person: " << sizeof(Person) << endl; //1 
+    cout << "Size of Faculty: " << sizeof(Faculty) << endl; //8
+    cout << "Size of Student: " << sizeof(Student) << endl; //8
+    cout << "Size of TA: " << sizeof(TA) << endl; //16
+}
+================
+ B b ;
+    A *a = &b ;
+    std::cout << typeid(*a).name() << std::endl ; //class a
+===========
+#include <iostream>
+
+class Base {
+public:
+    Base() { std::cout << "Base constructor" << std::endl; }
+    ~Base() { std::cout << "Base destructor" << std::endl; }
+};
+
+class Derived : public Base {
+public:
+    Derived() { std::cout << "Derived constructor" << std::endl; }
+    ~Derived() { std::cout << "Derived destructor" << std::endl; }
+};
+
+int main() {
+    Base* ptr = new Derived(); // Base class pointer to a Derived class object
+
+    delete ptr; // Only Base's destructor will be called
+
+    return 0;
+}
+Base constructor
+Derived constructor
+Base destructor
+
+if the base class destrcutor is made as virtual then
+Derived destructor
+Base destructor
+==============================================
+memory leak derived class destructor is not called
+
+#include <iostream>
+
+class Base {
+public:
+    // Base class methods
+    void show() const {
+        std::cout << "Base class show function" << std::endl;
+    }
+
+    void anotherFunction() const {
+        std::cout << "Base class anotherFunction" << std::endl;
+    }
+};
+
+class Derived : public Base {
+public:
+    // Derived class methods
+    void show() const {
+        std::cout << "Derived class show function" << std::endl;
+    }
+
+    void anotherFunction() const {
+        std::cout << "Derived class anotherFunction" << std::endl;
+    }
+};
+
+int main() {
+    Base* ptr = new Derived(); // Base class pointer to a Derived class object
+
+    // Calling methods using the base class pointer
+    ptr->show();            // Calls Base::show() due to static binding
+    ptr->anotherFunction(); // Calls Base::anotherFunction() due to static binding
+
+    delete ptr; // Clean up allocated memory
+    return 0;
+}
+Base class show function
+Base class anotherFunction
+====================================================
+Exception handling:
+
+void ProcessRecord(int count)
+{
+   int *pArray = (int*) malloc(count *sizeof(int));
+   if ()
+   {
+       std::cout <<"failed to allocate the memory";
+       return;
+   }
+   for (int i = 0; i< count; i++)
+   {
+       pArray[i] = i;
+   }
+   
+    free(pArray);
+}
+
+
+ProcessRecord (std::numeric_limits<int>::max());
+
+//std::numeric_limits<int>::max(); //max integer that the current platform can hold
+
+The above approach is wron since the caller doesnt know whether the function is 
+executed successfully or not.
+no check in the return value 
+
+int  ProcessRecord(int count)
+{
+   int *pArray = (int*) malloc(count *sizeof(int));
+   if (pArray == nullptr)
+   {
+       std::cout <<"failed to allocate the memory";
+       return -1;
+   }
+   for (int i = 0; i< count; i++)
+   {
+       pArray[i] = i;
+   }
+   
+    free(pArray);
+	return 0;
+}
+
+if (ProcessRecord (std::numeric_limits<int>::max()))
+{
+}
+======================
+using exception handling we can force the caller to know whether the error has happened or not
+what action is needed based on the error
+ - mechanism to handle the error in program that coocur at run time
+ - these errors are called exception
+ - exist outside the normal functioning of the program.
+ - require immediate handling by program
+ - if excption not handled the program will crash
+ - cannot be ignored unlike  c error handling (return value for error)
+ 
+ ===================
+ runtime_error has the constructor than accept the string.
+ when the exception happen control will jump to the catch block and it 
+ will never return to the place where the exception happened.
+ 
+ unhandled exception will terminate the program.
+ 
+ what is the virtual function in the base class std::exception
+ bad_alloc, runtime_error are derived from teh std::exception class
+ 
+ try{
+   exception casuing code appears here
+   it can have other try blocks
+   throw //exception is object that is constructed in throw statement
+ }
+ catch{
+   handler that catches the exception
+ }
+ 
+ int  ProcessRecord(int count)
+{
+   int *pArray = (int*) malloc(count *sizeof(int));
+   if (pArray == nullptr)
+   {
+        throw std::runtime_error("memory allocation failed")
+   }
+   for (int i = 0; i< count; i++)
+   {
+       pArray[i] = i;
+   }
+   
+    free(pArray);
+	return 0;
+}
+
+
+try {
+ProcessRecord (std::numeric_limits<int>::max())
+}
+//catch block should be immediatly after the try block
+catch(std::runtime_error &ex) //& is to avoid copying
+{
+   std::cout << ex.what() <<std::endl;
+   /* take action based on the error */
+}
+=====================================
+try throgh differennt errors. each error it throw should have the 
+matching exception.
+
+
+int  ProcessRecord(int count)
+{
+   if (count < 10)
+      throw std::out_of_range("count should be greater than 10);
+	  
+   int *pArray = (int*) malloc(count *sizeof(int));
+   if (pArray == nullptr)
+   {
+        throw std::runtime_error("memory allocation failed")
+   }
+   for (int i = 0; i< count; i++)
+   {
+       pArray[i] = i;
+   }
+   
+    free(pArray);
+	return 0;
+}
+
+
+
+try {
+ProcessRecord (5)
+}
+//catch block should be immediatly after the try block
+catch(std::runtime_error &ex) //& is to avoid copying
+{
+   std::cout << ex.what() <<std::endl;
+   /* take action based on the error */
+}
+catch(std::out_of_range &ex) //& is to avoid copying
+{
+   std::cout << ex.what() <<std::endl;
+   /* take action based on the error */
+}
+
+When the new throughs the exception and if you print the exception.what?
+bad array new length
+try
+{
+    int*ptr = new int[std::numeric_limits<int>::max()]
+}
+catch(std::bad_alloc &ex)
+{
+   cout <<ex.what(); //bad array new length
+}
+
+base class exception ie (std::exception &ex) ==> should be the last
+//it can also catch the derived class exception
+
+catch(...) //can catch anykind of exception. it should be the last catch block
+{
+   //it is doesnot give the information about the exception.
+   //hence it should be avoided as possible
+}
+======================================
+when the object is created in the try block and the exception is thrown in that 
+try block then the destructor for that object is called ie stack is unwinded
+stack for the function is unwinded (local object is properly destroyed).
+====
+stack unwinding will destroy the local object and not for the dynamic memory.
+it can lead to leak.
+avoid manual memory management or using the STL containers.
+
+//below we have the memory leak.
+try
+{
+   test *t = new test; //or test *t = new test();
+   ....
+   throw runtime_error("exception occured")
+   delete t;
+}
+catch(...)
+{
+}
+
+/// To fix the memory leak. when the function goes outof scope the 
+//the object is freed
+#include <memory>
+ try
+{
+   std::unique_ptr<test> t(new test); 
+   ....
+   throw runtime_error("exception occured")
+}
+catch(...)
+{
+}
+
+but how you will handle if you need the memory for an array of integer.
+in that case go for vector.
+#include <vector>
+
+try {
+std::vector <int>p;
+p.reserve(100);//p can hold 100 elements
+
+for (int i = 0;i<100;i++)
+  p.push_back(i);
+}
+
+if the vecto fails to reserve the memory for the number of element will throw the exception.
+
+#include <iostream>
+#include <vector>
+#include <exception> // For std::bad_alloc
+
+int main() {
+    std::vector<int> vec;
+    try {
+        // Attempt to reserve a very large amount of space
+        vec.reserve(static_cast<size_t>(-1));
+    } catch (const std::bad_alloc& e) {
+        std::cerr << "Memory allocation failed: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+terminate called after throwing an instance of 'std::length_error'
+  what():  vector::reserve
+=====================================
+Nested exception handling:
+
+assume you are having 100 recors and you started processing the record one by one.
+assume 10th record fails, you should not skip the complete processing of the record
+in that case handle the 10th record failure locally and started processing the next record
+
+if the number of record failure is greater than 5 skip the complete processing of record.
+throw; //rethrow the exception to the outer try block
+throw; //will throw the original exception.
+This is possible if we catch the exception by reference. it is possible to modify the original exception before it is rethrow. to add additional information
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+============================
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+
+// Custom exception class to add additional information
+class RecordProcessingException : public std::runtime_error {
+public:
+    RecordProcessingException(const std::string& message, int recordNumber)
+        : std::runtime_error(message), recordNumber(recordNumber) {}
+
+    int getRecordNumber() const { return recordNumber; }
+
+private:
+    int recordNumber;
+};
+
+// Function to process a single record
+void processRecord(int record) {
+    if ((record % 2) == 0) { 
+        throw std::runtime_error("Processing failed for record");
+    }
+    std::cout << "Processed record " << record << std::endl;
+}
+
+// Function to process all records
+void processAllRecords(const std::vector<int>& records) {
+    int failureCount = 0;
+    const int failureLimit = 5;
+
+    for (size_t i = 0; i < records.size(); ++i) {
+        try {
+            processRecord(records[i]);
+        } catch (const std::exception& e) {
+            std::cerr << "Error processing record " << i + 1 << ": " << e.what() << std::endl;
+            ++failureCount;
+
+            if (failureCount > failureLimit) {
+                throw RecordProcessingException("Too many record processing failures", i + 1);
+            }
+        }
+    }
+}
+
+int main() {
+    std::vector<int> records(100);
+    for (int i = 0; i < 100; ++i) {
+        records[i] = i + 1;
+    }
+
+    try {
+        processAllRecords(records);
+    } catch (const RecordProcessingException& e) {
+        std::cerr << "Processing stopped due to excessive failures at record " << e.getRecordNumber() << std::endl;
+        std::cerr << "Exception message: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+Processed record 1
+Error processing record 2: Processing failed for record
+Processed record 3
+Error processing record 4: Processing failed for record
+Processed record 5
+Error processing record 6: Processing failed for record
+Processed record 7
+Error processing record 8: Processing failed for record
+Processed record 9
+Error processing record 10: Processing failed for record
+Processed record 11
+Error processing record 12: Processing failed for record
+Processing stopped due to excessive failures at record 12
+Exception message: Too many record processing failures
+
+=====================================================================
+if (failureCount > failureLimit) {
+                std::runtime_error newEx(std::string("Too many record processing failures at record ") + std::to_string(i + 1) + ": " + e.what());
+                throw newEx;
+            }
+Processing stopped: Too many record processing failures at record 11: Processing failed for record
+=======================================================
+std::cout << "(Error " << ex.what() << " } " <<std::endl;
+add the string to exception.
+=======================
+#include <iostream>
+#include <stdexcept>
+
+int main() {
+    try {
+        try {
+            throw std::runtime_error("hi");
+        }
+        catch (std::runtime_error &ex) {
+            std::cout << "Inner catch: " << ex.what() << std::endl;
+            throw; // Rethrow the same exception
+        }
+    }
+    catch (std::exception &ex) {
+        std::cout << "Outer catch: " << ex.what() << std::endl;
+    }
+
+    return 0;
+}
+
+Inner catch: hi
+Outer catch: hi
+=========================================
+for this program to work we need to have the inner catch exception as 
+runtime_error. 
+int main() {
+    try {
+        try {
+            throw std::runtime_error("hi");
+        }
+        catch (std::runtime_error &ex) {
+            std::cout << "Inner catch: " << ex.what() << std::endl;
+            std::runtime_error errorex("super viswa");
+            ex = errorex;
+            throw ex; // Throw the new exception explicitly
+        }
+    }
+    catch (std::exception &ex) {
+        std::cout << "Outer catch: " << ex.what() << std::endl;
+    }
+
+    return 0;
+}
+Inner catch: hi
+Outer catch: super viswa
+================================
+ std::exception errorex("super viswa"); //error dont have constructor taking string
+ std::exception can catch the all other exception like runtime_error, bad_cast
+but vice versa is not allowed.
+
+int main() {
+    try {
+        try {
+            throw std::runtime_error("hi");
+        }
+		
+        catch (std::exception &ex) {
+            std::cout << "Inner catch: " << ex.what() << std::endl;
+            std::runtime_error errorex("super viswa");
+            ex = errorex; //you will not get the desired output
+            throw ex; // Throw the new exception explicitly
+        }
+    }
+    catch (std::exception &ex) {
+        std::cout << "Outer catch: " << ex.what() << std::endl;
+    }
+
+    return 0;
+}Inner catch: hi
+Outer catch: std::exception
+==========================================
+exception constructor and destructor:
+constructor may fails to acquire the resource 
+constructor may fails to allocate the memory
+when the constructor throws the exception the object initialization fails.
+
+char *ptr{};
+    // Allocate memory and assign to the pointer
+    ptr = new char[10]; // Allocate memory for an array of 10 chars
+
+    // Use the allocated memory
+    for (int i = 0; i < 10; ++i) {
+        ptr[i] = 'a' + i; // Assign characters 'a' to 'j'
+    }
+	delete []ptr;
+	ptr = nullptr;
+
+=======================
+if the constructor throws the exception destructor is not invoked.
+In C++, if a constructor throws an exception, the destructor for that 
+object is not called. However, destructors for any fully constructed sub-objects or base class objects are called.
+#include <iostream>
+#include <stdexcept>
+
+using namespace std;
+
+class A {
+public:
+    A() { cout << "A constructor" << endl; }
+    ~A() { cout << "A destructor" << endl; }
+};
+
+class B {
+public:
+    B() { cout << "B constructor" << endl; }
+    ~B() { cout << "B destructor" << endl; }
+};
+
+class C {
+public:
+    C() { cout << "C constructor" << endl; }
+    ~C() { cout << "C destructor" << endl; }
+};
+
+class Test {
+    A* pA{};
+    B b{}; // concrete object
+    int *pInt{};
+    char *pChar{};
+public:
+    Test() {
+        cout << "Test constructor" << endl;
+        C cobj;
+        pA = new A;
+        pInt = new int;
+        throw runtime_error("exception is thrown");
+        pChar = new char[100];
+    }
+    ~Test() {
+        cout << "Test destructor" << endl;
+        delete pA;
+        delete pInt;
+        delete[] pChar;
+    }
+};
+
+int main() {
+    try {
+        Test t;
+    } catch (std::exception &ex) {
+        cout << "Exception caught: " << ex.what() << endl;
+    }
+    return 0;
+}
+B constructor
+Test constructor
+C constructor
+A constructor
+C destructor
+B destructor
+Exception caught: exception is thrown
+================================================
+How to ensure the memory leaks are avoided when the constructor throws the exception.
+to avoid the leaks go for uniqueue_ptr; string object and vector;
+
+std::unique_ptr<A> pA{}
+pa.reset(new A)
+
+destructor should not throws an excepion because stack unwinding will call the destrutor.
+if the destructor throws the exception it should be handled with in the destructor itself.
+=========================================
+noexcept:
+std::noexcept is applied to function (both in declaration and definition)
+indicates teh function does not throw exceptions
+compiler can optimize the function code
+--no need to generate stack unwinding code
+an exception from such function terminate the program.
+ --stack may or maynot be unwinded.
+--Not all functions should use noexcept specifier
+    -function calling other function in library
+	- in that case calling function will not use no except.
+
+	
+int sum(int a, int y) noexcept //default it is true
+{
+   return (x+y)
+}
+// or
+int sum(int a, int y) noexcept(true)
+{
+   return (x+y)
+}
+
+noexcept function canot throw the exception. if it throws it will terminate the 
+program. 
+//crash is due to no stack unwinding
+//noexcept function should not call the function which throws the exception. because the 
+program will terminate when the exception is thrown
+//below program will carsh since the sum call the function which can throw exception
+void test(int x) // by default it is exception(false)
+//or void test(int x) exception(false)
+{
+    throw (10);
+	return x;
+}
+
+int sum(int x. int y) exception(true) //compiler will not give any warning
+{
+     return(test(x+y);  
+}
+==================
+int sum(int x. int y) exception(true) //compiler will give warning
+{
+     throw(10);  
+}
+try {
+   sun(1,2); // it is not necessary the try should have only the exception function
+}
+catch(std::exception &ex)
+{
+   cout << ex.what();
+}
+=======================
+noexcept is also the operator that accept the expression.
+//noexcept(test(x) get the exception type of the test and apply it for the 
+//sum
+cout <<std::boolalpha <<noexcept(test(x)) <<std::endl; //return false
+void test(int x)
+{
+}
+
+int sum(int x, int y) noexcept(noexcept(test(x))) {
+   test(x);
+   return 10;
+}
+===================
+void test(int x) noexcept(true){
+    // Function body
+}
+
+void test1(int x) {
+    // Function body
+}
+
+int main() {
+    int x = 42;
+    std::cout << std::boolalpha << noexcept(test(x)) << std::endl; // true
+	std::cout << std::boolalpha << noexcept(test1(x)) << std::endl; // false
+    return 0;
+}
+====================
+destructor should be marked as noexcept(true)
+move constructor and move assignemnet operator is marked with noexcept true;
+c++11 all the destructor are implicitly marked noexcept true;
+How to check that?
+
+//to find the default specifier for the destructor?
+test object;
+std::cout << std::boolalpha << noexcept(object.~test()) << std::endl; //true
+==========
+using exception to validate the userinput is not the right choice.
+=============================================================
+// Define a simple thread function
+void threadFunction(int threadID) {
+    std::cout << "Thread " << threadID << " is running\n";
+    // Simulate work with sleep
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::cout << "Thread " << threadID << " has finished\n";
+}
+
+int main() {
+    // Number of threads to create
+    const int numThreads = 5;
+
+    // Vector to hold the threads
+    std::vector<std::thread> threads;
+
+    // Launch threads and store them in the vector
+    for (int i = 0; i < numThreads; ++i) {
+        threads.emplace_back(threadFunction, i); // or threads.push_back(std::thread(threadFunction, i));
+    }
+
+    // Join threads to ensure they complete before exiting the main function
+    for (auto& th : threads) {
+        if (th.joinable()) {
+            th.join();
+        }
+    }
+
+    std::cout << "All threads have completed\n";
+    return 0;
+}
+=============================================================
+thread object can only be moved and copied?.
+#include <iostream>
+#include <thread>
+#include <vector>
+
+// Define a simple thread function
+void threadFunction(int threadID) {
+    std::cout << "Thread " << threadID << " is running\n";
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::cout << "Thread " << threadID << " has finished\n";
+}
+
+int main() {
+    // Number of threads to create
+    const int numThreads = 5;
+
+    // Vector to hold the threads
+    std::vector<std::thread> th;
+
+    // Create and store threads in the vector
+    for (int i = 0; i < numThreads; ++i) {
+        std::thread t(threadFunction, i);
+        th.push_back(std::move(t)); // Move the thread into the vector
+    }
+
+    // Join threads to ensure they complete before exiting the main function
+    for (auto& t : th) {
+        if (t.joinable()) {
+            t.join();
+        }
+    }
+
+    std::cout << "All threads have completed\n";
+    return 0;
+}
+=================================================
+class Base {
+public:
+    Base() : data(new int[1000]) {}
+
+    // Move constructor
+    Base(Base&& other) noexcept : data(other.data) {
+        other.data = nullptr; // Transfer ownership
+    }
+
+    // Move assignment operator
+    Base& operator=(Base&& other) noexcept {
+        if (this != &other) {
+            delete[] data;         // Release current resource
+            data = other.data;     // Transfer ownership
+            other.data = nullptr;  // Nullify the source
+        }
+        return *this;
+    }
+
+    // Destructor
+    ~Base() {
+        delete[] data;
+    }
+
+private:
+    int* data;
+};
+===============================================================
+#include <vector>
+#include <iostream>
+
+class MyClass {
+public:
+    MyClass() = default;
+    MyClass(MyClass&&) noexcept { /* Move constructor */ }
+    MyClass& operator=(MyClass&&) noexcept { /* Move assignment */ return *this; }
+    // Other members...
+};
+
+int main() {
+    std::vector<MyClass> vec;
+    vec.push_back(MyClass()); // Move construction here
+    // If MyClass's move operations are noexcept, this operation is efficient
+}
+===========================================
+#include <array>
+#include <iostream>
+
+int main() {
+    std::array<int, 5> values {1, 2, 3, 4, 5};
+    
+    auto &&range = values; // range is deduced as std::array<int, 5> &
+
+    // range is an lvalue, even though it was declared with &&
+    static_assert(std::is_lvalue_reference<decltype(range)>::value, "range should be an lvalue reference");
+
+    // We can use range just like values
+    for (auto &val : range) {
+        std::cout << val << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+//1 2 3 4 5
+==================================
+#include <iostream>
+#include <type_traits>
+
+// Generic function to process data
+template<typename T>
+void processData( T&& data) {
+    if constexpr (std::is_lvalue_reference<T>::value) {
+        std::cout << "Processing an lvalue reference." << std::endl;
+        // Specific logic for lvalue references
+       // data += 10;  // Assume data is an int, this modifies the original variable
+    } else {
+        std::cout << "Processing an rvalue reference." << std::endl;
+        // Specific logic for rvalue references
+        // No modification as it’s typically a temporary object
+    }
+
+    std::cout << "Processed value: " << data << std::endl;
+}
+
+int main() {
+    int x = 5;
+    processData(x);   // Passes an lvalue, `x` is an lvalue reference
+    processData(10);  // Passes an rvalue, `10` is an rvalue reference
+    const int u =100;
+    processData(u);
+    return 0;
+}
+Processing an lvalue reference.
+Processed value: 5
+Processing an rvalue reference.
+Processed value: 10
+Processing an lvalue reference.
+Processed value: 100
+====================================================
+#include <iostream>
+#include <type_traits>
+
+// Generic function to process data
+template<typename T>
+void processData(T&& data) {
+    if (std::is_lvalue_reference<T>::value) {
+        std::cout << "Processing an lvalue reference." << std::endl;
+        // Specific logic for lvalue references
+        if constexpr (!std::is_const<std::remove_reference_t<T>>::value) {
+            data += 10;  // Modify only if it's not const
+        } else {
+            std::cout << "Cannot modify const lvalue reference." << std::endl;
+        }
+    } else {
+        std::cout << "Processing an rvalue reference." << std::endl;
+        // Specific logic for rvalue references
+        // No modification as it’s typically a temporary object
+    }
+
+    std::cout << "Processed value: " << data << std::endl;
+}
+
+int main() {
+    int x = 5;
+    processData(x);   // Passes an lvalue, `x` is an lvalue reference
+    processData(10);  // Passes an rvalue, `10` is an rvalue reference
+    const int u = 100;
+    processData(u);   // Passes a const lvalue reference
+
+    return 0;
+}
+Processing an lvalue reference.
+Processed value: 15
+Processing an rvalue reference.
+Processed value: 10
+Processing an lvalue reference.
+Cannot modify const lvalue reference.
+Processed value: 100
+
+//if constexpr is not their
+// This line will cause a compilation error if T is const int& since both the statement will be executed. true and false
+===========================================================
+constexpr int factorial(int n) {
+    return (n <= 1) ? 1 : (n * factorial(n - 1));
+}
+
+constexpr int fact5 = factorial(5); // Guaranteed to be computed at compile-time
+int fact6 = factorial(5); //not Guaranteed to be computed at compile-time
+int a =10; //Guaranteed to be computed at compile-time
+=========================================================
+#include <iostream>
+#include <memory>
+
+// Parent class
+class Parent {
+public:
+    Parent() {
+         std::cout <<__FUNCTION__<<std::endl;
+    }
+    void show() const {
+        std::cout << "Parent class function called." << std::endl;
+    }
+};
+
+// Child class
+class Child {
+private:
+    std::shared_ptr<Parent> parentPtr;
+
+public:
+    Child(std::shared_ptr<Parent> p) : parentPtr(p) {
+        std::cout <<__FUNCTION__<<std::endl;
+    }
+
+    void display() const {
+        parentPtr->show();
+        std::cout << "Child class function called." << std::endl;
+    }
+};
+
+int main() {
+    // Create a shared_ptr to Parent
+    std::shared_ptr<Parent> parentPtr = std::make_shared<Parent>();
+
+    // Create a shared_ptr to Child object and pass the shared_ptr to its constructor
+    std::shared_ptr<Child> child = std::make_shared<Child>(parentPtr);
+
+    child.reset(new Child(parentPtr));
+    // Call a function in Child class
+    child->display();
+
+    return 0;
+}
+Parent
+Child
+Child
+Parent class function called.
+Child class function called.
+=====================================================
+#include <iostream>
+using namespace std;
+class A {
+public:
+    A() { std::cout << "Constructor A\n"; }
+};
+
+class B {
+public:
+    B() { std::cout << "Constructor B\n"; }
+};
+
+class C  {
+public:
+    C() { std::cout << "Constructor C\n"; }
+};
+
+class D : public C, public A {
+private:
+    B b;
+    C c;
+    A a;
+public:
+    D() { std::cout << "Constructor D\n"; }
+};
+
+int main()
+{
+     D obj;
+     return 0;
+}
+Constructor C
+Constructor A
+Constructor B
+Constructor C
+Constructor A
+Constructor D
+===================================================
+Ambiguity error:
+main.cpp:18:7: warning: direct base ‘A’ inaccessible in ‘D’ due to ambiguity [-Winaccessible-base]
+   18 | class D : public C, public A {
+      |       ^
+Constructor A
+Constructor C
+Constructor A
+Constructor A
+Constructor B
+Constructor A
+Constructor C
+Constructor A
+Constructor D
+
+#include <iostream>
+using namespace std;
+class A {
+public:
+    A() { std::cout << "Constructor A\n"; }
+};
+
+class B : public A{
+public:
+    B() { std::cout << "Constructor B\n"; }
+};
+
+class C : public A {
+public:
+    C() { std::cout << "Constructor C\n"; }
+};
+
+class D : public C, public A {
+private:
+    B b;
+    C c;
+    A a;
+public:
+    D() { std::cout << "Constructor D\n"; }
+};
+
+int main()
+{
+     D obj;
+     return 0;
+}
+   
+   =====================
+#include <iostream>
+
+class MyClass {
+private:
+    int member = 7; // Private member variable
+
+public:
+    // Friend function to allow access to private members
+    friend std::ostream& operator<<(std::ostream& os, const MyClass& obj) {
+        os << obj.member; // Output private member
+        return os;
+    }
+
+    // Assignment operator to handle assignment from an integer
+    MyClass& operator=(int value) {
+        member = value;
+        return *this;
+    }
+};
+
+int main() {
+    MyClass obj;
+    std::cout << obj << std::endl; // Using overloaded << operator
+    obj = 7; // Using the defined assignment operator
+    std::cout << obj << std::endl; // Print the updated value
+    return 0;
+}
+===============================
+#include <iostream>
+#include <cstddef>  // For std::size_t
+
+// Overloaded global new operator
+void* operator new(std::size_t size) {
+    std::cout << "Custom global new of size " << size << std::endl;
+    return malloc(size);  // Allocate memory using malloc
+}
+
+// Overloaded global delete operator
+void operator delete(void* ptr) noexcept {
+    std::cout << "Custom global delete" << std::endl;
+    free(ptr);  // Deallocate memory using free
+}
+
+class MyClass {
+public:
+    MyClass() {
+        std::cout << "Constructor called" << std::endl;
+    }
+
+    ~MyClass() {
+        std::cout << "Destructor called" << std::endl;
+    }
+};
+
+int main() {
+    // Creating an instance of MyClass
+    MyClass* obj = new MyClass();
+
+    // Destroying the instance of MyClass
+    delete obj;
+
+    return 0;
+}
+Custom global new of size 1 //size is 1 since the there is no member variable for the class 
+Constructor called
+Destructor called
+Custom global delete
+====================================
+#include <iostream>
+#include <cstddef>  // For std::size_t
+
+// Overloaded global new operator
+void* operator new(std::size_t size) {
+    std::cout << "Global new of size " << size << std::endl;
+    return malloc(size);  // Allocate memory using malloc
+}
+
+// Overloaded global delete operator
+void operator delete(void* ptr) noexcept {
+    std::cout << "Global delete" << std::endl;
+    free(ptr);  // Deallocate memory using free
+}
+
+class MyClass {
+    int a;
+public:
+    // Overloaded class-specific new operator
+    void* operator new(std::size_t size) {
+        std::cout << "MyClass specific new of size " << size << std::endl;
+        return malloc(size);  // Allocate memory using malloc
+    }
+
+    // Overloaded class-specific delete operator
+    void operator delete(void* ptr) noexcept {
+        std::cout << "MyClass specific delete" << std::endl;
+        free(ptr);  // Deallocate memory using free
+    }
+
+    MyClass() {
+        std::cout << "Constructor called" << std::endl;
+    }
+
+    ~MyClass() {
+        std::cout << "Destructor called" << std::endl;
+    }
+};
+
+int main() {
+    // Creating an instance of MyClass
+    MyClass* obj = new MyClass();
+
+    // Destroying the instance of MyClass
+    delete obj;
+    
+    int *ptr =new int(19);
+    delete ptr;
+
+    return 0;
+}
+MyClass specific new of size 4
+Constructor called
+Destructor called
+MyClass specific delete
+Global new of size 4
+Global delete
+==================================
+customizing the memory allocation:
+#include <iostream>
+#include <cstddef>  // For std::size_t
+
+// Overloaded global new operator that takes size and an initializer
+void* operator new(std::size_t size, const char* initMessage) {
+    std::cout << "Global new of size " << size << " with initializer: " << initMessage << std::endl;
+    return malloc(size);  // Allocate memory using malloc
+}
+
+// Overloaded global delete operator
+void operator delete(void* ptr) noexcept {
+    std::cout << "Global delete" << std::endl;
+    free(ptr);  // Deallocate memory using free
+}
+
+class MyClass {
+public:
+    MyClass(int value) : value(value) {
+        std::cout << "Constructor called with value " << value << std::endl;
+    }
+
+    ~MyClass() {
+        std::cout << "Destructor called" << std::endl;
+    }
+
+    int getValue() const { return value; }
+
+private:
+    int value;
+};
+
+int main() {
+    // Create an instance of MyClass using the global new with an initializer
+    MyClass* obj = new("Initialized memory") MyClass(42);
+
+    std::cout << "Value in object: " << obj->getValue() << std::endl;
+
+    // Destroy the instance of MyClass
+    delete obj;
+
+    return 0;
+}
+Global new of size 1 with initializer: Initialized memory
+Constructor called with value 42
+Value in object: 42
+Destructor called
+Global delete
+===============================
+#include <iostream>
+#include <new>  // For placement new
+
+class MyClass {
+public:
+    MyClass(int value) : value(value) {
+        std::cout << "Constructor called with value " << value << std::endl;
+    }
+
+    ~MyClass() {
+        std::cout << "Destructor called" << std::endl;
+    }
+
+    int getValue() const { return value; }
+
+private:
+    int value;
+};
+
+int main() {
+    // Allocate raw memory
+    void* buffer = malloc(sizeof(MyClass));
+
+    // Construct MyClass object in the pre-allocated buffer
+    MyClass* obj = new (buffer) MyClass(42);
+
+    std::cout << "Value in object: " << obj->getValue() << std::endl;
+
+    // Call destructor explicitly
+    obj->~MyClass();
+
+    // Free the raw memory
+    free(buffer);
+
+    return 0;
+}
+Constructor called with value 42
+Value in object: 42
+Destructor called
+=====================================
+Perfect Forwarding: When you're writing a forwarding function that needs
+ to forward its arguments to another function, you should use std::forward to maintain the original 
+value category of each argument.
+
+#include <iostream>
+#include <utility> // For std::forward and std::move
+
+// Function overloads for `process`
+void process1(int value) { //ambiguity with &
+    std::cout << "Processing integer by value: " << value << std::endl;
+}
+
+void process(int& value) {
+    std::cout << "Processing integer by non-const reference: " << value << std::endl;
+}
+
+void process(const int& value) {
+    std::cout << "Processing integer by const reference: " << value << std::endl;
+}
+
+void process(const int&& value) {
+    std::cout << "Processing integer by reference &&: " << value << std::endl;
+}
+
+// Template function that forwards arguments to the appropriate process function
+template <typename T>
+void wrapper(T&& arg) {
+    // Forward the argument to the `process` function
+    process(std::forward<T>(arg));
+}
+
+int main() {
+    int x = 10;
+
+    std::cout << "Calling wrapper with lvalue:" << std::endl;
+    // Call wrapper with an lvalue
+    wrapper(x); // Should call process(int&)
+
+    const int x1 =100;
+    wrapper(x1); 
+     
+    std::cout << "Calling wrapper with rvalue:" << std::endl;
+    // Call wrapper with an rvalue
+    wrapper(20); // Should call process(int)
+
+    std::cout << "Calling wrapper with std::move:" << std::endl;
+    // Move semantics example
+    wrapper(std::move(x)); // Should call process(int) as `std::move(x)` is an rvalue
+	//if their is no && function it will call the const &
+
+    return 0;
+}
+Calling wrapper with lvalue:
+Processing integer by non-const reference: 10
+Processing integer by const reference: 100
+Calling wrapper with rvalue:
+Processing integer by reference &&: 20
+Calling wrapper with std::move:
+Processing integer by reference &&: 10
+========================================================
